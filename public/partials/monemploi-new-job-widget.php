@@ -68,10 +68,10 @@ class monemploi_new_jobs_widget extends WP_Widget {
 								echo '<span class="completeDeparture">';
 									echo '<div class="completeDeparture_'.  $i . '" style="display:none;">'. implode($field_data) . '</div>';
 									echo '<div class="completeArrival_' . $i . '" style="display: none;">' . get_post_meta( $p->ID, 'my_code_postal_key', true ) . '</div>';
-									echo ' - <span class="widgetdistance_' . $i . '"></span>';
+									echo ' - <span class="widgetdistance_' . $i . '"></span> - ';
 								echo '</span>';
 							}
-							
+							echo get_post_meta( $p->ID, 'my_city_key', true );
 							echo ' - Brouillon';
 			
 						 echo '</div>';
@@ -101,9 +101,10 @@ class monemploi_new_jobs_widget extends WP_Widget {
 							echo '<span class="completeDeparture">';
 								echo '<div class="completeDeparture_'.  $i . '" style="display:none;">'. implode($field_data) . '</div>';
 								echo '<div class="completeArrival_' . $i . '" style="display: none;">' . get_post_meta( $p->ID, 'my_code_postal_key', true ) . '</div>';
-								echo ' - <span class="widgetdistance_' . $i . '"></span>';
+								echo ' - <span class="widgetdistance_' . $i . '"></span> - ';
 							echo '</span>';
 						}
+						echo get_post_meta( $p->ID, 'my_city_key', true );
 		
 					 echo '</div>';
 					 $i++;
