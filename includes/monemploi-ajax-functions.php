@@ -289,15 +289,38 @@ function monemploi_add_job($post) {
 	$annees_dexperience = $_POST['annees_dexperience'];
 	$salaire = $_POST['salaire'];
 	$city = $_POST['city'];
+	$datepickerstartjobscheduled = $_POST['datepickerstartjobscheduled'];
+	$datepickerendjobscheduled = $_POST['datepickerendjobscheduled'];
+	$timestartjobscheduled = $_POST['timestartjobscheduled'];
+	$timeendjobscheduled = $_POST['timeendjobscheduled'];
 	
-	$new_post = array(
-		'post_title' => $emploi_job_title,
-		'post_content' => $ticket_details,
-		'post_status' => 'publish',
-		'post_date_gmt' => date('Y-m-d H:i:s'),
-		'post_author' => get_current_user_id(),
-		'post_type' => 'emploi'
-	);
+	if(!$datepickerstartjobscheduled == null && !$timestartjobscheduled == null) {
+		$schedule_timestamp = strtotime($datepickerstartjobscheduled . 'T' . $timestartjobscheduled);	
+		$publish_date = date('Y-m-d H:i:s', $schedule_timestamp);
+		$publish_date_gmt = get_gmt_from_date($publish_date);
+		
+		$new_post = array(
+			'post_title' => $emploi_job_title,
+			'post_content' => $ticket_details,
+			'post_status' => 'future',
+		        'post_date'     => $publish_date,
+		        'post_date_gmt' => $publish_date_gmt,
+			'post_author' => get_current_user_id(),
+			'post_type' => 'emploi'
+		);
+		
+	} else {
+	
+		$new_post = array(
+			'post_title' => $emploi_job_title,
+			'post_content' => $ticket_details,
+			'post_status' => 'publish',
+			'post_date_gmt' => date('Y-m-d H:i:s'),
+			'post_author' => get_current_user_id(),
+			'post_type' => 'emploi'
+		);
+		
+	}
 	$postid = wp_insert_post($new_post);
     
     	add_post_meta( $postid, 'my_code_postal_key', $code_postal );
@@ -305,6 +328,8 @@ function monemploi_add_job($post) {
     	add_post_meta( $postid, 'my_annees_dexperience_key', $annees_dexperience );
     	add_post_meta( $postid, 'my_salaire_key', $salaire );
     	add_post_meta( $postid, 'my_city_key', $city );
+    	add_post_meta( $postid, 'my_start_job_scheduled_key', strtotime($datepickerstartjobscheduled . 'T' . $timestartjobscheduled));
+    	add_post_meta( $postid, 'my_end_job_scheduled_key', strtotime($datepickerendjobscheduled . 'T' . $timeendjobscheduled));
 	
 	wp_send_json ( 'Votre emploi a ete ajouté avec succès #' . $postid );
 }	
@@ -1635,7 +1660,7 @@ function job_draft_to_publish($post) {
 	$post_id = $_POST['object_id'];
 	
 	
-	if ( get_post_status( $post_id ) == 'draft' ) {
+	if ( get_post_status( $post_id ) == 'draft' || get_post_status( $post_id ) == 'future' ) {
 		// Prepare the post data array for updating
 		$postdata = array(
 		    'ID'          => $post_id,

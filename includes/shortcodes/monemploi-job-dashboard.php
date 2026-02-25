@@ -6,7 +6,7 @@ function monemploi_job_dashboard() {
 
         $get_jobs_args = array(
             'post_type' => 'emploi',
-            'post_status'    => array('publish', 'draft'),
+            'post_status'    => array('publish', 'draft', 'future'),
             'posts_per_page' => -1        
         );
         
@@ -15,7 +15,7 @@ function monemploi_job_dashboard() {
 	if( ! empty( $get_jobs ) ){
 		?><div><?php
 		foreach ( $get_jobs as $p ){
-		    	if ( get_post_status ( $p->ID ) == 'draft' ) {
+		    	if ( get_post_status ( $p->ID ) == 'draft' || get_post_status ( $p->ID ) == 'future' ) {
 		    		if(get_current_user_id() == $p->post_author) {
 		    		
 		    		echo '<div style="display: block;"><a href="' . get_permalink( $p->ID ) .'">' . $p->post_title . '</a> - ';

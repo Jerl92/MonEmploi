@@ -57,7 +57,7 @@ function employeur_dashboard() {
 				$args = array(
 				 'post_type' => 'emploi',
 	 			 'author'        =>  $user_id, 
-	 			 'post_status'    => array('publish', 'draft'),
+	 			 'post_status'    => array('publish', 'draft', 'future'),
 				  'orderby'       =>  'post_date',
 				  'order'         =>  'DESC',
 				  'posts_per_page' => -1
@@ -73,7 +73,7 @@ function employeur_dashboard() {
 				$i = 0;
 				
 				foreach($posts as $post)  {
-				    if ( get_post_status ( $post->ID ) == 'draft' ) {
+				    if ( get_post_status ( $post->ID ) == 'draft' || get_post_status ( $post->ID ) == 'future' ) {
 			    		        if(get_current_user_id() == $post->post_author) {
 					
 							echo '<a href="' . get_permalink( $post->ID ) .'">' . $post->post_title . '</a>';

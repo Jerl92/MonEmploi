@@ -25,6 +25,10 @@ function monemploi_add_job($){
 	        var annees_dexperience = jQuery('.annees_dexperience').find(":selected").val();
 	  	var salaire = jQuery('.monemploi_add_salaire').val();
 	  	var city = jQuery('.monemploi_add_city_text').val();
+	  	var datepickerstartjobscheduled = jQuery('.datepickerstartjobscheduled').val();
+	  	var datepickerendjobscheduled = jQuery('.datepickerendjobscheduled').val();
+	  	var timestartjobscheduled = jQuery('#timestartjobscheduled').val();
+	  	var timeendjobscheduled = jQuery('#timeendjobscheduled').val();
 	
 	        jQuery.ajax({
 	            type: 'post',
@@ -37,6 +41,10 @@ function monemploi_add_job($){
 	                'annees_dexperience': annees_dexperience,
 	                'salaire': salaire,
 	                'city': city,
+	                'datepickerstartjobscheduled': datepickerstartjobscheduled,
+	                'datepickerendjobscheduled': datepickerendjobscheduled,
+	                'timestartjobscheduled': timestartjobscheduled,
+	                'timeendjobscheduled': timeendjobscheduled,
 	                'action': 'monemploi_add_job'
 	            },
 	            dataType: 'json',

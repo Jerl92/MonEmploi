@@ -134,6 +134,8 @@ class Monemploi {
         	        	
         	require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/monemploi-ajax-functions.php';
         	
+        	require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/monemploi-cron-functions.php';
+        	
         	require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/shortcodes/monemploi-newjob-from.php';
         	
         	require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/shortcodes/monemploi-job-dashboard.php';

@@ -38,16 +38,18 @@ function handle_frontend_media_upload() {
     }
 
     // Insert the uploaded file into the media library
-    $attachment_id = wp_insert_attachment(
-        array(
-            'guid'           => $upload['url'],
-            'post_mime_type' => $upload['type'],
-            'post_title'     => basename( $upload['file'] ),
-            'post_content'   => '',
-            'post_status'    => 'publish',
-        ),
-        $upload['file']
-    );
+    if($upload['type'] == 'application/msword' || $upload['type'] == 'application/pdf' || $upload['type'] == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+        $attachment_id = wp_insert_attachment(
+            array(
+                'guid'           => $upload['url'],
+                'post_mime_type' => $upload['type'],
+                'post_title'     => basename( $upload['file'] ),
+                'post_content'   => '',
+                'post_status'    => 'publish',
+            ),
+            $upload['file']
+        );
+    }
 
     if ( is_wp_error( $attachment_id ) || ! $attachment_id ) {
         wp_die( 'Error adding file to media library.' );
@@ -112,7 +114,7 @@ function show_draft_posts_on_front( $query ) {
     if ( is_user_logged_in() && current_user_can( 'um_employeur' ) ) {
         // Ensure the main loop is targeted and no suppress_filters argument is present
         if ( $query->is_main_query() && !isset($query->query_vars['suppress_filters']) ) {
-            $query->set( 'post_status', [ 'publish', 'draft' ] );
+            $query->set( 'post_status', [ 'publish', 'draft', 'future' ] );
         }
     }
     

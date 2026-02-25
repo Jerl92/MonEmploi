@@ -102,11 +102,13 @@ class Monemploi_Public {
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/monemploi-public.js', array( 'jquery' ), $this->version, false );
         
-        wp_enqueue_script( 'datepicker', plugin_dir_url( __FILE__ ) . 'js/datepicker.js', array( 'jquery' ), $this->version, false );
-        
-        wp_enqueue_script( 'jquery-ui', plugin_dir_url( __FILE__ ) . 'js/jquery-ui.js', array( 'jquery' ), $this->version, false );
-
-        wp_enqueue_script( 'jQuery-ui-touch-punch', plugin_dir_url( __FILE__ ) . 'js/jQuery-ui-touch-punch.js', array( 'jquery' ), $this->version, false );
+	        wp_enqueue_script( 'datepicker', plugin_dir_url( __FILE__ ) . 'js/datepicker.js', array( 'jquery' ), $this->version, false );
+	        
+	       	wp_enqueue_script( 'monemploijs', plugin_dir_url( __FILE__ ) . 'js/monemploi.js', array( 'jquery' ), $this->version, false );
+	        
+	        wp_enqueue_script( 'jquery-ui', plugin_dir_url( __FILE__ ) . 'js/jquery-ui.js', array( 'jquery' ), $this->version, false );
+	
+	        wp_enqueue_script( 'jQuery-ui-touch-punch', plugin_dir_url( __FILE__ ) . 'js/jQuery-ui-touch-punch.js', array( 'jquery' ), $this->version, false );
 
 	}
 
