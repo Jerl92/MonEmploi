@@ -38,19 +38,22 @@
 				$end_job_scheduled = get_post_meta( $post->id, 'my_end_job_scheduled_key', true);
 				$strtotime_now = strtotime(date("Y-m-d H:i:s"));
 				
-				if($strtotime_now >= $end_job_scheduled){
-				
-					if ( get_post_status( $post->id ) == 'publish' ) {
-						// Prepare the post data array for updating
-						$postdata = array(
-						    'ID'          => $post->id,
-						    'post_status' => 'draft' // Set the status to 'draft'
-						);
-						
-						// Update the post in the database
-						wp_update_post( $postdata );
+				if($end_job_scheduled != null) {
+					if($strtotime_now >= $end_job_scheduled){
+					
+						if ( get_post_status( $post->id ) == 'publish' ) {
+							// Prepare the post data array for updating
+							$postdata = array(
+							    'ID'          => $post->id,
+							    'post_status' => 'draft' // Set the status to 'draft'
+							);
+							
+							// Update the post in the database
+							wp_update_post( $postdata );
+						}
+					
 					}
-				
+					
 				}
 			
 			}
