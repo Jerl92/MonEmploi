@@ -25,7 +25,7 @@
 	
 		$get_jobs_args = array(
 	            'post_type' => 'emploi',
-	            'post_status'    => array('publish'),
+	            'post_status'    => 'publish',
 	            'posts_per_page' => -1        
 	        );
 	        
@@ -34,17 +34,18 @@
 		if( ! empty( $get_jobs ) ){
 		
 			foreach ( $get_jobs as $post ){
-			
-				$end_job_scheduled = get_post_meta( $post->id, 'my_end_job_scheduled_key', true);
+						
+				$end_job_scheduled = get_post_meta( $post->ID, 'my_end_job_scheduled_key', true);
 				$strtotime_now = strtotime(date("Y-m-d H:i:s"));
 				
 				if($end_job_scheduled != null) {
+	
 					if($strtotime_now >= $end_job_scheduled){
 					
-						if ( get_post_status( $post->id ) == 'publish' ) {
+						if ( get_post_status( $post->ID ) == 'publish' ) {
 							// Prepare the post data array for updating
 							$postdata = array(
-							    'ID'          => $post->id,
+							    'ID'          => $post->ID,
 							    'post_status' => 'draft' // Set the status to 'draft'
 							);
 							
