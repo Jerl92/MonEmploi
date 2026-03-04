@@ -331,7 +331,12 @@ function monemploi_add_job($post) {
     	add_post_meta( $postid, 'my_start_job_scheduled_key', strtotime($datepickerstartjobscheduled . 'T' . $timestartjobscheduled));
     	add_post_meta( $postid, 'my_end_job_scheduled_key', strtotime($datepickerendjobscheduled . 'T' . $timeendjobscheduled));
 	
-	wp_send_json ( 'Votre emploi a ete ajouté avec succès #' . $postid );
+	$html[] .= 'Votre emploi à été ajouté avec succès #';
+	$html[] .= $postid;
+	$html[] .= '</br>';
+	$html[] .= '<button><a href="' . get_permalink($postid) . '">' . get_the_title($postid) . '</a></button>';
+	
+	wp_send_json ( implode($html) );
 }	
 
 /* AJAX action callback */
@@ -1674,8 +1679,13 @@ function job_draft_to_publish($post) {
 	$html[] .= '<div class="draft-job-emplois" data-object-id="' . $post_id . '">';
 	$html[] .= '<span class="material-icons">archive</span>';
 	$html[] .= '</div>';
-
 	
+	$end_job_scheduled = get_post_meta( $post_id, 'my_end_job_scheduled_key', true);
+	$strtotime_now = strtotime(date("Y-m-d H:i:s"));
+	
+	if($strtotime_now >= $end_job_scheduled){
+		update_post_meta( $post_id, 'my_end_job_scheduled_key', '');
+	}
 	
 	wp_send_json( implode($html) );
 	

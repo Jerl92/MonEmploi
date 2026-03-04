@@ -2,8 +2,8 @@
 
 	function myprefix_custom_cron_schedule( $schedules ) {
 	    $schedules['every_one_hour'] = array(
-	        'interval' => 7200,
-	        'display'  => __( 'Every one hour' ),
+	        'interval' => 300,
+	        'display'  => __( 'Every five minutes' ),
 	    );
 	    return $schedules;
 	}
@@ -38,10 +38,10 @@
 				$end_job_scheduled = get_post_meta( $post->ID, 'my_end_job_scheduled_key', true);
 				$strtotime_now = strtotime(date("Y-m-d H:i:s"));
 				
-				if($end_job_scheduled != null) {
+				if($end_job_scheduled != null || $end_job_scheduled != '') {
 	
 					if($strtotime_now >= $end_job_scheduled){
-					
+									
 						if ( get_post_status( $post->ID ) == 'publish' ) {
 							// Prepare the post data array for updating
 							$postdata = array(
@@ -51,6 +51,7 @@
 							
 							// Update the post in the database
 							wp_update_post( $postdata );
+							
 						}
 					
 					}

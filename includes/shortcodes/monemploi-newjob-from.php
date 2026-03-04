@@ -77,6 +77,10 @@ function monemploi_newjob_from() {
 				
 				<br><br>
 				
+				<div id="monemploi-new-form-sumbit"></div>
+				
+				<div class="new_job_error"></div>
+								
 				<button class="ns_submit">
 					<?php esc_html_e( 'Ajouter l&#39;emploi', 'monemploi' ); ?>
 				</button>
