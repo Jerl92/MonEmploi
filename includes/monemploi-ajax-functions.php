@@ -335,6 +335,7 @@ function monemploi_add_job($post) {
 	$html[] .= $postid;
 	$html[] .= '</br>';
 	$html[] .= '<button><a href="' . get_permalink($postid) . '">' . get_the_title($postid) . '</a></button>';
+	$html[] .= '</br>';
 	
 	wp_send_json ( implode($html) );
 }	
@@ -485,11 +486,11 @@ if (!in_array($unique, $unique_strings)) {
 
 		array_unshift($unique_strings, $unique);
 		update_user_meta( $userid, 'job_unique', $unique_strings);
+	update_user_meta( $userid, 'job_name_'.$unique, $job_name);
     }
 }
 	
 	update_user_meta( $userid, 'job_title_'.$unique, $job_title);
-	update_user_meta( $userid, 'job_name_'.$unique, $job_name);
 	update_user_meta( $userid, 'date_job_start_'.$unique, esc_attr($datejobstart));
 	update_user_meta( $userid, 'date_job_end_'.$unique, esc_attr($datejobend));
 	update_user_meta( $userid, 'job_description_'.$unique, $job_description);
@@ -1651,7 +1652,9 @@ function job_draft($post) {
 		wp_update_post( $postdata );
 	}
 	
-	$html[] .= '<button class="job-draft-to-publish">Publier</button>';
+	$html[] .= '<div class="job-draft-to-publish" data-object-id="' . $post_id . '">';
+		$html[] .= '<span class="material-icons">publish</span>';
+	$html[] .= '</div>';
 	
 	wp_send_json( implode($html) );
 	
@@ -1677,14 +1680,14 @@ function job_draft_to_publish($post) {
 	}
 	
 	$html[] .= '<div class="draft-job-emplois" data-object-id="' . $post_id . '">';
-	$html[] .= '<span class="material-icons">archive</span>';
+		$html[] .= '<span class="material-icons">archive</span>';
 	$html[] .= '</div>';
 	
 	$end_job_scheduled = get_post_meta( $post_id, 'my_end_job_scheduled_key', true);
 	$strtotime_now = strtotime(date("Y-m-d H:i:s"));
 	
 	if($strtotime_now >= $end_job_scheduled){
-		update_post_meta( $post_id, 'my_end_job_scheduled_key', '');
+		update_post_meta( $post_id, 'my_end_job_scheduled_key', 'T');
 	}
 	
 	wp_send_json( implode($html) );

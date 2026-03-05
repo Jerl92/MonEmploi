@@ -191,9 +191,6 @@ function monemploi_add_job($){
 		                jQuery('.ns_submit').text("Soumettre");
 				jQuery('.ns_submit').prop("disabled", false);
 		                
-		                setTimeout(function() {
-					jQuery('#monemploi-new-form-sumbit').html('');
-			        }, 10000);
 		            },
 		            error: function(errorThrown){
 		                console.log(errorThrown);

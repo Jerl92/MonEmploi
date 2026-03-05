@@ -152,6 +152,8 @@ class Monemploi {
 		
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/shortcodes/monemploi-home.php';
 		
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/shortcodes/monemploi-city-dashboard.php';
+		
 		$this->loader = new Monemploi_Loader();
 
 	}
