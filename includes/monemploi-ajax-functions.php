@@ -1684,10 +1684,10 @@ function job_draft_to_publish($post) {
 	$html[] .= '</div>';
 	
 	$end_job_scheduled = get_post_meta( $post_id, 'my_end_job_scheduled_key', true);
-	$strtotime_now = strtotime(date("Y-m-d H:i:s"));
+	$strtotime_now = current_time('timestamp');
 	
 	if($strtotime_now >= $end_job_scheduled){
-		update_post_meta( $post_id, 'my_end_job_scheduled_key', 'T');
+		update_post_meta( $post_id, 'my_end_job_scheduled_key', '');
 	}
 	
 	wp_send_json( implode($html) );

@@ -36,7 +36,7 @@
 			foreach ( $get_jobs as $post ){
 						
 				$end_job_scheduled = get_post_meta( $post->ID, 'my_end_job_scheduled_key', true);
-				$strtotime_now = strtotime(date("Y-m-d H:i:s"));
+				$strtotime_now = current_time('timestamp');
 				
 				if($end_job_scheduled != null || $end_job_scheduled != '') {
 	
