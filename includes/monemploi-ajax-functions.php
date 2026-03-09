@@ -113,6 +113,10 @@ function monemploi_ajax_scripts() {
 	wp_localize_script( 'monemploi-ajax-job-delete-scripts', 'job_delete_monemploi_ajax_url', admin_url( 'admin-ajax.php', 'relative' ) );
 	wp_enqueue_script( 'monemploi-ajax-job-delete-scripts' );
 
+	wp_register_script( 'monemploi-ajax-comment-reply-scripts', $url . "js/ajax.monemploi.comment.reply.js", array( 'jquery' ), '1.0.0', true );
+	wp_localize_script( 'monemploi-ajax-comment-reply-scripts', 'comment_candidacy_reply_monemploi_ajax_url', admin_url( 'admin-ajax.php', 'relative' ) );
+	wp_enqueue_script( 'monemploi-ajax-comment-reply-scripts' );
+
 }
 
 /* AJAX action callback */
@@ -1709,6 +1713,77 @@ function job_delete($post) {
 	$html[] .= '<h6>Votre emploi à été supprimer.</h6>';
 	$html[] .= '<br>';
 	$html[] .= '<button><a href="'. get_site_url() .'/tableaux-de-bord/">Aller au tableau de bord</a></button>';
+		
+	wp_send_json( implode($html) );
+	
+}
+
+/* AJAX action callback */
+add_action( 'wp_ajax_comment_candidacy_reply', 'comment_candidacy_reply' );
+add_action( 'wp_ajax_nopriv_comment_candidacy_reply', 'comment_candidacy_reply' );
+function comment_candidacy_reply($post) {
+
+	$post_id = $_POST['object_id'];
+	$count_comments = $_POST['object_count'];
+	$current_user_id = get_current_user_id();
+	
+	// Arguments array for get_comments()
+	$args = array(
+	    'post_id' => $post_id, // The ID of the post
+	    'status'  => 'approve', // Only fetch approved comments
+	    'order'   => 'ASC', // Order comments from oldest to newest
+	    'parent'  => '0' // Only fetch top-level comments (optional, for threaded comments)
+	);
+	
+	// Get the comments
+	$comments = get_comments( $args );
+	
+	$i = 1;
+	
+	$x = 0;
+	
+	foreach ( $comments as $response ) {
+	
+		if($count_comments < count($comments) && $i == count($comments)) {
+		
+			if($response->user_id != $current_user_id) {
+	 
+			 	$ramdonstring = generate_secure_string();
+				
+				$html[] = '<div class="candidacy-response-cards-wrapper ' . $ramdonstring . '">';
+					$html[] .= '<div class="ns-row">';
+						$html[] .= '<div class="ns-col-sm-9">';
+							$html[] .= '<div class="response-head" style="display: flex;">';
+								$html[] .= '<h3 class="ticket-head" id="response-' . esc_attr($x) . '" style="width: calc(100% - 25px);">';
+									$html[] .= $response->comment_author;
+								$html[] .= '</h3>';
+								if (intval($response->user_id) == intval($current_user_id)){
+									$html[] .= '<div class="delete-comment-candidacy" style="width: 25px; padding-top: 25px;" data-object-id="' . $response->comment_ID . '" data-object-string="' . $ramdonstring . '">';
+										$html[] .= '<i class="material-icons">';
+											$html[] .= 'delete';
+										$html[] .= '</i>';
+									$html[] .= '</div>';
+								}
+							$html[] .= '</div>';
+						$html[] .= '</div>';
+						$html[] .= '<div class="ns-col-sm-3 response-dates">';
+							$html[] .= '<a href="#response-' . esc_attr($x) . '" class="response-bookmark ns-small">' . date( 'd M Y h:iA', strtotime( $response->comment_date ) ) . '</a>';
+						$html[] .= '</div>';
+					$html[] .= '</div>';
+					$html[] .= '<div class="ticket-response">';
+						$html[] .= wpautop( $response->comment_content );
+					$html[] .= '</div>';
+					
+				$html[] .= '</div>';
+				
+			}
+			
+		}
+		
+		$i++;
+		$x++;
+	 
+	}
 		
 	wp_send_json( implode($html) );
 	

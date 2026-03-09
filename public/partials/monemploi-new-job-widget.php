@@ -33,12 +33,29 @@ class monemploi_new_jobs_widget extends WP_Widget {
 		echo $args['before_title'] . $title . $args['after_title'];
 		
 		$i = 0;
+		
+		$current_user = wp_get_current_user();
+		$user_meta = get_userdata($current_user->ID);
+		$user_role = $user_meta->roles[0];
 	
-	        $get_jobs_args = array(
-	            'post_type' => 'emploi',
-	            'post_status'    => array('publish'),
-	            'posts_per_page' => 10        
-	        );
+		if($user_role == 'um_employeur' || $user_role == 'administrator') {
+
+	
+		        $get_jobs_args = array(
+		            'post_type' => 'emploi',
+		            'post_status'    => array('publish', 'draft', 'future'),
+		            'posts_per_page' => 10        
+		        );
+		        
+		} else {
+		
+			$get_jobs_args = array(
+		            'post_type' => 'emploi',
+		            'post_status'    => array('publish'),
+		            'posts_per_page' => 10        
+		        );
+		
+		}
 	        
 	        $get_jobs = get_posts($get_jobs_args);
 	
@@ -73,9 +90,11 @@ class monemploi_new_jobs_widget extends WP_Widget {
 									echo '<span class="completeDeparture">';
 										echo '<div class="completeDeparture_'.  $i . '" style="display:none;">'. implode($field_data) . '</div>';
 										echo '<div class="completeArrival_' . $i . '" style="display: none;">' . get_post_meta( $p->ID, 'my_code_postal_key', true ) . '</div>';
-										echo ' - <span class="widgetdistance_' . $i . '"></span> - ';
+										echo ' - <span class="widgetdistance_' . $i . '"></span>';
 									echo '</span>';
 								}
+								
+								echo ' - ';
 								echo get_post_meta( $p->ID, 'my_city_key', true );
 			
 								if(get_post_status($p->ID) == 'draft') {
@@ -116,9 +135,11 @@ class monemploi_new_jobs_widget extends WP_Widget {
 							echo '<span class="completeDeparture">';
 								echo '<div class="completeDeparture_'.  $i . '" style="display:none;">'. implode($field_data) . '</div>';
 								echo '<div class="completeArrival_' . $i . '" style="display: none;">' . get_post_meta( $p->ID, 'my_code_postal_key', true ) . '</div>';
-								echo ' - <span class="widgetdistance_' . $i . '"></span> - ';
+								echo ' - <span class="widgetdistance_' . $i . '"></span>';
 							echo '</span>';
 						}
+						
+						echo ' - ';
 						echo get_post_meta( $p->ID, 'my_city_key', true );
 						
 						echo '</br>';
