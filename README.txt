@@ -11,6 +11,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Here is a short description of the plugin.  This should be no more than 150 characters.  No markup here.
 
 https://i.ibb.co/8LKRC2KH/monemploi30.png
+https://i.ibb.co/LhdFNTSX/monemploi10.png
 
 == Description ==
 
