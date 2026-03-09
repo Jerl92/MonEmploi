@@ -294,7 +294,7 @@ function monemploi_add_job($post) {
 	$timestartjobscheduled = $_POST['timestartjobscheduled'];
 	$timeendjobscheduled = $_POST['timeendjobscheduled'];
 	
-	if(!$datepickerstartjobscheduled == null && !$timestartjobscheduled == null) {
+	if($datepickerstartjobscheduled != null && $timestartjobscheduled != null) {
 		$schedule_timestamp = strtotime($datepickerstartjobscheduled . 'T' . $timestartjobscheduled);	
 		$publish_date = date('Y-m-d H:i:s', $schedule_timestamp);
 		$publish_date_gmt = get_gmt_from_date($publish_date);
@@ -303,8 +303,7 @@ function monemploi_add_job($post) {
 			'post_title' => $emploi_job_title,
 			'post_content' => $ticket_details,
 			'post_status' => 'future',
-		        'post_date'     => $publish_date,
-		        'post_date_gmt' => $publish_date_gmt,
+		    'post_date'     => $publish_date,
 			'post_author' => get_current_user_id(),
 			'post_type' => 'emploi'
 		);

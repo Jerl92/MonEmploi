@@ -3,15 +3,36 @@
 function monemploi_city() {
 	
 	if ($_GET['city']) {
-		$get_args_emploi = array( 
-			'post_type' => 'emploi',
-			'posts_per_page' => -1,
-			'post_status' => array('publish', 'draft', 'future'),
-			'meta_key'   => 'my_city_key',
-			'meta_value' => $_GET['city'],
-			'orderby' => 'date',
-			'order' => 'DESC'
-		); 
+	
+		$current_user = wp_get_current_user();
+		$user_meta = get_userdata($current_user->ID);
+		$user_role = $user_meta->roles[0];
+	
+		if($user_role == 'um_employeur' || $user_role == 'administrator'){
+
+			$get_args_emploi = array( 
+				'post_type' => 'emploi',
+				'posts_per_page' => -1,
+				'post_status' => array('publish', 'draft', 'future'),
+				'meta_key'   => 'my_city_key',
+				'meta_value' => $_GET['city'],
+				'orderby' => 'date',
+				'order' => 'DESC'
+			); 
+		
+		} else {
+		
+			$get_args_emploi = array( 
+				'post_type' => 'emploi',
+				'posts_per_page' => -1,
+				'post_status' => array('publish'),
+				'meta_key'   => 'my_city_key',
+				'meta_value' => $_GET['city'],
+				'orderby' => 'date',
+				'order' => 'DESC'
+			);
+			 
+		}
 		
 		$get_emplois = get_posts( $get_args_emploi );
 		
@@ -111,14 +132,32 @@ function monemploi_city() {
 
 	} else  {
 	
-		$get_args_emploi = array( 
-			'post_type' => 'emploi',
-			'posts_per_page' => -1,
-			'post_status' => array('publish', 'draft', 'future'),
-			'orderby' => 'date',
-			'order' => 'DESC'
-		); 
+		$current_user = wp_get_current_user();
+		$user_meta = get_userdata($current_user->ID);
+		$user_role = $user_meta->roles[0];
+	
+		if($user_role == 'um_employeur' || $user_role == 'administrator'){
+	
+			$get_args_emploi = array( 
+				'post_type' => 'emploi',
+				'posts_per_page' => -1,
+				'post_status' => array('publish', 'draft', 'future'),
+				'orderby' => 'date',
+				'order' => 'DESC'
+			); 
 		
+		} else {
+			
+			$get_args_emploi = array( 
+				'post_type' => 'emploi',
+				'posts_per_page' => -1,
+				'post_status' => array('publish'),
+				'orderby' => 'date',
+				'order' => 'DESC'
+			); 
+			
+		}
+			
 		$get_emplois = get_posts( $get_args_emploi );
 		
 		$i = 0;

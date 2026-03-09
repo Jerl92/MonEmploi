@@ -1,9 +1,9 @@
 <?php
 
 	function myprefix_custom_cron_schedule( $schedules ) {
-	    $schedules['every_one_hour'] = array(
-	        'interval' => 300,
-	        'display'  => __( 'Every five minutes' ),
+	    $schedules['every_one_minute'] = array(
+	        'interval' => 60,
+	        'display'  => __( 'Every minute' ),
 	    );
 	    return $schedules;
 	}
@@ -16,7 +16,7 @@
 	
 	    //Schedule an action if it's not already scheduled
 	    if ( ! wp_next_scheduled( 'myfunc_cron_hook' ) ) {
-	        wp_schedule_event( time(), 'every_one_hour', 'myfunc_cron_hook' );
+	        wp_schedule_event( time(), 'every_one_minute', 'myfunc_cron_hook' );
 	    }
 	});
 	
@@ -67,6 +67,61 @@
 							
 							// Send the email
 							wp_mail( $author_email, $subject, $message, $headers );
+														
+						}
+					
+					}
+					
+				}
+			
+			}
+		
+		}
+		
+	}
+	
+	add_action( 'init', function () {
+	
+	    ///Hook into that action that'll fire every six hours
+	    add_action( 'future_to_publish_cron_hook', 'future_to_publish_cron_function' );
+	
+	    //Schedule an action if it's not already scheduled
+	    if ( ! wp_next_scheduled( 'future_to_publish_cron_hook' ) ) {
+	        wp_schedule_event( time(), 'every_one_minute', 'future_to_publish_cron_hook' );
+	    }
+	});
+	
+	//create your function, that runs on cron
+	function future_to_publish_cron_function() {
+	
+		$get_jobs_args = array(
+	            'post_type' => 'emploi',
+	            'post_status'    => 'future',
+	            'posts_per_page' => -1        
+	        );
+	        
+	        $get_jobs = get_posts($get_jobs_args);
+	
+		if( ! empty( $get_jobs ) ){
+		
+			foreach ( $get_jobs as $post ){
+						
+				$start_job_scheduled = strtotime(get_the_date('Y-m-d H:i:s', $post->ID));
+				$strtotime_now = current_time('timestamp');
+							
+				if($start_job_scheduled != null || $start_job_scheduled != '') {
+	
+					if($strtotime_now >= $start_job_scheduled){
+					
+						if ( get_post_status( $post->ID ) == 'future' ) {
+							// Prepare the post data array for updating
+							$postdata = array(
+							    'ID'          => $post->ID,
+							    'post_status' => 'publish' // Set the status to 'draft'
+							);
+							
+							// Update the post in the database
+							wp_update_post( $postdata );		
 														
 						}
 					
