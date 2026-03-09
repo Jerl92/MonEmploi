@@ -1100,7 +1100,17 @@ function comment_candidacy_save($post) {
 			$html[] .= '<div class="ns-col-sm-9">';
 				$html[] .= '<div class="response-head" style="display: flex;">';
 					$html[] .= '<h3 class="ticket-head" id="response-' . esc_attr($numItems) . '" style="width: calc(100% - 25px);">';
-						$html[] .= $response->comment_author;
+						$userid = $response->user_id; 
+						$user_meta = get_userdata($userid);
+						$user_role = $user_meta->roles[0];
+						um_fetch_user( $userid );
+						if($user_role == 'um_employeur'){
+							$html[] .= '<a href="' . get_site_url() . '/employeur/?user=' . $user_meta->user_login . '">' . $response->comment_author . '</a> - ' . um_user('name_org') . '';
+							um_reset_user();
+						} elseif($user_role == 'employer'){
+							$html[] .= '<a href="' . get_site_url() . '/employee/?user=' . $user_meta->user_login . '">' . $response->comment_author . '</a> - ' . um_user('name_org') . '';
+							um_reset_user(); 
+						}
 					$html[] .= '</h3>';
 					if (intval($response->user_id) == intval($current_user_id)){
 						$html[] .= '<div class="delete-comment-candidacy" style="width: 25px; padding-top: 25px;" data-object-id="' . $response->comment_ID . '" data-object-string="' . $ramdonstring . '">';
@@ -1755,7 +1765,17 @@ function comment_candidacy_reply($post) {
 						$html[] .= '<div class="ns-col-sm-9">';
 							$html[] .= '<div class="response-head" style="display: flex;">';
 								$html[] .= '<h3 class="ticket-head" id="response-' . esc_attr($x) . '" style="width: calc(100% - 25px);">';
-									$html[] .= $response->comment_author;
+									$userid = $response->user_id; 
+									$user_meta = get_userdata($userid);
+									$user_role = $user_meta->roles[0];
+									um_fetch_user( $userid );
+									if($user_role == 'um_employeur'){
+										$html[] .= '<a href="' . get_site_url() . '/employeur/?user=' . $user_meta->user_login . '">' . $response->comment_author . '</a> - ' . um_user('name_org'). '';
+										um_reset_user();
+									} elseif($user_role == 'employer'){
+										$html[] .= '<a href="' . get_site_url() . '/employee/?user=' . $user_meta->user_login . '">' . $response->comment_author . '</a> - ' . um_user('name_org'). '';
+										um_reset_user(); 
+									}
 								$html[] .= '</h3>';
 								if (intval($response->user_id) == intval($current_user_id)){
 									$html[] .= '<div class="delete-comment-candidacy" style="width: 25px; padding-top: 25px;" data-object-id="' . $response->comment_ID . '" data-object-string="' . $ramdonstring . '">';
