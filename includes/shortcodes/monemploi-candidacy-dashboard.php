@@ -6,7 +6,7 @@ function monemploi_candidacy_dashboard() {
 	$user_meta = get_userdata($current_user->ID);
 	$user_role = $user_meta->roles[0];
 
-	if($user_role == 'um_employeur'){
+	if($user_role == 'employeur'){
 	
 		$get_args = array( 
 			'post_type' => 'candidacy',
@@ -42,7 +42,7 @@ function monemploi_candidacy_dashboard() {
 			echo '<a href="' . get_permalink( get_post_meta($get_candidacy->ID, 'my_postid_key', true) ) . '">' . $get_candidacy->post_title . '</a>';
 		echo '</li>';
 		echo '<li>';
-			if($user_role == 'um_employeur'){
+			if($user_role == 'employeur'){
 				$author = get_post_field( 'post_author', $get_candidacy->ID );
 				$meta_data_rma_author = get_userdata( $author );
 				echo $meta_data_rma_author->first_name;

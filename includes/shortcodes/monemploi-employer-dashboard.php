@@ -8,7 +8,7 @@ function employeur_dashboard() {
 			$userid = $get_user_by_username->ID;
 			$user_meta = get_userdata($userid);
 			$user_role = $user_meta->roles[0];
-			if($user_role == 'um_employeur'){
+			if($user_role == 'employeur'){
 				
 				?><div><?php 
 				   
@@ -213,7 +213,7 @@ function employeur_dashboard() {
 												<?php $user_meta = get_userdata($userid); ?>
 												<?php $user_role = $user_meta->roles[0]; ?>
 												<?php um_fetch_user( $userid ); ?>
-												<?php if($user_role == 'um_employeur'){ ?>
+												<?php if($user_role == 'employeur'){ ?>
 													<a href="<?php get_site_url(); ?>/employeur/?user=<?php echo $user_meta->user_login ?>"><?php echo $get_user->display_name; ?></a> - <?php echo um_user('name_org'); ?>
 													<?php um_reset_user(); ?>
 												<?php } elseif($user_role == 'employer'){ ?>
@@ -299,7 +299,7 @@ function employeur_dashboard() {
 			
 		} else  {
 	    	    $args = array(
-		        'role__in' => array( 'um_employeur' ),
+		        'role__in' => array( 'employeur' ),
 		        'orderby' => 'date',
 		        'order'   => 'DESC'
 		    );

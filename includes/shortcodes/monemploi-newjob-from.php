@@ -4,7 +4,7 @@ function monemploi_newjob_from() {
 	$current_user = wp_get_current_user();
 	$user_meta = get_userdata($current_user->ID);
 	$user_role = $user_meta->roles[0];
-	if($user_role == 'um_employeur'){
+	if($user_role == 'employeur'){
 			?><div id="monemploi-new-form">
 			    <p>Vous etre connecter en tant que <?php echo $current_user->user_login; ?><p>
 				<p>Titre de l'emploi</p>

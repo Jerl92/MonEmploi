@@ -8,7 +8,7 @@ function monemploi_city() {
 		$user_meta = get_userdata($current_user->ID);
 		$user_role = $user_meta->roles[0];
 	
-		if($user_role == 'um_employeur' || $user_role == 'administrator'){
+		if($user_role == 'employeur' || $user_role == 'administrator'){
 
 			$get_args_emploi = array( 
 				'post_type' => 'emploi',
@@ -136,7 +136,7 @@ function monemploi_city() {
 		$user_meta = get_userdata($current_user->ID);
 		$user_role = $user_meta->roles[0];
 	
-		if($user_role == 'um_employeur' || $user_role == 'administrator'){
+		if($user_role == 'employeur' || $user_role == 'administrator'){
 	
 			$get_args_emploi = array( 
 				'post_type' => 'emploi',

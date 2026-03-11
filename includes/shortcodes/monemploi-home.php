@@ -16,7 +16,7 @@ function monemploi_home() {
 	echo '<h2>Avec plus de <span class="count-target-emploi">' . count($get_emploi) . '</span> emplois disponible.</h2>';
 	
 	$args_um_employeur = array(
-		'role__in' => array( 'um_employeur' ),
+		'role__in' => array( 'employeur' ),
 		'orderby' => 'date',
 		'order'   => 'DESC'
 	);

@@ -1,4 +1,19 @@
 
+var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+        }
+    }
+    return false;
+};
 
 function getDistance($) {          
   jQuery('.autocompleteDeparture').each(function(i, obj) {
@@ -48,28 +63,106 @@ function getDistance($) {
     
   }
   
+function get_city_name($) {
+
+jQuery('.monemploi_add_code_postal_text').on('keydown', function(event) {
+    	geocoder = new google.maps.Geocoder();
+    	var adresse = jQuery('.monemploi_add_code_postal_text').val();
+	geocoder.geocode({ 'address': adresse }, function(results, status) {
+		if (results[0]) {
+			var city = "";
+			for (var i = 0; i < results[0].address_components.length; i++) {
+			    for (var b = 0; b < results[0].address_components[i].types.length; b++) {
+			        if (results[0].address_components[i].types[b] == "locality") {
+			            city = results[0].address_components[i].long_name;
+			            break;
+			        }
+			    }
+			    if (city) break;
+			}
+		}			
+	        jQuery(".monemploi_add_city_text").val(city);
+	});
+});
+
+}
+
+function get_directions($) {
+	var origin = jQuery('#user-adress').html();
+	var destination = jQuery('#job-adress').html();
+	var departuretime = jQuery('.departuretime').val();
+	var departuredate = jQuery('.departuredate').html();
+	
+	var map = new google.maps.Map(document.getElementById('map'), {
+		zoom: 4,
+		center: {lat: -24.345, lng: 134.46}  // Australia.
+	});
+	
+	var geocoder = new google.maps.Geocoder;
+	var directionsService = new google.maps.DirectionsService;
+	var directionsRenderer = new google.maps.DirectionsRenderer({
+		draggable: false,
+		map: map
+	});
+	
+	if(getUrlParameter('travelMode') === 'voiture') {
+		var request = {
+			origin: origin, // e.g., "Origin City, State" or { lat: X, lng: Y }
+			destination: destination, // e.g., "Destination City, State" or { lat: A, lng: B }
+			travelMode: google.maps.TravelMode.DRIVING,
+			
+		};
+	} else if(getUrlParameter('travelMode') === 'autobus') {
+	    if(departuretime != null) {
+	    var request = {
+			origin: origin, // e.g., "Origin City, State" or { lat: X, lng: Y }
+			destination: destination, // e.g., "Destination City, State" or { lat: A, lng: B }
+			travelMode: google.maps.TravelMode.TRANSIT,
+            drivingOptions: {
+                    departureTime: new Date(departuredate+'T'+departuretime+'Z')
+            }
+		};
+	    } else {
+        request = {
+			origin: origin, // e.g., "Origin City, State" or { lat: X, lng: Y }
+			destination: destination, // e.g., "Destination City, State" or { lat: A, lng: B }
+			travelMode: google.maps.TravelMode.TRANSIT,
+		};
+	    }
+	} else {
+        var request = {
+			origin: origin, // e.g., "Origin City, State" or { lat: X, lng: Y }
+			destination: destination, // e.g., "Destination City, State" or { lat: A, lng: B }
+			travelMode: google.maps.TravelMode.DRIVING,
+			
+		};
+	}
+
+    directionsService.route(request, (result, status) => {
+		if (status == google.maps.DirectionsStatus.OK) {
+		    // The renderer draws the polyline and adds default markers
+		    directionsRenderer.setDirections(result); 
+		} else {
+		    window.alert("Directions request failed due to " + status);
+		}
+	});
+	
+$('.departuretime').on('change', function() {
+	directionsService.route(request, (result, status) => {
+		if (status == google.maps.DirectionsStatus.OK) {
+		    // The renderer draws the polyline and adds default markers
+		    directionsRenderer.setDirections(result); 
+		} else {
+		    window.alert("Directions request failed due to " + status);
+		}
+	});
+});
+
+}
+  
 jQuery(document).ready(function($) {
     getDistance($);
     getDistance_($);
-    
-    	jQuery('.monemploi_add_code_postal_text').on('keydown', function(event) {
-	    	geocoder = new google.maps.Geocoder();
-	    	var adresse = jQuery('.monemploi_add_code_postal_text').val();
-		geocoder.geocode({ 'address': adresse }, function(results, status) {
-			if (results[0]) {
-				var city = "";
-				for (var i = 0; i < results[0].address_components.length; i++) {
-				    for (var b = 0; b < results[0].address_components[i].types.length; b++) {
-				        if (results[0].address_components[i].types[b] == "locality") {
-				            city = results[0].address_components[i].long_name;
-				            break;
-				        }
-				    }
-				    if (city) break;
-				}
-			}			
-		        jQuery(".monemploi_add_city_text").val(city);
-		});
-	});
-  
+    get_city_name($);
+    get_directions($);  
 });

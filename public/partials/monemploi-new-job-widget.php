@@ -38,9 +38,8 @@ class monemploi_new_jobs_widget extends WP_Widget {
 		$user_meta = get_userdata($current_user->ID);
 		$user_role = $user_meta->roles[0];
 	
-		if($user_role == 'um_employeur' || $user_role == 'administrator') {
+		if($user_role == 'employeur' || $user_role == 'administrator') {
 
-	
 		        $get_jobs_args = array(
 		            'post_type' => 'emploi',
 		            'post_status'    => array('publish', 'draft', 'future'),
@@ -67,7 +66,7 @@ class monemploi_new_jobs_widget extends WP_Widget {
 			$user_role = $user_meta->roles[0];
 			if(get_post_status($p->ID) == 'draft' || get_post_status($p->ID) == 'future') {	
 					if(get_current_user_id() == $p->post_author) {
-						if($user_role == 'um_employeur'){
+						if($user_role == 'employeur' || $user_role == 'administrator'){
 							echo '<div style="display: block;"><a href="' . get_permalink( $p->ID ) .'">' . $p->ID . ' - ' . $p->post_title . '</a> - ';
 								$author_id = $p->post_author;
 								echo the_author_meta( 'user_nicename' , $author_id );

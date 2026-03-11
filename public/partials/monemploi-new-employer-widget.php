@@ -33,7 +33,7 @@ class monemploi_new_employers_widgets extends WP_Widget {
 		echo $args['before_title'] . $title . $args['after_title'];
 				
 		    $args = array(
-		        'role__in' => array( 'um_employeur' ),
+		        'role__in' => array( 'employeur' ),
 		        'orderby' => 'date',
 		        'order'   => 'DESC'
 		    );

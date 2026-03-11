@@ -22,7 +22,7 @@ function monemploi_job_dashboard() {
 			$user_role = $user_meta->roles[0];
 			if(get_post_status($p->ID) == 'draft' || get_post_status($p->ID) == 'future') {	
 					if(get_current_user_id() == $p->post_author) {
-						if($user_role == 'um_employeur'){
+						if($user_role == 'employeur'){
 			
 					    		echo '<div style="display: block;"><a href="' . get_permalink( $p->ID ) .'">' . $p->ID . ' - ' . $p->post_title . '</a> - ';
 								$author_id = $p->post_author;

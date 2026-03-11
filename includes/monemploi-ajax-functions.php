@@ -1104,7 +1104,7 @@ function comment_candidacy_save($post) {
 						$user_meta = get_userdata($userid);
 						$user_role = $user_meta->roles[0];
 						um_fetch_user( $userid );
-						if($user_role == 'um_employeur'){
+						if($user_role == 'employeur'){
 							$html[] .= '<a href="' . get_site_url() . '/employeur/?user=' . $user_meta->user_login . '">' . $response->comment_author . '</a> - ' . um_user('name_org') . '';
 							um_reset_user();
 						} elseif($user_role == 'employer'){
@@ -1135,7 +1135,7 @@ function comment_candidacy_save($post) {
 	$user_meta = get_userdata($current_user->ID);
 	$user_role = $user_meta->roles[0];
 	
-	if($user_role == 'um_employeur'){
+	if($user_role == 'employeur'){
 		$authorid = get_post_field( 'post_author', $postid );
 		$author_email = get_the_author_meta( 'user_email', $authorid );
 		$to = $author_email;
@@ -1769,7 +1769,7 @@ function comment_candidacy_reply($post) {
 									$user_meta = get_userdata($userid);
 									$user_role = $user_meta->roles[0];
 									um_fetch_user( $userid );
-									if($user_role == 'um_employeur'){
+									if($user_role == 'employeur'){
 										$html[] .= '<a href="' . get_site_url() . '/employeur/?user=' . $user_meta->user_login . '">' . $response->comment_author . '</a> - ' . um_user('name_org'). '';
 										um_reset_user();
 									} elseif($user_role == 'employer'){
