@@ -305,56 +305,166 @@ function monemploi_add_job($post) {
         $duree_emploi = $_POST['duree_emploi'];
         $permis_conduire = $_POST['permis_conduire'];
         $besoin_voiture = $_POST['besoin_voiture'];
+        $job_status =  $_POST['job_status'];
+        $postid_update =  $_POST['postid'];
+        
+	if($job_status == 'new' && $postid_update == 0){
 	
-	if($datepickerstartjobscheduled != null && $timestartjobscheduled != null) {
-		$schedule_timestamp = strtotime($datepickerstartjobscheduled . 'T' . $timestartjobscheduled);	
-		$publish_date = date('Y-m-d H:i:s', $schedule_timestamp);
-		$publish_date_gmt = get_gmt_from_date($publish_date);
-		
-		$new_post = array(
-			'post_title' => $emploi_job_title,
-			'post_content' => $ticket_details,
-			'post_status' => 'future',
-		    'post_date'     => $publish_date,
-			'post_author' => get_current_user_id(),
-			'post_type' => 'emploi'
-		);
-		
-	} else {
-	
-		$new_post = array(
-			'post_title' => $emploi_job_title,
-			'post_content' => $ticket_details,
-			'post_status' => 'publish',
-			'post_date_gmt' => date('Y-m-d H:i:s'),
-			'post_author' => get_current_user_id(),
-			'post_type' => 'emploi'
-		);
-		
+		if($datepickerstartjobscheduled != null && $timestartjobscheduled != null) {
+			$schedule_timestamp = strtotime($datepickerstartjobscheduled . 'T' . $timestartjobscheduled);	
+			$strtotime_now = current_time('timestamp');
+			$publish_date = date('Y-m-d H:i:s', $schedule_timestamp);
+			$publish_date_gmt = get_gmt_from_date($publish_date);
+			
+			if($strtotime_now < $schedule_timestamp) {
+			
+				$new_post = array(
+					'post_title' => $emploi_job_title,
+					'post_content' => $ticket_details,
+					'post_status' => 'future',
+				    	'post_date'     => $publish_date,
+				    	'post_date_gmt' => $publish_date_gmt,
+					'post_author' => get_current_user_id(),
+					'post_type' => 'emploi'
+				);
+			
+			} else if($strtotime_now > $schedule_timestamp) {
+			
+				$new_post = array(
+					'post_title' => $emploi_job_title,
+					'post_content' => $ticket_details,
+					'post_status' => 'publish',
+					'post_date_gmt' => date('Y-m-d H:i:s'),
+					'post_author' => get_current_user_id(),
+					'post_type' => 'emploi'
+				);
+			}
+			
+		} else {
+			
+			$new_post = array(
+				'post_title' => $emploi_job_title,
+				'post_content' => $ticket_details,
+				'post_status' => 'publish',
+				'post_date_gmt' => date('Y-m-d H:i:s'),
+				'post_author' => get_current_user_id(),
+				'post_type' => 'emploi'
+			);
+			
+		}
+		$postid = wp_insert_post($new_post);
+	    
+	    	add_post_meta( $postid, 'my_code_postal_key', $code_postal );
+	    	add_post_meta( $postid, 'my_education_key', $education );
+	    	add_post_meta( $postid, 'my_annees_dexperience_key', $annees_dexperience );
+	    	add_post_meta( $postid, 'my_salaire_key', $salaire );
+	    	add_post_meta( $postid, 'my_city_key', $city );
+	    	add_post_meta( $postid, 'my_start_job_scheduled_key', strtotime($datepickerstartjobscheduled . 'T' . $timestartjobscheduled));
+	    	add_post_meta( $postid, 'my_end_job_scheduled_key', strtotime($datepickerendjobscheduled . 'T' . $timeendjobscheduled));
+	    	add_post_meta( $postid, 'my_start_job_date_scheduled_key', $datepickerstartjobscheduled );
+	    	add_post_meta( $postid, 'my_start_job_time_scheduled_key', $timestartjobscheduled );
+	    	add_post_meta( $postid, 'my_end_job_date_scheduled_key', $datepickerendjobscheduled );
+	    	add_post_meta( $postid, 'my_end_job_time_scheduled_key', $timeendjobscheduled );   	
+	    	add_post_meta( $postid, 'my_add_heures_key', $add_heures );
+	    	add_post_meta( $postid, 'my_type_demploi_key', $type_demploi );
+		add_post_meta( $postid, 'my_type_dhoraire_key', $type_dhoraire );
+		add_post_meta( $postid, 'my_disponibilites1_key', $disponibilites1 );
+		add_post_meta( $postid, 'my_disponibilites2_key', $disponibilites2 );
+		add_post_meta( $postid, 'my_duree_emploi_key', $duree_emploi );
+		add_post_meta( $postid, 'my_permis_conduire_key', $permis_conduire );
+		add_post_meta( $postid, 'my_besoin_voiture_key', $besoin_voiture );
 	}
-	$postid = wp_insert_post($new_post);
-    
-    	add_post_meta( $postid, 'my_code_postal_key', $code_postal );
-    	add_post_meta( $postid, 'my_education_key', $education );
-    	add_post_meta( $postid, 'my_annees_dexperience_key', $annees_dexperience );
-    	add_post_meta( $postid, 'my_salaire_key', $salaire );
-    	add_post_meta( $postid, 'my_city_key', $city );
-    	add_post_meta( $postid, 'my_start_job_scheduled_key', strtotime($datepickerstartjobscheduled . 'T' . $timestartjobscheduled));
-    	add_post_meta( $postid, 'my_end_job_scheduled_key', strtotime($datepickerendjobscheduled . 'T' . $timeendjobscheduled));
-    	add_post_meta( $postid, 'my_add_heures_key', $add_heures );
-    	add_post_meta( $postid, 'my_type_demploi_key', $type_demploi );
-	add_post_meta( $postid, 'my_type_dhoraire_key', $type_dhoraire );
-	add_post_meta( $postid, 'my_disponibilites1_key', $disponibilites1 );
-	add_post_meta( $postid, 'my_disponibilites2_key', $disponibilites2 );
-	add_post_meta( $postid, 'my_duree_emploi_key', $duree_emploi );
-	add_post_meta( $postid, 'my_permis_conduire_key', $permis_conduire );
-	add_post_meta( $postid, 'my_besoin_voiture_key', $besoin_voiture );
 	
-	$html[] .= 'Votre emploi à été ajouté avec succès #';
-	$html[] .= $postid;
-	$html[] .= '</br>';
-	$html[] .= '<button><a href="' . get_permalink($postid) . '">' . get_the_title($postid) . '</a></button>';
-	$html[] .= '</br>';
+	if($job_status == 'update' && $postid_update != 0){
+		
+		if($datepickerstartjobscheduled != null && $timestartjobscheduled != null) {
+			$schedule_timestamp = strtotime($datepickerstartjobscheduled . 'T' . $timestartjobscheduled);	
+			$strtotime_now = current_time('timestamp');
+			$publish_date = date('Y-m-d H:i:s', $schedule_timestamp);
+			$publish_date_gmt = get_gmt_from_date($publish_date);
+			
+			if($strtotime_now < $schedule_timestamp) {
+			
+				$arg = array(
+					'ID'           => $postid_update,
+					'post_title' => $emploi_job_title,
+					'post_content' => $ticket_details,
+					'post_status' => 'future',
+				    	'post_date'     => $publish_date,
+				    	'post_date_gmt' => $publish_date_gmt,
+					'post_author' => get_current_user_id(),
+					'post_type' => 'emploi'
+				);
+			
+			} else if($strtotime_now >= $schedule_timestamp) {
+			
+				$arg = array(
+					'ID'           => $postid_update,
+					'post_title' => $emploi_job_title,
+					'post_content' => $ticket_details,
+					'post_status' => 'publish',
+					'post_date_gmt' => date('Y-m-d H:i:s'),
+					'post_author' => get_current_user_id(),
+					'post_type' => 'emploi'
+				);
+			}
+			
+		} else {
+			
+			$arg = array(
+				'ID'           => $postid_update,
+				'post_title' => $emploi_job_title,
+				'post_content' => $ticket_details,
+				'post_status' => 'publish',
+				'post_date_gmt' => date('Y-m-d H:i:s'),
+				'post_author' => get_current_user_id(),
+				'post_type' => 'emploi'
+			);
+			
+		}
+		wp_update_post( $arg );
+	    
+	    	update_post_meta( $postid_update, 'my_code_postal_key', $code_postal );
+	    	update_post_meta( $postid_update, 'my_education_key', $education );
+	    	update_post_meta( $postid_update, 'my_annees_dexperience_key', $annees_dexperience );
+	    	update_post_meta( $postid_update, 'my_salaire_key', $salaire );
+	    	update_post_meta( $postid_update, 'my_city_key', $city );
+	    	update_post_meta( $postid_update, 'my_start_job_scheduled_key', strtotime($datepickerstartjobscheduled . 'T' . $timestartjobscheduled));
+	    	update_post_meta( $postid_update, 'my_end_job_scheduled_key', strtotime($datepickerendjobscheduled . 'T' . $timeendjobscheduled));
+	    	update_post_meta( $postid_update, 'my_start_job_date_scheduled_key', $datepickerstartjobscheduled );
+	    	update_post_meta( $postid_update, 'my_start_job_time_scheduled_key', $timestartjobscheduled );
+	    	update_post_meta( $postid_update, 'my_end_job_date_scheduled_key', $datepickerendjobscheduled );
+	    	update_post_meta( $postid_update, 'my_end_job_time_scheduled_key', $timeendjobscheduled );   	
+	    	update_post_meta( $postid_update, 'my_add_heures_key', $add_heures );
+	    	update_post_meta( $postid_update, 'my_type_demploi_key', $type_demploi );
+		update_post_meta( $postid_update, 'my_type_dhoraire_key', $type_dhoraire );
+		update_post_meta( $postid_update, 'my_disponibilites1_key', $disponibilites1 );
+		update_post_meta( $postid_update, 'my_disponibilites2_key', $disponibilites2 );
+		update_post_meta( $postid_update, 'my_duree_emploi_key', $duree_emploi );
+		update_post_meta( $postid_update, 'my_permis_conduire_key', $permis_conduire );
+		update_post_meta( $postid_update, 'my_besoin_voiture_key', $besoin_voiture );
+	
+	}
+	
+	if($job_status == 'new' && $postid_update == 0){
+		
+		$html[] .= 'Votre emploi à été ajouté avec succès #';
+		$html[] .= $postid;
+		$html[] .= '</br>';
+		$html[] .= '<button><a href="' . get_permalink($postid) . '">' . get_the_title($postid) . '</a></button>';
+		$html[] .= '</br>';
+	
+	}	
+	
+	if($job_status == 'update' && $postid_update != 0){
+	
+		$html[] .= 'Votre emploi à été mis à jour avec succès #';
+		$html[] .= $postid_update;
+		$html[] .= '</br>';
+		$html[] .= '<button><a href="' . get_permalink($postid_update) . '">' . get_the_title($postid_update) . '</a></button>';
+		$html[] .= '</br>';
+	
+	}	
 	
 	wp_send_json ( implode($html) );
 }	

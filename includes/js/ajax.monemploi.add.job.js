@@ -35,8 +35,12 @@ function monemploi_add_job($){
 		
 		var erreur = 0;
 		
+		var $this = jQuery(this),
+            		job_status = $this.data('object-status'),
+            		postid = $this.data('object-id');
+		
 	        var job_title = jQuery('.monemploi_add_job_text').val();
-	        var ticket_details = getWpEditorValue('ns-ticket-details');
+	        var ticket_details = getWpEditorValue('new-job-details');
 	        var code_postal = jQuery('.monemploi_add_code_postal_text').val();
 	        var education = jQuery('.education_terms').find(":selected").val();
 	        var annees_dexperience = jQuery('.annees_dexperience').find(":selected").val();
@@ -78,7 +82,7 @@ function monemploi_add_job($){
 		    jQuery('.monemploi_add_job_text').css('border', '0.5px solid gray');
 		}
 		
-		if(getTinyMCELength('ns-ticket-details') < 15){
+		if(getTinyMCELength('new-job-details') < 15){
 			erreur = 1;
 			jQuery('.ns_submit').text('Soumettre');
 			jQuery('.ns_submit').prop('disabled', false);
@@ -278,14 +282,16 @@ function monemploi_add_job($){
 		                'duree_emploi': duree_emploi,
 		                'permis_conduire': permis_conduire,
 		                'besoin_voiture': besoin_voiture,
+		                'job_status': job_status,
+		                'postid': postid,
 		                'action': 'monemploi_add_job'
 		            },
 		            dataType: 'json',
 		            success: function(data){
 		            
-			        jQuery('.monemploi_add_job_text').val('');
-			        tinymce.get('ns-ticket-details').setContent('');
-			        jQuery('.monemploi_add_code_postal_text').val('');
+			    	jQuery('.monemploi_add_job_text').val('');
+			    	tinymce.get('new-job-details').setContent('');
+			    	jQuery('.monemploi_add_code_postal_text').val('');
 			   	jQuery('.education_terms').val(0);
 			   	jQuery('.annees_dexperience').val(0);
 			  	jQuery('.monemploi_add_salaire').val('');
