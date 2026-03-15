@@ -76,7 +76,7 @@ function my_custom_after_registration_action( $user_id, $args ) {
 		$user->set_role( 'employer' );
 	}
 }
-add_action( 'um_registration_set_extra_data', 'my_custom_after_registration_action', 10, 2 );****
+add_action( 'um_registration_set_extra_data', 'my_custom_after_registration_action', 10, 2 );
 ```
 
 ## Frequently Asked Questions 
