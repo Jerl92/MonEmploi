@@ -86,8 +86,8 @@ The answer is no.<br>
 
 ## Screenshots 
 
-<img style="max-width: 100%;" src="https://i.ibb.co/Ng27z6Z1/monemploi13.png" /><br>
-<img style="max-width: 100%;" src="https://i.ibb.co/7xmbgSjV/monemploi16.png" /><br>
+<img style="max-width: 100%;" src="https://i.ibb.co/Z1SRVbCd/monemploi22.png" /><br>
+<img style="max-width: 100%;" src="https://i.ibb.co/cc1MHHMP/monemploi21.png" /><br>
 <img style="max-width: 100%;" src="https://i.ibb.co/v4pT5CYZ/monemploi20.png" /><br>
 
 ## Changelog 
