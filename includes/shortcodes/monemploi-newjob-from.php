@@ -132,9 +132,9 @@ function monemploi_newjob_from() {
 							<option value="2">1 an</option>
 						<?php } ?>
 						<?php if($annees_dexperience == 3){ ?>
-							<option value="2" selected>1 an</option>
+							<option value="2" selected>2-3 an</option>
 						<?php } else { ?>
-							<option value="2">1 an</option>
+							<option value="2">2-3 an</option>
 						<?php } ?>
 						<?php if($annees_dexperience == 4){ ?>
 							<option value="4" selected>4-5 ans</option>
