@@ -2,7 +2,7 @@
 
 MonEmploi is a job board.
 
-<img style="max-width: 100%;" src="https://i.ibb.co/wZVZVwTG/monemploi12.png" alt="MonEmploi" />
+<img style="max-width: 100%;" src="https://i.ibb.co/PvPCJrJD/monemploi17.png" alt="MonEmploi" />
 
 ## Description
 
