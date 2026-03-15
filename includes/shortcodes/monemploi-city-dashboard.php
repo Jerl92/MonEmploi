@@ -57,7 +57,7 @@ function monemploi_city() {
 				$user_role = $user_meta->roles[0];
 				if(get_post_status($value[ID]) == 'draft' || get_post_status($value[ID]) == 'future') {	
 					if(get_current_user_id() == $value[author]) {
-						if($user_role == 'um_employeur'){
+						if($user_role == 'employeur'){
 					
 								echo '<a href="' . get_permalink($value[ID]) . '">' . $value[ID] . ' - ' . get_the_title($value[ID]) . '</a> - ';
 								$author_id = $value[author];
