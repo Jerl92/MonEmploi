@@ -92,7 +92,7 @@ The answer is no.<br>
 
 ## Changelog 
 
-0.2 - Add the ability to edit the jobs in the front-end new job form.<br>
+0.2 - Add the ability to edit the jobs in the front-end with the new job form.<br>
 0.1 - Init version with basic function, everything work but there a lack of CSS optimisation.<br>
 
 ## Special Thanks 
