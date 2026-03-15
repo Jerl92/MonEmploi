@@ -24,7 +24,14 @@ function monemploi_job_dashboard() {
 					if(get_current_user_id() == $p->post_author) {
 						if($user_role == 'employeur'){
 			
-					    		echo '<div style="display: block;"><a href="' . get_permalink( $p->ID ) .'">' . $p->ID . ' - ' . $p->post_title . '</a> - ';
+					    		echo '<div style="display: block;">';
+					    			if(get_post_status($p->ID) == 'draft') {
+									echo 'Brouillon - ';
+								} 
+								if(get_post_status($p->ID) == 'future') {
+									echo ' Programmer - ';
+								}
+					    			echo '<a href="' . get_permalink( $p->ID ) .'">' . $p->ID . ' - ' . $p->post_title . '</a> - ';
 								$author_id = $p->post_author;
 								echo the_author_meta( 'user_nicename' , $author_id );
 								$usermetadata = get_user_meta(get_current_user_id());
@@ -51,16 +58,6 @@ function monemploi_job_dashboard() {
 							}
 							
 							echo ' - ' . get_post_meta( $p->ID, 'my_city_key', true );
-							
-							if(get_post_status($p->ID) == 'draft') {
-								echo ' - Brouillon';
-								echo '</br>';
-							} 
-							if(get_post_status($p->ID) == 'future') {
-								echo ' - Programmer';
-								echo '</br>';
-							}
-							
 							?></div><?php
 							$i++;	
 					

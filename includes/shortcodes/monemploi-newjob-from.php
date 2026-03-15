@@ -64,16 +64,63 @@ function monemploi_newjob_from() {
 				<input type="number" class="monemploi_add_salaire" name="monemploi_add_salaire" id="monemploi_add_salaire" value="<?php echo !empty($_POST['monemploi_add_salaire']); ?>" style="width: 100px;" required>
 
 				
-				<p>Années dexpérience</p>
-                <select name="annees_dexperience" class="annees_dexperience" id="annees_dexperience">
-				<option value="0"><?php echo esc_html( 'Choisissez un années d&#8216;expérience' , 'monemploi' ); ?></option>
-				<option value="1">Auccun</option>
-				<option value="2">1 an</option>
-				<option value="3">2-3 ans</option>
-				<option value="4">4-5 ans</option>
-				<option value="5">6-9 ans</option>
-				<option value="6">10 ans+</option>
-				</select>				
+				<p>Années d&#8216;expérience</p>
+	                	<select name="annees_dexperience" class="annees_dexperience" id="annees_dexperience">
+					<option value="0"><?php echo esc_html( 'Choisissez un années d&#8216;expérience' , 'monemploi' ); ?></option>
+					<option value="1">Auccun</option>
+					<option value="2">1 an</option>
+					<option value="3">2-3 ans</option>
+					<option value="4">4-5 ans</option>
+					<option value="5">6-9 ans</option>
+					<option value="6">10 ans+</option>
+				</select>	
+				
+				<p>Nombre d&#8216;heures par semaine</p>
+				<input type="number" class="monemploi_add_heures" name="monemploi_add_heures" id="monemploi_add_heures" value="<?php echo !empty($_POST['monemploi_add_heures']); ?>" style="width: 100px;" required>
+				
+				
+				<p>Type d&#8216;emploi</p>
+	                	<select name="type_demploi" class="type_demploi" id="type_demploi">
+					<option value="0"><?php echo esc_html( 'un type d&#8216;emploi' , 'monemploi' ); ?></option>
+					<option value="1">Temps plein</option>
+					<option value="2">Temps partiel</option>
+				</select>
+				
+				<p>Type d&#8216;horaire</p>
+	                	<select name="type_dhoraire" class="type_dhoraire" id="type_dhoraire">
+					<option value="0"><?php echo esc_html( 'Choisissez un type d&#8216;horaire' , 'monemploi' ); ?></option>
+					<option value="1">Jour</option>
+					<option value="2">Soir</option>
+					<option value="3">Nuit</option>
+				</select>
+
+				<p>Type de disponibilités</p>
+				<input type="checkbox" id="disponibilites1" class="disponibilites1" name="disponibilites1" value="1">
+				<label for="disponibilites1">Semaine</label>
+				<input type="checkbox" id="disponibilites2" class="disponibilites2" name="disponibilites2" value="2">
+				<label for="disponibilites2">Fin de semaine</label>
+				
+				<p>Durée de l&#8216;emploi</p>
+	                	<select name="duree_emploi" class="duree_emploi" id="duree_emploi">
+					<option value="0"><?php echo esc_html( 'Choisissez une durée de l&#8216;emploi' , 'monemploi' ); ?></option>
+					<option value="1">Permanent</option>
+					<option value="2">Contrat</option>
+					<option value="3">Sur appel</option>
+				</select>
+				
+				<p>Besoin d&#8216;un permis de conduire</p>
+	                	<select name="permis_conduire" class="permis_conduire" id="permis_conduire">
+					<option value="0"><?php echo esc_html( 'Choisissez une réponse' , 'monemploi' ); ?></option>
+					<option value="1">Non</option>
+					<option value="2">Oui</option>
+				</select>
+				
+				<p>Besoin d&#8216;une voiture</p>
+	                	<select name="besoin_voiture" class="besoin_voiture" id="besoin_voiture">
+					<option value="0"><?php echo esc_html( 'Choisissez une réponse' , 'monemploi' ); ?></option>
+					<option value="1">Non</option>
+					<option value="2">Oui</option>
+				</select>
 				
 				<br><br>
 				

@@ -297,6 +297,14 @@ function monemploi_add_job($post) {
 	$datepickerendjobscheduled = $_POST['datepickerendjobscheduled'];
 	$timestartjobscheduled = $_POST['timestartjobscheduled'];
 	$timeendjobscheduled = $_POST['timeendjobscheduled'];
+        $add_heures = $_POST['add_heures'];
+        $type_demploi = $_POST['type_demploi'];
+        $type_dhoraire = $_POST['type_dhoraire'];
+        $disponibilites1 = $_POST['disponibilites1'];
+        $disponibilites2 = $_POST['disponibilites2'];
+        $duree_emploi = $_POST['duree_emploi'];
+        $permis_conduire = $_POST['permis_conduire'];
+        $besoin_voiture = $_POST['besoin_voiture'];
 	
 	if($datepickerstartjobscheduled != null && $timestartjobscheduled != null) {
 		$schedule_timestamp = strtotime($datepickerstartjobscheduled . 'T' . $timestartjobscheduled);	
@@ -333,6 +341,14 @@ function monemploi_add_job($post) {
     	add_post_meta( $postid, 'my_city_key', $city );
     	add_post_meta( $postid, 'my_start_job_scheduled_key', strtotime($datepickerstartjobscheduled . 'T' . $timestartjobscheduled));
     	add_post_meta( $postid, 'my_end_job_scheduled_key', strtotime($datepickerendjobscheduled . 'T' . $timeendjobscheduled));
+    	add_post_meta( $postid, 'my_add_heures_key', $add_heures );
+    	add_post_meta( $postid, 'my_type_demploi_key', $type_demploi );
+	add_post_meta( $postid, 'my_type_dhoraire_key', $type_dhoraire );
+	add_post_meta( $postid, 'my_disponibilites1_key', $disponibilites1 );
+	add_post_meta( $postid, 'my_disponibilites2_key', $disponibilites2 );
+	add_post_meta( $postid, 'my_duree_emploi_key', $duree_emploi );
+	add_post_meta( $postid, 'my_permis_conduire_key', $permis_conduire );
+	add_post_meta( $postid, 'my_besoin_voiture_key', $besoin_voiture );
 	
 	$html[] .= 'Votre emploi à été ajouté avec succès #';
 	$html[] .= $postid;
