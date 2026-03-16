@@ -359,8 +359,16 @@ function monemploi_add_job($post) {
 	    	add_post_meta( $postid, 'my_annees_dexperience_key', $annees_dexperience );
 	    	add_post_meta( $postid, 'my_salaire_key', $salaire );
 	    	add_post_meta( $postid, 'my_city_key', $city );
-	    	add_post_meta( $postid, 'my_start_job_scheduled_key', strtotime($datepickerstartjobscheduled . 'T' . $timestartjobscheduled));
-	    	add_post_meta( $postid, 'my_end_job_scheduled_key', strtotime($datepickerendjobscheduled . 'T' . $timeendjobscheduled));
+	    	if($datepickerstartjobscheduled == '' && $timestartjobscheduled == ''){
+	    		add_post_meta( $postid_update, 'my_start_job_scheduled_key', '');
+	    	} else {
+	    		add_post_meta( $postid_update, 'my_start_job_scheduled_key', strtotime($datepickerstartjobscheduled . 'T' . $timestartjobscheduled));
+	    	}
+	    	if($datepickerendjobscheduled == '' && $timeendjobscheduled == ''){
+			add_post_meta( $postid_update, 'my_end_job_scheduled_key', '');
+	    	} else {
+	    		add_post_meta( $postid_update, 'my_end_job_scheduled_key', strtotime($datepickerendjobscheduled . 'T' . $timeendjobscheduled));
+	    	}
 	    	add_post_meta( $postid, 'my_start_job_date_scheduled_key', $datepickerstartjobscheduled );
 	    	add_post_meta( $postid, 'my_start_job_time_scheduled_key', $timestartjobscheduled );
 	    	add_post_meta( $postid, 'my_end_job_date_scheduled_key', $datepickerendjobscheduled );
@@ -429,8 +437,16 @@ function monemploi_add_job($post) {
 	    	update_post_meta( $postid_update, 'my_annees_dexperience_key', $annees_dexperience );
 	    	update_post_meta( $postid_update, 'my_salaire_key', $salaire );
 	    	update_post_meta( $postid_update, 'my_city_key', $city );
-	    	update_post_meta( $postid_update, 'my_start_job_scheduled_key', strtotime($datepickerstartjobscheduled . 'T' . $timestartjobscheduled));
-	    	update_post_meta( $postid_update, 'my_end_job_scheduled_key', strtotime($datepickerendjobscheduled . 'T' . $timeendjobscheduled));
+	    	if($datepickerstartjobscheduled == '' && $timestartjobscheduled == ''){
+	    		update_post_meta( $postid_update, 'my_start_job_scheduled_key', '');
+	    	} else {
+	    		update_post_meta( $postid_update, 'my_start_job_scheduled_key', strtotime($datepickerstartjobscheduled . 'T' . $timestartjobscheduled));
+	    	}
+	    	if($datepickerendjobscheduled == '' && $timeendjobscheduled == ''){
+			update_post_meta( $postid_update, 'my_end_job_scheduled_key', '');
+	    	} else {
+	    		update_post_meta( $postid_update, 'my_end_job_scheduled_key', strtotime($datepickerendjobscheduled . 'T' . $timeendjobscheduled));
+	    	}
 	    	update_post_meta( $postid_update, 'my_start_job_date_scheduled_key', $datepickerstartjobscheduled );
 	    	update_post_meta( $postid_update, 'my_start_job_time_scheduled_key', $timestartjobscheduled );
 	    	update_post_meta( $postid_update, 'my_end_job_date_scheduled_key', $datepickerendjobscheduled );

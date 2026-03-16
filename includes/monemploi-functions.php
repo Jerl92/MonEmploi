@@ -176,5 +176,29 @@ function auto_approve_all_comments( $approved, $commentdata ) {
 }
 add_filter( 'pre_comment_approved', 'auto_approve_all_comments', 99, 2 );
 
+function getDecimalPart($number) {
+    // Convert to string to avoid float precision issues
+    $number_string = (string)$number;
+    
+    // Find the position of the last decimal point (either '.' or ',')
+    $last_dot_pos = strrpos($number_string, '.');
+    $last_comma_pos = strrpos($number_string, ',');
+    
+    $decimal_point_pos = false;
+    if ($last_dot_pos !== false) {
+        $decimal_point_pos = $last_dot_pos;
+    } elseif ($last_comma_pos !== false) {
+        $decimal_point_pos = $last_comma_pos;
+    }
+
+    if ($decimal_point_pos !== false) {
+        // Extract the substring after the decimal point
+        return '0.' . substr($number_string, $decimal_point_pos + 1);
+    } else {
+        // No decimal part found
+        return "0"; // or "" depending on desired output
+    }
+}
+
 
 ?>

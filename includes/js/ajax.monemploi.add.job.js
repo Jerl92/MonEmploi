@@ -314,6 +314,13 @@ function monemploi_add_job($){
 		                
 		                jQuery('.ns_submit').text('Soumettre');
 				jQuery('.ns_submit').prop('disabled', false);
+				
+				if(job_status = 'update'){
+					var url = new URL(window.location.href);
+					var params = url.searchParams;
+					params.delete('postid');
+					window.history.pushState({}, '', url.toString());
+				}
 		                
 		            },
 		            error: function(errorThrown){

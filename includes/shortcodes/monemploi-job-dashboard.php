@@ -57,7 +57,19 @@ function monemploi_job_dashboard() {
 								echo '</span>';
 							}
 							
-							echo ' - ' . get_post_meta( $p->ID, 'my_city_key', true );
+							echo ' - ' . get_post_meta( $p->ID, 'my_city_key', true );							
+							$from = strtotime(get_the_date('Y-m-d H:i:s', $p->ID));
+							$today = current_time('timestamp');
+							$difference = $today - $from;
+							$round_difference_decimal = round($difference / 60 / 60 / 24, 2);
+							$round_difference = round($difference / 60 / 60 / 24, 0);
+							if($round_difference < 1){
+								echo ' - ' . $round_difference . ' Jour - ';
+								echo round(getDecimalPart($round_difference_decimal) * 24, 0) . ' heures';
+							} else {
+								echo ' - ' . $round_difference . ' Jours - ';
+								echo round(getDecimalPart($round_difference_decimal) * 24, 0) . ' heures';
+							}
 							?></div><?php
 							$i++;	
 					
@@ -94,8 +106,20 @@ function monemploi_job_dashboard() {
 					}
 					
 					echo ' - ' . get_post_meta( $p->ID, 'my_city_key', true );
-					
-					echo '</br>';
+			
+					$from = strtotime(get_the_date('Y-m-d H:i:s', $p->ID));
+					$today = current_time('timestamp');
+					$difference = $today - $from;
+					$round_difference_decimal = round($difference / 60 / 60 / 24, 2);
+					$round_difference = round($difference / 60 / 60 / 24, 0);
+					if($round_difference < 1){
+						echo ' - ' . $round_difference . ' Jour - ';
+						echo round(getDecimalPart($round_difference_decimal) * 24, 0) . ' heures';
+					} else {
+						echo ' - ' . $round_difference . ' Jours - ';
+						echo round(getDecimalPart($round_difference_decimal) * 24, 0) . ' heures';
+					}
+
 					
 					?></div><?php
 					$i++;	
