@@ -4,27 +4,28 @@ function monemploi_remove_attachment($) {
 		event.stopPropagation();
 		event.stopImmediatePropagation();
 		
-		jQuery( $this ).html('test');
-		
-		        var $this = jQuery(this),
-			        object_id = $this.data('object-id');
+		var $this = jQuery(this),
+			object_id = $this.data('object-id');
 
-		jQuery.ajax({
-			type: 'post',
-			url: remove_attachment_monemploi_ajax_url,
-			data: {
-				'object_id': object_id,
-				'action': 'remove_attachment'
-            },
-            dataType: 'JSON',
-			success: function(data) {
-				jQuery($this).parent().html('');
-				jQuery($this).parent().html(data);
-			},
-			error: function(error) {
-				console.log(error);
-			}
-        })
+		if (confirm('Êtes-vous sur de vouloir supprimer ce document ?')) {
+			jQuery.ajax({
+				type: 'post',
+				url: remove_attachment_monemploi_ajax_url,
+					data: {
+						'object_id': object_id,
+						'action': 'remove_attachment'
+					},
+				dataType: 'JSON',
+				success: function(data) {
+					jQuery($this).parent().html('');
+					jQuery($this).parent().html(data);
+				},
+				error: function(error) {
+					console.log(error);
+				}
+			})
+			
+		}
 	});
 }
 
