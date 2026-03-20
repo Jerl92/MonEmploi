@@ -54,15 +54,34 @@ function employeur_dashboard() {
 				    
 				    echo '<br>';
 				    
-				$args = array(
-				 'post_type' => 'emploi',
-	 			 'author'        =>  $user_id, 
-	 			 'post_status'    => array('publish', 'draft', 'future'),
-				  'orderby'       =>  'post_date',
-				  'order'         =>  'DESC',
-				  'posts_per_page' => -1
-				);
+				   
+				$current_user = wp_get_current_user();
+				$user_meta = get_userdata($current_user->ID);
+				$user_role = $user_meta->roles[0];
+			
+				if($user_role == 'employeur'){
+				    
+					$args = array(
+					 'post_type' => 'emploi',
+		 			 'author'        =>  $user_id, 
+		 			 'post_status'    => array('publish', 'draft', 'future'),
+					  'orderby'       =>  'date',
+					  'order'         =>  'DESC',
+					  'posts_per_page' => -1
+					);
 				
+				} else {
+					
+					$args = array(
+					 'post_type' => 'emploi',
+		 			 'author'        =>  $user_id, 
+		 			 'post_status'    => array('publish'),
+					  'orderby'       =>  'date',
+					  'order'         =>  'DESC',
+					  'posts_per_page' => -1
+					);
+				
+				}
 				
 				$posts = get_posts( $args );
 				
@@ -77,6 +96,7 @@ function employeur_dashboard() {
 			    		        if(get_current_user_id() == $post->post_author) {
 					
 							echo '<a href="' . get_permalink( $post->ID ) .'">' . $post->post_title . '</a>';
+							echo ' - ';
 							$usermetadata = get_user_meta(get_current_user_id());
 							$field_data = $usermetadata['Code_postal'];
 							if($field_data){
@@ -86,8 +106,22 @@ function employeur_dashboard() {
 									echo ' - <span class="distance_' . $i . '"></span> - ';
 								echo '</span>';
 							}
+							$from = strtotime(get_the_date('Y-m-d H:i:s', $post->ID));
+							$today = current_time('timestamp');
+							$difference = $today - $from;
+							$round_difference = round($difference / 60 / 60 / 24, 0);
+							if($round_difference < 1){
+								echo ' - ' . $round_difference . ' Jour';
+							} else {
+								echo ' - ' . $round_difference . ' Jours';
+							}
 							echo get_post_meta( $post->ID, 'my_city_key', true );
-							echo ' - Brouillon';
+							if(get_post_status($post->ID) == 'draft') {
+								echo ' - Brouillon';
+							} 
+							if(get_post_status($post->ID) == 'future') {
+								echo ' - Programmer';
+							}
 							echo '<br>';
 							
 							$i++;
@@ -97,6 +131,7 @@ function employeur_dashboard() {
 					} else {
 					
 							echo '<a href="' . get_permalink( $post->ID ) .'">' . $post->post_title . '</a>';
+							echo ' - ';
 							$usermetadata = get_user_meta(get_current_user_id());
 							$field_data = $usermetadata['Code_postal'];
 							if($field_data){
@@ -107,6 +142,15 @@ function employeur_dashboard() {
 								echo '</span>';
 							}
 							echo get_post_meta( $post->ID, 'my_city_key', true );
+							$from = strtotime(get_the_date('Y-m-d H:i:s', $post->ID));
+							$today = current_time('timestamp');
+							$difference = $today - $from;
+							$round_difference = round($difference / 60 / 60 / 24, 0);
+							if($round_difference < 1){
+								echo ' - ' . $round_difference . ' Jour';
+							} else {
+								echo ' - ' . $round_difference . ' Jours';
+							}
 							echo '<br>';
 							
 							$i++;

@@ -2,6 +2,55 @@
 
 function monemploi_job_dashboard() {
 
+	$current_user = wp_get_current_user();
+	$user_meta = get_userdata($current_user->ID);
+	$user_role = $user_meta->roles[0];
+
+	if($user_role == 'employeur' || $user_role == 'administrator'){
+
+		$get_args_emploi = array( 
+			'post_type' => 'emploi',
+			'posts_per_page' => -1,
+			'post_status' => array('publish', 'draft', 'future'),
+			'orderby' => 'date',
+			'order' => 'DESC'
+		); 
+	
+	} else {
+	
+		$get_args_emploi = array( 
+			'post_type' => 'emploi',
+			'posts_per_page' => -1,
+			'post_status' => array('publish'),
+			'orderby' => 'date',
+			'order' => 'DESC'
+		);
+		 
+	}
+	
+	$get_emplois = get_posts( $get_args_emploi );
+	
+	$i = 0;
+	foreach ($get_emplois as $post) {
+		$city = get_post_meta( $post->ID, 'my_city_key', true );
+		$get_city_array[$city][$i] = array('ID' => $post->ID, 'author' => $post->post_author, 'city' => $city);	
+		$i++;	
+	}
+	
+	ksort($get_city_array);
+	
+	$i = 0;
+		
+	?><form action="" method="GET">
+	    <select name="filter_city" id="filter_city">
+	        <option value="">Tout les villes</option>
+	        <?php foreach ($get_city_array as $key => $values) { ?>
+	        	<option value="<?php echo $key ?>"><?php echo $key ?></option>
+	        <?php }  ?>
+	    </select>
+	    <input type="submit" value="Filter">
+	</form><?php
+
 	$i = 0;
 	
 	$get_user_by_username = wp_get_current_user();
@@ -10,21 +59,49 @@ function monemploi_job_dashboard() {
 	$user_role = $user_meta->roles[0];
 
 	if($user_role == 'employeur'){
-	        $get_jobs_args = array(
-	            'post_type' => 'emploi',
-	            'post_status'    => array('publish', 'draft', 'future'),
-	            'posts_per_page' => -1,
-	            'orderby'	     => 'date',
-	            'order'	=> 'DESC'  
-	        );
-        } else if ($user_role == 'employer'){
-	        $get_jobs_args = array(
-	            'post_type' => 'emploi',
-	            'post_status'    => array('publish'),
-	            'posts_per_page' => -1,
-	            'orderby'	     => 'date',
-	            'order'	=> 'DESC'  
-	        );
+	       if ( isset( $_GET['filter_city'] ) && ! empty( $_GET['filter_city'] ) ) {
+    	        $get_jobs_args = array(
+    	            'post_type' => 'emploi',
+    	            'post_status'    => array('publish', 'draft', 'future'),
+    	            'posts_per_page' => -1,
+    	            'orderby'	     => 'date',
+    	            'order'	=> 'DESC',
+                    'meta_key'     => 'my_city_key',
+                    'meta_value'   => sanitize_text_field( $_GET['filter_city'] )
+    	        );
+	       } else {
+	           
+	           $get_jobs_args = array(
+    	            'post_type' => 'emploi',
+    	            'post_status'    => array('publish', 'draft', 'future'),
+    	            'posts_per_page' => -1,
+    	            'orderby'	     => 'date',
+    	            'order'	=> 'DESC'
+    	        );
+	           
+	       }
+        } else {
+	       if ( isset( $_GET['filter_city'] ) && ! empty( $_GET['filter_city'] ) ) {
+    	        $get_jobs_args = array(
+    	            'post_type' => 'emploi',
+    	            'post_status'    => array('publish'),
+    	            'posts_per_page' => -1,
+    	            'orderby'	     => 'date',
+    	            'order'	=> 'DESC',
+                    'meta_key'     => 'my_city_key',
+                    'meta_value'   => sanitize_text_field( $_GET['filter_city'] )
+    	        );
+	       } else {
+	           
+	           $get_jobs_args = array(
+    	            'post_type' => 'emploi',
+    	            'post_status'    => array('publish'),
+    	            'posts_per_page' => -1,
+    	            'orderby'	     => 'date',
+    	            'order'	=> 'DESC'
+    	        );
+	           
+	       }
         }
         
         $get_jobs = get_posts($get_jobs_args);
