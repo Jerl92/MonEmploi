@@ -3,34 +3,40 @@
 function monemploi_job_dashboard() {
 
 	$i = 0;
+	
+	$get_user_by_username = wp_get_current_user();
+	$userid = $get_user_by_username->ID;
+	$user_meta = get_userdata($userid);
+	$user_role = $user_meta->roles[0];
 
-        $get_jobs_args = array(
-            'post_type' => 'emploi',
-            'post_status'    => array('publish', 'draft', 'future'),
-            'posts_per_page' => -1        
-        );
+	if($user_role == 'employeur'){
+	        $get_jobs_args = array(
+	            'post_type' => 'emploi',
+	            'post_status'    => array('publish', 'draft', 'future'),
+	            'posts_per_page' => -1,
+	            'orderby'	     => 'date',
+	            'order'	=> 'DESC'  
+	        );
+        } else if ($user_role == 'employer'){
+	        $get_jobs_args = array(
+	            'post_type' => 'emploi',
+	            'post_status'    => array('publish'),
+	            'posts_per_page' => -1,
+	            'orderby'	     => 'date',
+	            'order'	=> 'DESC'  
+	        );
+        }
         
         $get_jobs = get_posts($get_jobs_args);
 
 	if( ! empty( $get_jobs ) ){
 		?><div><?php
 			foreach ( $get_jobs as $p ){
-				
-			$get_user_by_username = wp_get_current_user();
-			$userid = $get_user_by_username->ID;
-			$user_meta = get_userdata($userid);
-			$user_role = $user_meta->roles[0];
 			if(get_post_status($p->ID) == 'draft' || get_post_status($p->ID) == 'future') {	
 					if(get_current_user_id() == $p->post_author) {
 						if($user_role == 'employeur'){
 			
 					    		echo '<div style="display: block;">';
-					    			if(get_post_status($p->ID) == 'draft') {
-									echo 'Brouillon - ';
-								} 
-								if(get_post_status($p->ID) == 'future') {
-									echo ' Programmer - ';
-								}
 					    			echo '<a href="' . get_permalink( $p->ID ) .'">' . $p->ID . ' - ' . $p->post_title . '</a> - ';
 								$author_id = $p->post_author;
 								echo the_author_meta( 'user_nicename' , $author_id );
@@ -57,18 +63,22 @@ function monemploi_job_dashboard() {
 								echo '</span>';
 							}
 							
+							if(get_post_status($p->ID) == 'draft') {
+								echo ' - Brouillon';
+							} 
+							if(get_post_status($p->ID) == 'future') {
+								echo ' - Programmer';
+							}
+							
 							echo ' - ' . get_post_meta( $p->ID, 'my_city_key', true );							
 							$from = strtotime(get_the_date('Y-m-d H:i:s', $p->ID));
 							$today = current_time('timestamp');
 							$difference = $today - $from;
-							$round_difference_decimal = round($difference / 60 / 60 / 24, 2);
 							$round_difference = round($difference / 60 / 60 / 24, 0);
 							if($round_difference < 1){
-								echo ' - ' . $round_difference . ' Jour - ';
-								echo round(getDecimalPart($round_difference_decimal) * 24, 0) . ' heures';
+								echo ' - ' . $round_difference . ' Jour';
 							} else {
-								echo ' - ' . $round_difference . ' Jours - ';
-								echo round(getDecimalPart($round_difference_decimal) * 24, 0) . ' heures';
+								echo ' - ' . $round_difference . ' Jours';
 							}
 							?></div><?php
 							$i++;	
@@ -110,14 +120,11 @@ function monemploi_job_dashboard() {
 					$from = strtotime(get_the_date('Y-m-d H:i:s', $p->ID));
 					$today = current_time('timestamp');
 					$difference = $today - $from;
-					$round_difference_decimal = round($difference / 60 / 60 / 24, 2);
 					$round_difference = round($difference / 60 / 60 / 24, 0);
 					if($round_difference < 1){
-						echo ' - ' . $round_difference . ' Jour - ';
-						echo round(getDecimalPart($round_difference_decimal) * 24, 0) . ' heures';
+						echo ' - ' . $round_difference . ' Jour';
 					} else {
-						echo ' - ' . $round_difference . ' Jours - ';
-						echo round(getDecimalPart($round_difference_decimal) * 24, 0) . ' heures';
+						echo ' - ' . $round_difference . ' Jours';
 					}
 
 					

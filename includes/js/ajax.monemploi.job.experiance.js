@@ -12,7 +12,6 @@ function monemploi_save_job_experiance($) {
 		var job_description = jQuery('.'+unique).children('.monemploi_add_job_experiance_description').val();
 		var datejobstart = jQuery('.'+unique).children('.datepickerstartjob').val();
 		var datejobend = jQuery('.'+unique).children('.datepickerendjob').val();
-		let formattedHtml = job_description.replace(/\r?\n/g, '<br>');
 		
 		if (jQuery('.'+unique).children('.still-working').is(':checked')) {
 			var stillworking = 1;
@@ -26,7 +25,7 @@ function monemploi_save_job_experiance($) {
 			data: {
 				'job_title': job_title,
 				'job_name': job_name,
-				'job_description': formattedHtml,
+				'job_description': job_description,
 				'unique': unique,
 				'datejobstart': datejobstart,
                 		'datejobend': datejobend,

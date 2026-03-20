@@ -9,7 +9,6 @@ function monemploi_save_school_experiance($) {
 		var school_title = jQuery('.'+unique).children('.monemploi_add_school_experiance_title').val();
 		var school_name = jQuery('.'+unique).children('.monemploi_add_school_experiance_name').val();
 		var school_description = jQuery('.'+unique).children('.monemploi_add_school_experiance_description').val();
-		let formattedHtml = school_description.replace(/\r?\n/g, '<br>');
 		var dateschoolstart = jQuery('.'+unique).children('.datepickerstartschool').val();
 		var dateschoolend = jQuery('.'+unique).children('.datepickerendschool').val();
         
@@ -19,7 +18,7 @@ function monemploi_save_school_experiance($) {
 			data: {
 				'school_title': school_title,
 				'school_name': school_name,
-				'school_description': formattedHtml,
+				'school_description': school_description,
 				'unique': unique,
 				'dateschoolstart': dateschoolstart,
 				'dateschoolend': dateschoolend,

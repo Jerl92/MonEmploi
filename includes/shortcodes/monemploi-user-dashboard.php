@@ -119,7 +119,7 @@ function monemploi_user_dashboard() {
 							echo '<span>' . date('m/Y', $date_certification_end_strtotime) . '</span>';
 							echo ' - ';
 							echo '<span>' . round($date_certification_strtotime_clac) . ' Mois</span>';
-							echo '<div>'. get_user_meta( $userid, 'certification_description_'.$unique_string_certification, true) .'</div>';
+							echo '<div style="white-space: pre-wrap;">'. get_user_meta( $userid, 'certification_description_'.$unique_string_certification, true) .'</div>';
 						
 						echo '</div>';
 								
@@ -171,7 +171,7 @@ function monemploi_user_dashboard() {
 							echo '<span>' . date('m/Y', $date_school_end_strtotime) . '</span>';
 							echo ' - ';
 							echo '<span>' . round($date_school_strtotime_clac) . ' Mois</span>';						
-							echo '<div>'. get_user_meta( $userid, 'school_description_'.$unique_string_school, true) .'</div>';
+							echo '<div style="white-space: pre-wrap;">'. get_user_meta( $userid, 'school_description_'.$unique_string_school, true) .'</div>';
 						
 						echo '</div>';
 								

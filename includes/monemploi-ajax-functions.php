@@ -752,7 +752,7 @@ function edit_job_experiance($post) {
 				$html[] .= ' - ';
 				$html[] .= '<span>' . date('m/Y', strtotime($datestrtotime)) . '</span>';
 				$html[] .= ' - ';
-				$html[] .= '<span>' . round($date_job_strtotime_clac) . ' Mois</span>';				;
+				$html[] .= '<span>' . round($date_job_strtotime_clac) . ' Mois</span>';	
 				$html[] .= '<div class="job-experiance-description-header" style="white-space: pre-wrap;">'. get_user_meta( $userid, 'job_description_'.$unique_string, true) .'</div>';
 		
 			
@@ -866,7 +866,7 @@ function monemploi_save_certification_experiance($post) {
 	$html[] .= ' - ';
 	$html[] .= '<span>' . date('m/Y', $date_certification_end_strtotime) . '</span>';
 	$html[] .= ' - ';
-	$html[] .= '<span>' . round($date_certification_strtotime_clac) . ' Mois</span>';				;
+	$html[] .= '<span>' . round($date_certification_strtotime_clac) . ' Mois</span>';
 	$html[] .= '<div class="certification-experiance-description-header" style="white-space: pre-wrap;">'. get_user_meta( $userid, 'certification_description_'.$unique, true) .'</div>';
     
         wp_send_json ( implode($html) );
@@ -937,7 +937,7 @@ function edit_certification_experiance($post) {
 			$html[] .= '<input type="text" class="datepickerendcertification" data-toggle="datepickerendcertification_"  value="' . get_user_meta( $userid, 'datecertificationend_'.$unique_string, true) . '">';
 			
 			$html[] .= '<p>Description des taches</p>';
-			$html[] .= '<textarea class="monemploi_add_certification_experiance_description" name="monemploi_add_certification_experiance_description" id="monemploi_add_certification_experiance_description" placeholder="Description des taches" rows="6" cols="75">' . get_user_meta( $userid, 'certification_description_'.$unique_string, true) .'</textarea>';
+			$html[] .= '<textarea class="monemploi_add_certification_experiance_description" name="monemploi_add_certification_experiance_description" id="monemploi_add_certification_experiance_description" placeholder="Description des taches" rows="6" cols="75" style="white-space: pre-wrap;">' . get_user_meta( $userid, 'certification_description_'.$unique_string, true) .'</textarea>';
 			
 			$html[] .= '<div class="" style="position: relative;">';
 				$html[] .= '<button class="save-certification-experiance" data-object-id="' . $unique_string . '">Sauvegarder</button>';
@@ -968,7 +968,7 @@ function edit_certification_experiance($post) {
 			$html[] .= ' - ';
 			$html[] .= '<span>' . date('m/Y', $date_certification_end_strtotime) . '</span>';
 			$html[] .= ' - ';
-			$html[] .= '<span>' . round($date_certification_strtotime_clac) . ' Mois</span>';			;
+			$html[] .= '<span>' . round($date_certification_strtotime_clac) . ' Mois</span>';
 			$html[] .= '<div class="certification-experiance-description-header" style="white-space: pre-wrap;">'. get_user_meta( $userid, 'certification_description_'.$unique_string, true) .'</div>';
 			
 			$html[] .= '</div>';	
@@ -1058,7 +1058,7 @@ function monemploi_save_school_experiance($post) {
 	$html[] .= ' - ';
 	$html[] .= '<span>' . date('m/Y', $date_school_end_strtotime) . '</span>';
 	$html[] .= ' - ';
-	$html[] .= '<span>' . round($date_school_strtotime_clac) . ' Mois</span>';		;
+	$html[] .= '<span>' . round($date_school_strtotime_clac) . ' Mois</span>';
 	$html[] .= '<div class="school-experiance-description-header" style="white-space: pre-wrap;">'. get_user_meta( $userid, 'school_description_'.$unique, true) .'</div>';
     
         wp_send_json ( implode($html) );
@@ -1105,7 +1105,7 @@ function edit_school_experiance($post) {
 			
 			
 			$html[] .= '<p>Description des taches</p>';
-			$html[] .= '<textarea class="monemploi_add_school_experiance_description" name="monemploi_add_school_experiance_description" id="monemploi_add_school_experiance_description" placeholder="Description des taches" rows="6" cols="75">' . get_user_meta( $userid, 'school_description_'.$unique_string, true) .'</textarea>';
+			$html[] .= '<textarea class="monemploi_add_school_experiance_description" name="monemploi_add_school_experiance_description" id="monemploi_add_school_experiance_description" placeholder="Description des taches" rows="6" cols="75" style="white-space: pre-wrap;">' . get_user_meta( $userid, 'school_description_'.$unique_string, true) .'</textarea>';
 			
 			$html[] .= '<div class="" style="position: relative;">';
 				$html[] .= '<button class="save-school-experiance" data-object-id="' . $unique_string . '">Sauvegarder</button>';
@@ -1136,7 +1136,7 @@ function edit_school_experiance($post) {
 			$html[] .= ' - ';
 			$html[] .= '<span>' . date('m/Y', $date_school_end_strtotime) . '</span>';
 			$html[] .= ' - ';
-			$html[] .= '<span>' . round($date_school_strtotime_clac) . ' Mois</span>';		;
+			$html[] .= '<span>' . round($date_school_strtotime_clac) . ' Mois</span>';
 			$html[] .= '<div class="school-experiance-description-header" style="white-space: pre-wrap;">'. get_user_meta( $userid, 'school_description_'.$unique_string, true) .'</div>';
 			
 			$html[] .= '</div>';	
@@ -1576,7 +1576,7 @@ function avis_employer($post) {
 				$html[] .= '</div>';
 			$html[] .= '</div>';
 			$html[] .= '<div class="ns-col-sm-3 response-dates">';
-				$html[] .= '<a href="#response-0" class="response-bookmark ns-small">' . date( 'd M Y h:iA', strtotime( $post->post_date ) ) . '</a>';
+				$html[] .= '<a href="" class="response-bookmark ns-small">' . date( 'd M Y h:iA', strtotime( $post->post_date ) ) . '</a>';
 			$html[] .= '</div>';
 		$html[] .= '</div>';
 		$html[] .= $post->post_content;

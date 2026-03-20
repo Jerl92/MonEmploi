@@ -49,6 +49,8 @@ function handle_frontend_media_upload() {
             ),
             $upload['file']
         );
+    } else {
+        wp_die( 'Ce fichier nest pas un fichier *.pdf, *.doc ou *.docx' );
     }
 
     if ( is_wp_error( $attachment_id ) || ! $attachment_id ) {
@@ -122,32 +124,6 @@ function show_draft_posts_on_front( $query ) {
 }
 add_filter( 'pre_get_posts', 'show_draft_posts_on_front' );
 
-
-function send_email_on_future_publish( $new_status, $old_status, $post ) {
-    // Check if the new status is 'publish' and the old status was 'future'
-    if ( 'publish' === $new_status && 'future' === $old_status ) {
-        // Ensure it's a 'post' type (can add other post types if needed)
-        if ( 'emploi' === $post->post_type ) {
-            $author = get_userdata( $post->post_author );
-            $author_email = $author->user_email;
-            $post_title = get_the_title( $post->ID );
-            $post_url = get_permalink( $post->ID );
-
-            $subject = 'Your scheduled post "' . $post_title . '" has been published!';
-            $message = '
-                <p>Hello ' . $author->display_name . ',</p>
-                <p>Your post "' . $post_title . '" has been published on the website.</p>
-                <p>View it here: <a href="' . $post_url . '">' . $post_url . '</a></p>
-            ';
-            $headers = array('Content-Type: text/html; charset=UTF-8');
-
-            // Send the email
-            wp_mail( $author_email, $subject, $message, $headers );
-        }
-    }
-}
-add_action( 'transition_post_status', 'send_email_on_future_publish', 10, 3 );
-
 function my_custom_after_registration_action( $user_id, $args ) {
     if ( empty( $user_id ) || is_wp_error( $user_id ) ) {
         return;
@@ -156,7 +132,6 @@ function my_custom_after_registration_action( $user_id, $args ) {
     $user = new WP_User( $user_id );
 	$meta_for_user = get_user_meta( $user_id, 'status', true ); 
 	$meta_user_status = $meta_for_user[0];
-	$statuts_value = sanitize_text_field( $meta_user_status );
 	if($meta_user_status == 'Employeur'){    
 		$user->set_role( 'employeur' );
 	}
@@ -175,30 +150,5 @@ function auto_approve_all_comments( $approved, $commentdata ) {
     return 1;
 }
 add_filter( 'pre_comment_approved', 'auto_approve_all_comments', 99, 2 );
-
-function getDecimalPart($number) {
-    // Convert to string to avoid float precision issues
-    $number_string = (string)$number;
-    
-    // Find the position of the last decimal point (either '.' or ',')
-    $last_dot_pos = strrpos($number_string, '.');
-    $last_comma_pos = strrpos($number_string, ',');
-    
-    $decimal_point_pos = false;
-    if ($last_dot_pos !== false) {
-        $decimal_point_pos = $last_dot_pos;
-    } elseif ($last_comma_pos !== false) {
-        $decimal_point_pos = $last_comma_pos;
-    }
-
-    if ($decimal_point_pos !== false) {
-        // Extract the substring after the decimal point
-        return '0.' . substr($number_string, $decimal_point_pos + 1);
-    } else {
-        // No decimal part found
-        return "0"; // or "" depending on desired output
-    }
-}
-
 
 ?>
