@@ -53,15 +53,16 @@ function getDistance($) {
     },    
     function (response, status) {
         if (status !== google.maps.DistanceMatrixStatus.OK) {
-          jQuery(".widgetdistance_"+i).html(status);
+          jQuery(".widgetdistance_"+i).html(status);
         } else {
-          jQuery(".widgetdistance_"+i).html( response.rows[0].elements[0].distance.text );
+          jQuery(".widgetdistance_"+i).html( response.rows[0].elements[0].distance.text );
         }
     });
     
     });
     
   }
+  
   
 function get_city_name($) {
 
@@ -159,10 +160,23 @@ $('.departuretime').on('change', function() {
 });
 
 }
+
+jQuery(window).on('load', function() {
+	var get_km = getUrlParameter('km_filter');
+	if(get_km) {
+		jQuery(".km_filter").val(get_km);
+		jQuery(".job-wrapper-box").each(function(index, element) {
+			var distance = jQuery('.distance_'+index).html();
+			if(parseInt(get_km) < parseInt(distance)) {
+				jQuery('#job-wrapper-box-'+index).remove();
+			}
+		});
+	}
+});
   
 jQuery(document).ready(function($) {
     getDistance($);
     getDistance_($);
     get_city_name($);
-    get_directions($);  
+    get_directions($);
 });

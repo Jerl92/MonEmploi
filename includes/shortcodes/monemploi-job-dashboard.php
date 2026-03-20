@@ -30,24 +30,27 @@ function monemploi_job_dashboard() {
 	
 	$get_emplois = get_posts( $get_args_emploi );
 	
-	$i = 0;
+	$x = 0;
 	foreach ($get_emplois as $post) {
 		$city = get_post_meta( $post->ID, 'my_city_key', true );
-		$get_city_array[$city][$i] = array('ID' => $post->ID, 'author' => $post->post_author, 'city' => $city);	
+		$get_city_array[$city][$x] = array('ID' => $post->ID, 'author' => $post->post_author, 'city' => $city);	
 		$i++;	
 	}
 	
 	ksort($get_city_array);
-	
-	$i = 0;
 		
 	?><form action="" method="GET">
 	    <select name="filter_city" id="filter_city">
 	        <option value="">Tout les villes</option>
 	        <?php foreach ($get_city_array as $key => $values) { ?>
-	        	<option value="<?php echo $key ?>"><?php echo $key ?></option>
+	        	<?php if($key == $_GET['filter_city']) { ?>
+	        		<option value="<?php echo $key ?>" selected><?php echo $key ?></option>
+	    		<?php } else { ?>
+	        		<option value="<?php echo $key ?>"><?php echo $key ?></option>
+	    		<?php } ?>
 	        <?php }  ?>
 	    </select>
+	    <input type="number" id="km_filter" name="km_filter" class="km_filter" min="0" max="1000" placeholder="KM" value="">
 	    <input type="submit" value="Filter">
 	</form><?php
 
@@ -107,12 +110,11 @@ function monemploi_job_dashboard() {
         $get_jobs = get_posts($get_jobs_args);
 
 	if( ! empty( $get_jobs ) ){
-		?><div><?php
-			foreach ( $get_jobs as $p ){
-			if(get_post_status($p->ID) == 'draft' || get_post_status($p->ID) == 'future') {	
-					if(get_current_user_id() == $p->post_author) {
-						if($user_role == 'employeur'){
-			
+		foreach ( $get_jobs as $p ){
+		if(get_post_status($p->ID) == 'draft' || get_post_status($p->ID) == 'future') {	
+				if(get_current_user_id() == $p->post_author) {
+					if($user_role == 'employeur'){
+						echo '<div class="job-wrapper-box" id="job-wrapper-box-'.$i.'">';
 					    		echo '<div style="display: block;">';
 					    			echo '<a href="' . get_permalink( $p->ID ) .'">' . $p->ID . ' - ' . $p->post_title . '</a> - ';
 								$author_id = $p->post_author;
@@ -158,14 +160,14 @@ function monemploi_job_dashboard() {
 								echo ' - ' . $round_difference . ' Jours';
 							}
 							?></div><?php
-							$i++;	
-					
-						}
+						echo '</div>';
 					
 					}
 				
-				} else {
-					
+				}
+			
+			} else {
+				echo '<div class="job-wrapper-box" id="job-wrapper-box-'.$i.'">';
 			    		echo '<div style="display: block;"><a href="' . get_permalink( $p->ID ) .'">' . $p->ID . ' - ' . $p->post_title . '</a> - ';
 						$author_id = $p->post_author;
 						echo the_author_meta( 'user_nicename' , $author_id );
@@ -203,16 +205,14 @@ function monemploi_job_dashboard() {
 					} else {
 						echo ' - ' . $round_difference . ' Jours';
 					}
-
+	
 					
 					?></div><?php
-					$i++;	
-			
-				}	    		
-		    		
-		    	}
-		    ?></div><?php
-		}
+				echo '</div>';	
+			}	    		
+	    	$i++;	
+	    	}
+	}
 
 }
 add_shortcode('monemploi-job-dashboard', 'monemploi_job_dashboard');
