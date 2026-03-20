@@ -622,20 +622,20 @@ function monemploi_save_job_experiance($post) {
 	
 	$unique_strings = get_user_meta( $userid, 'job_unique', true);
 
-if (!in_array($unique, $unique_strings)) {
-	if(! is_array($unique_strings) ){
+	if (!in_array($unique, $unique_strings)) {
+		if(!is_array($unique_strings) ){
+		
+			update_user_meta( $userid, 'job_unique', array($unique));
+		
+		} else 	{
 	
-		add_user_meta( $userid, 'job_unique', $unique);
-	
-	} else 	{
-
-		array_unshift($unique_strings, $unique);
-		update_user_meta( $userid, 'job_unique', $unique_strings);
-	update_user_meta( $userid, 'job_name_'.$unique, $job_name);
-    }
-}
+			array_unshift($unique_strings, $unique);
+			update_user_meta( $userid, 'job_unique', $unique_strings);
+	    }
+	}
 	
 	update_user_meta( $userid, 'job_title_'.$unique, $job_title);
+	update_user_meta( $userid, 'job_name_'.$unique, $job_name);
 	update_user_meta( $userid, 'date_job_start_'.$unique, esc_attr($datejobstart));
 	update_user_meta( $userid, 'date_job_end_'.$unique, esc_attr($datejobend));
 	update_user_meta( $userid, 'job_description_'.$unique, $job_description);
@@ -837,17 +837,17 @@ function monemploi_save_certification_experiance($post) {
 	
 	$unique_strings = get_user_meta( $userid, 'certification_unique', true);
 
-if (!in_array($unique, $unique_strings)) {
-	if(! is_array($unique_strings) ){
+	if (!in_array($unique, $unique_strings)) {
+		if(!is_array($unique_strings) ){
+		
+			update_user_meta( $userid, 'certification_unique', array($unique));
+		
+		} else 	{
 	
-		add_user_meta( $userid, 'certification_unique', $unique);
-	
-	} else 	{
-
-		array_unshift($unique_strings, $unique);
-		update_user_meta( $userid, 'certification_unique', $unique_strings);
-    }
-}
+			array_unshift($unique_strings, $unique);
+			update_user_meta( $userid, 'certification_unique', $unique_strings);
+	    }
+	}
 	
 	update_user_meta( $userid, 'certification_title_'.$unique, $certification_title);
 	update_user_meta( $userid, 'certification_name_'.$unique, $certification_name);
@@ -1030,18 +1030,18 @@ function monemploi_save_school_experiance($post) {
 	
 	$unique_strings = get_user_meta( $userid, 'school_unique', true);
 
-if (!in_array($unique, $unique_strings)) {
-	if(! is_array($unique_strings) ){
+	if (!in_array($unique, $unique_strings)) {
+		if(!is_array($unique_strings) ){
+		
+			update_user_meta( $userid, 'school_unique', array($unique));
+		
+		} else 	{
 	
-		add_user_meta( $userid, 'school_unique', $unique);
-	
-	} else 	{
-
-		array_unshift($unique_strings, $unique);
-		update_user_meta( $userid, 'school_unique', $unique_strings);
-    }
-}
-	
+			array_unshift($unique_strings, $unique);
+			update_user_meta( $userid, 'school_unique', $unique_strings);
+	    }
+	}
+		
 	update_user_meta( $userid, 'school_title_'.$unique, $school_title);
 	update_user_meta( $userid, 'school_name_'.$unique, $school_name);
 	update_user_meta( $userid, 'school_description_'.$unique, $school_description);
