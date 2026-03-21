@@ -38,6 +38,8 @@ function monemploi_job_dashboard() {
 	}
 	
 	ksort($get_city_array);
+	
+	echo '<div class="test"></div>';
 		
 	?><form action="" method="GET">
 	    <select name="filter_city" id="filter_city">
@@ -50,7 +52,10 @@ function monemploi_job_dashboard() {
 	    		<?php } ?>
 	        <?php }  ?>
 	    </select>
-	    <input type="number" id="km_filter" name="km_filter" class="km_filter" min="0" max="1000" placeholder="KM" value="">
+	    <?php if(is_user_logged_in()) { ?>
+	    	<input type="number" id="km_filter" name="km_filter" class="km_filter" min="0" max="1000" placeholder="KM" value="">
+	    <?php } ?>
+	    <input type="number" id="day_filter" name="day_filter" class="day_filter" min="0" max="1000" placeholder="Jour" value="">
 	    <input type="submit" value="Filter">
 	</form><?php
 
@@ -155,9 +160,9 @@ function monemploi_job_dashboard() {
 							$difference = $today - $from;
 							$round_difference = round($difference / 60 / 60 / 24, 0);
 							if($round_difference < 1){
-								echo ' - ' . $round_difference . ' Jour';
+								echo ' - <span class="get-the-date-difference-'.$i.'">' . $round_difference . ' Jour</span>';
 							} else {
-								echo ' - ' . $round_difference . ' Jours';
+								echo ' - <span class="get-the-date-difference-'.$i.'">' . $round_difference . ' Jours</span>';
 							}
 							?></div><?php
 						echo '</div>';
@@ -201,9 +206,9 @@ function monemploi_job_dashboard() {
 					$difference = $today - $from;
 					$round_difference = round($difference / 60 / 60 / 24, 0);
 					if($round_difference < 1){
-						echo ' - ' . $round_difference . ' Jour';
+						echo ' - <span class="get-the-date-difference-'.$i.'">' . $round_difference . ' Jour</span>';
 					} else {
-						echo ' - ' . $round_difference . ' Jours';
+						echo ' - <span class="get-the-date-difference-'.$i.'">' . $round_difference . ' Jours</span>';
 					}
 	
 					
