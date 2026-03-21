@@ -121,25 +121,7 @@
 							);
 							
 							// Update the post in the database
-							wp_update_post( $postdata );	
-							
-							
-							$author = get_userdata( $post->post_author );
-							$author_email = $author->user_email;
-							$post_title = get_the_title( $post->ID );
-							$post_url = get_permalink( $post->ID );
-							
-							$subject = 'Your scheduled post "' . $post_title . '" has been published!';
-							$message = '
-							<p>Hello ' . $author->display_name . ',</p>
-							<p>Your post "' . $post_title . '" has been published on the website.</p>
-							<p>View it here: <a href="' . $post_url . '">' . $post_url . '</a></p>
-							';
-							$headers = array('Content-Type: text/html; charset=UTF-8');
-							
-							// Send the email
-							wp_mail( $author_email, $subject, $message, $headers );	
-														
+							wp_update_post( $postdata );													
 						}
 					
 					}
