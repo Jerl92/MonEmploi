@@ -92,7 +92,7 @@ The answer is no.<br>
 
 ## Changelog 
 
-0.3.5 - Add sort by km, title, date in jobs dashboard with few bug fix.
+0.3.5 - Add sort by km, title, date in jobs dashboard with few bug fix.<br>
 0.3 - Various bug fix in profile, in the add job from, everything should work good.<br>
 0.2 - Add the ability to edit the jobs in the front-end with the new job form.<br>
 0.1 - Init version with basic function, everything work but there a lack of CSS optimisation.<br>
