@@ -53,7 +53,7 @@ function monemploi_job_dashboard() {
 	    <?php if(is_user_logged_in()) { ?>
 	    	<input type="number" id="km_filter" name="km" class="km_filter" min="0" max="1000" placeholder="KM" value="">
 	    <?php } ?>
-	    <input type="number" id="day_filter" name="day" class="day_filter" min="0" max="1000" placeholder="Jour" value="">
+	    <input type="number" id="days_filter" name="days" class="days_filter" min="0" max="1000" placeholder="Jour" value="">
 	    <input type="number" id="salary_filter" name="salary" class="salary_filter" min="0" max="1000" placeholder="Salaire" value="<?php echo $_GET['salary']; ?>">
 		<?php $education_terms = get_terms( array(
 			'taxonomy' => 'education',
