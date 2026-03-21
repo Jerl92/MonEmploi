@@ -382,6 +382,8 @@ function monemploi_add_job($post) {
 		    "weekend" => $disponibilites2
 		];
 		add_post_meta( $postid, 'my_disponibilites_key', $disponibilites_array );
+		add_post_meta( $postid, 'my_disponibilites1_key', $disponibilites1 );
+		add_post_meta( $postid, 'my_disponibilites2_key', $disponibilites2 );
 		add_post_meta( $postid, 'my_duree_emploi_key', $duree_emploi );
 		add_post_meta( $postid, 'my_permis_conduire_key', $permis_conduire );
 		add_post_meta( $postid, 'my_besoin_voiture_key', $besoin_voiture );
@@ -464,6 +466,8 @@ function monemploi_add_job($post) {
 		    "weekend" => $disponibilites2
 		];
 		update_post_meta( $postid_update, 'my_disponibilites_key', $disponibilites_array );
+		update_post_meta( $postid_update, 'my_disponibilites1_key', $disponibilites1 );
+		update_post_meta( $postid_update, 'my_disponibilites2_key', $disponibilites2 );
 		update_post_meta( $postid_update, 'my_duree_emploi_key', $duree_emploi );
 		update_post_meta( $postid_update, 'my_permis_conduire_key', $permis_conduire );
 		update_post_meta( $postid_update, 'my_besoin_voiture_key', $besoin_voiture );

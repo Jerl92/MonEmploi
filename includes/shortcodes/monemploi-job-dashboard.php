@@ -341,26 +341,26 @@ function monemploi_job_dashboard() {
 			            'compare' => '=',
 			        )
 			);
-		 }
-
-		if ( $_GET['disponibilites'] != ''  ) {
-	        	$get_jobs_args['meta_query'][] = array(
-			        array(
-			            'key'     => 'my_disponibilites1_key',
-			            'value'   => intval( $_GET['disponibilites']  ),
-			            'compare' => '=',
-			        )
-			);
-		 }
+		}
 		 
-		 if ( $_GET['disponibilites'] != ''  ) {
-	        	$get_jobs_args['meta_query'][] = array(
-			        array(
-			            'key'     => 'my_disponibilites2_key',
-			            'value'   => intval( $_GET['disponibilites']  ),
-			            'compare' => '=',
-			        )
-			);
+		if ( $_GET['disponibilites'] != ''  ) {
+			if($_GET['disponibilites'] == 1) {
+		        	$get_jobs_args['meta_query'][] = array(
+				        array(
+				            'key'     => 'my_disponibilites1_key',
+				            'value'   => intval( '1' ),
+				            'compare' => '=',
+				        )
+				);	
+			} elseif ($_GET['disponibilites'] == 2) {
+		        	$get_jobs_args['meta_query'][] = array(
+				        array(
+				            'key'     => 'my_disponibilites2_key',
+				            'value'   => intval( '1' ),
+				            'compare' => '=',
+				        )
+				);	
+			}
 		 }
 
 		 if ( $_GET['duree'] != ''  ) {
@@ -484,23 +484,23 @@ function monemploi_job_dashboard() {
 		 }
 
 		if ( $_GET['disponibilites'] != ''  ) {
-	        	$get_jobs_args['meta_query'][] = array(
-			        array(
-			            'key'     => 'my_disponibilites1_key',
-			            'value'   => intval( $_GET['disponibilites']  ),
-			            'compare' => '=',
-			        )
-			);
-		 }
-		 
-		 if ( $_GET['disponibilites'] != ''  ) {
-	        	$get_jobs_args['meta_query'][] = array(
-			        array(
-			            'key'     => 'my_disponibilites2_key',
-			            'value'   => intval( $_GET['disponibilites']  ),
-			            'compare' => '=',
-			        )
-			);
+			if($_GET['disponibilites'] == 1) {
+		        	$get_jobs_args['meta_query'][] = array(
+				        array(
+				            'key'     => 'my_disponibilites1_key',
+				            'value'   => intval( '1' ),
+				            'compare' => '=',
+				        )
+				);	
+			} elseif ($_GET['disponibilites'] == 2) {
+		        	$get_jobs_args['meta_query'][] = array(
+				        array(
+				            'key'     => 'my_disponibilites2_key',
+				            'value'   => intval( '1' ),
+				            'compare' => '=',
+				        )
+				);	
+			}
 		 }
 
 		 if ( $_GET['duree'] != ''  ) {
