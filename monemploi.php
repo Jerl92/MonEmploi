@@ -16,7 +16,7 @@
  * Plugin Name:       Monemploi 
  * Plugin URI:        https://https://Github.com/Jerl92/MonEmploi
  * Description:       MonEmploi is a job board to make a job searching web site with user dashboard and candidacy private page.
- * Version:           0.3.5
+ * Version:           0.3.6
  * Author:            Jérémie Langevin 
  * Author URI:        https://https://Github.com/Jerl92/
  * License:           GPL-2.0+
@@ -35,7 +35,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'MONEMPLOI_VERSION', '0.3.5' );
+define( 'MONEMPLOI_VERSION', '0.3.6' );
 
 /**
  * The code that runs during plugin activation.

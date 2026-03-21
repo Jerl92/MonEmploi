@@ -347,7 +347,8 @@ function monemploi_job_dashboard() {
 	if($user_role == 'employeur'){
 		
 		$status_sort = $_GET['status_sort'];
-		$title_sort = $_GET['title_sort'];		
+		$title_sort = $_GET['title_sort'];
+		$date_sort = $_GET['date_sort'];		
 		if($status_sort == 1) {
 			if($title_sort == 1) {
 			        $get_jobs_args = array(
@@ -365,6 +366,30 @@ function monemploi_job_dashboard() {
 			            'orderby'	     => 'title',
 			            'order'	=> 'DESC'
 			        );
+		        } elseif($date_sort == 1) {
+			        $get_jobs_args = array(
+			            'post_type' => 'emploi',
+			            'post_status'    => array('publish'),
+			            'posts_per_page' => -1,
+			            'orderby'	     => 'date',
+			            'order'	=> 'ASC'
+			        );
+		        } elseif($date_sort == 2) {
+			        $get_jobs_args = array(
+			            'post_type' => 'emploi',
+			            'post_status'    => array('publish'),
+			            'posts_per_page' => -1,
+			            'orderby'	     => 'date',
+			            'order'	=> 'DESC'
+			        );
+		        } else {
+			        $get_jobs_args = array(
+			            'post_type' => 'emploi',
+			            'post_status'    => array('publish'),
+			            'posts_per_page' => -1,
+			            'orderby'	     => 'date',
+			            'order'	=> 'DESC'
+			        );
 		        }
 		} elseif($status_sort == 2) {
 			if($title_sort == 1) {
@@ -381,6 +406,30 @@ function monemploi_job_dashboard() {
 			            'post_status'    => array('future'),
 			            'posts_per_page' => -1,
 			            'orderby'	     => 'title',
+			            'order'	=> 'DESC'
+			        );
+		        } elseif($date_sort == 1) {
+			        $get_jobs_args = array(
+			            'post_type' => 'emploi',
+			            'post_status'    => array('future'),
+			            'posts_per_page' => -1,
+			            'orderby'	     => 'date',
+			            'order'	=> 'ASC'
+			        );
+		        } elseif($date_sort == 2) {
+			        $get_jobs_args = array(
+			            'post_type' => 'emploi',
+			            'post_status'    => array('future'),
+			            'posts_per_page' => -1,
+			            'orderby'	     => 'date',
+			            'order'	=> 'DESC'
+			        );
+		        } else {
+			        $get_jobs_args = array(
+			            'post_type' => 'emploi',
+			            'post_status'    => array('future'),
+			            'posts_per_page' => -1,
+			            'orderby'	     => 'date',
 			            'order'	=> 'DESC'
 			        );
 		        }
@@ -401,8 +450,31 @@ function monemploi_job_dashboard() {
 			            'orderby'	     => 'title',
 			            'order'	=> 'DESC'
 			        );
-		        }
-		        
+		        } elseif($date_sort == 1) {
+			        $get_jobs_args = array(
+			            'post_type' => 'emploi',
+			            'post_status'    => array('draft'),
+			            'posts_per_page' => -1,
+			            'orderby'	     => 'date',
+			            'order'	=> 'ASC'
+			        );
+		        } elseif($date_sort == 2) {
+			        $get_jobs_args = array(
+			            'post_type' => 'emploi',
+			            'post_status'    => array('draft'),
+			            'posts_per_page' => -1,
+			            'orderby'	     => 'date',
+			            'order'	=> 'DESC'
+			        );
+		        } else {
+			        $get_jobs_args = array(
+			            'post_type' => 'emploi',
+			            'post_status'    => array('draft'),
+			            'posts_per_page' => -1,
+			            'orderby'	     => 'date',
+			            'order'	=> 'DESC'
+			        );
+		        }	        
 		} elseif($status_sort == '') {
 			if($title_sort == 1) {
 			        $get_jobs_args = array(
@@ -420,66 +492,7 @@ function monemploi_job_dashboard() {
 			            'orderby'	     => 'title',
 			            'order'	=> 'DESC'
 			        );
-		        }
-		}
-	        
-	       	$date_sort = $_GET['date_sort'];
-	       	if($status_sort == 1) {
-		        if($date_sort == 1) {
-			        $get_jobs_args = array(
-			            'post_type' => 'emploi',
-			            'post_status'    => array('publish'),
-			            'posts_per_page' => -1,
-			            'orderby'	     => 'date',
-			            'order'	=> 'ASC'
-			        );
-		        } elseif($date_sort == 2) {
-			        $get_jobs_args = array(
-			            'post_type' => 'emploi',
-			            'post_status'    => array('publish'),
-			            'posts_per_page' => -1,
-			            'orderby'	     => 'date',
-			            'order'	=> 'DESC'
-			        );
-		        }
-		} elseif($status_sort == 2) {
-			if($date_sort == 1) {
-			        $get_jobs_args = array(
-			            'post_type' => 'emploi',
-			            'post_status'    => array('future'),
-			            'posts_per_page' => -1,
-			            'orderby'	     => 'date',
-			            'order'	=> 'ASC'
-			        );
-		        } elseif($date_sort == 2) {
-			        $get_jobs_args = array(
-			            'post_type' => 'emploi',
-			            'post_status'    => array('future'),
-			            'posts_per_page' => -1,
-			            'orderby'	     => 'date',
-			            'order'	=> 'DESC'
-			        );
-		        }
-		} elseif($status_sort == 3) {
-			if($date_sort == 1) {
-			        $get_jobs_args = array(
-			            'post_type' => 'emploi',
-			            'post_status'    => array('draft'),
-			            'posts_per_page' => -1,
-			            'orderby'	     => 'date',
-			            'order'	=> 'ASC'
-			        );
-		        } elseif($date_sort == 2) {
-			        $get_jobs_args = array(
-			            'post_type' => 'emploi',
-			            'post_status'    => array('draft'),
-			            'posts_per_page' => -1,
-			            'orderby'	     => 'date',
-			            'order'	=> 'DESC'
-			        );
-		        }
-		} elseif($status_sort == '') {
-			if($date_sort == 1) {
+		        } elseif($date_sort == 1) {
 			        $get_jobs_args = array(
 			            'post_type' => 'emploi',
 			            'post_status'    => array('publish', 'future', 'draft'),
@@ -495,18 +508,16 @@ function monemploi_job_dashboard() {
 			            'orderby'	     => 'date',
 			            'order'	=> 'DESC'
 			        );
+		        } else {
+			        $get_jobs_args = array(
+			            'post_type' => 'emploi',
+			            'post_status'    => array('publish', 'future', 'draft'),
+			            'posts_per_page' => -1,
+			            'orderby'	     => 'date',
+			            'order'	=> 'DESC'
+			        );
 		        }
 		}
-	        
-	        if($title_sort == '' && $date_sort == '' && $status_sort == '') {
-		        $get_jobs_args = array(
-		            'post_type' => 'emploi',
-		            'post_status'    => array('publish', 'draft', 'future'),
-		            'posts_per_page' => -1,
-		            'orderby'	     => 'date',
-		            'order'	=> 'DESC'
-		        );
-	        }
 	        
 	         if ( $_GET['city'] != ''  ) {
 	        	$get_jobs_args['meta_query'][] = array(
