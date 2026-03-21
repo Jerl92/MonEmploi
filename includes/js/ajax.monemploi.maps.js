@@ -162,22 +162,22 @@ $('.departuretime').on('change', function() {
 }
 
 jQuery(window).on('load', function() {
-	var getday = getUrlParameter('day');
+	var getday = getUrlParameter('days');
 	if(getday) {
-		jQuery(".day_filter").val(get_day);
+		jQuery(".days_filter").val(getday);
 		jQuery(".job-wrapper-box").each(function(index, element) {
 			var day = jQuery('.get-the-date-difference-'+index).html();
-			if(parseInt(get_day) < parseInt(day)) {
+			if(parseInt(getday) < parseInt(day)) {
 				jQuery('#job-wrapper-box-'+index).remove();
 			}
 		});	
 	}
 	var getkm = getUrlParameter('km');
 	if(getkm) {
-		jQuery(".km_filter").val(get_km);
+		jQuery(".km_filter").val(getkm);
 		jQuery(".job-wrapper-box").each(function(index, element) {
 			var distance = jQuery('.distance_'+index).html();
-			if(parseInt(get_km) < parseInt(distance)) {
+			if(parseInt(getkm) < parseInt(distance)) {
 				jQuery('#job-wrapper-box-'+index).remove();
 			}
 		});
