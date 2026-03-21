@@ -160,29 +160,6 @@ $('.departuretime').on('change', function() {
 });
 
 }
-
-jQuery(window).on('load', function() {
-	var getday = getUrlParameter('days');
-	if(getday) {
-		jQuery(".days_filter").val(getday);
-		jQuery(".job-wrapper-box").each(function(index, element) {
-			var day = jQuery('.get-the-date-difference-'+index).html();
-			if(parseInt(getday) < parseInt(day)) {
-				jQuery('#job-wrapper-box-'+index).remove();
-			}
-		});	
-	}
-	var getkm = getUrlParameter('km');
-	if(getkm) {
-		jQuery(".km_filter").val(getkm);
-		jQuery(".job-wrapper-box").each(function(index, element) {
-			var distance = jQuery('.distance_'+index).html();
-			if(parseInt(getkm) < parseInt(distance)) {
-				jQuery('#job-wrapper-box-'+index).remove();
-			}
-		});
-	}
-});
   
 jQuery(document).ready(function($) {
     getDistance($);

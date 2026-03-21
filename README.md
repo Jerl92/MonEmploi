@@ -86,12 +86,13 @@ The answer is no.<br>
 
 ## Screenshots 
 
-<img style="max-width: 100%;" src="https://i.imgur.com/0b6HhB1.png" /><br>
+<img style="max-width: 100%;" src="https://i.imgur.com/UPs2581.png" /><br>
 <img style="max-width: 100%;" src="https://i.imgur.com/0Dq7Grb.png" /><br>
 <img style="max-width: 100%;" src="https://i.ibb.co/v4pT5CYZ/monemploi20.png" /><br>
 
 ## Changelog 
 
+0.3.5 - Add sort by km, title, date in jobs dashboard with few bug fix.
 0.3 - Various bug fix in profile, in the add job from, everything should work good.<br>
 0.2 - Add the ability to edit the jobs in the front-end with the new job form.<br>
 0.1 - Init version with basic function, everything work but there a lack of CSS optimisation.<br>

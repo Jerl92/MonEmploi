@@ -253,8 +253,89 @@ function monemploi_job_dashboard() {
 				<option value="2">Oui</option>
 			<?php } ?>
 		</select>
+		<br />
+		<select name="km_sort" id="km_sort" class="km_sort">
+			<?php $km_sort = $_GET['km_sort']; ?>
+			<?php if($km_sort == ''){ ?>
+				<option value="" selected><?php echo esc_html( 'Trier par km' , 'monemploi' ); ?></option>
+			<?php } else { ?>
+				<option value=""><?php echo esc_html( 'Trier par km' , 'monemploi' ); ?></option>
+			<?php } ?>
+			<?php if($km_sort == 1){ ?>
+				<option value="1" selected>Ascendants</option>
+			<?php } else { ?>
+				<option value="1">Ascendants</option>
+			<?php } ?>
+			<?php if($km_sort == 2){ ?>
+				<option value="2" selected>Descendants</option>
+			<?php } else { ?>
+				<option value="2">Descendants</option>
+			<?php } ?>
+		</select>
+		<select name="title_sort" id="title_sort" class="title_sort">
+			<?php $title_sort = $_GET['title_sort']; ?>
+			<?php if($title_sort == ''){ ?>
+				<option value="" selected><?php echo esc_html( 'Trier par titre' , 'monemploi' ); ?></option>
+			<?php } else { ?>
+				<option value=""><?php echo esc_html( 'Trier par titre' , 'monemploi' ); ?></option>
+			<?php } ?>
+			<?php if($title_sort == 1){ ?>
+				<option value="1" selected>Ascendants</option>
+			<?php } else { ?>
+				<option value="1">Ascendants</option>
+			<?php } ?>
+			<?php if($title_sort == 2){ ?>
+				<option value="2" selected>Descendants</option>
+			<?php } else { ?>
+				<option value="2">Descendants</option>
+			<?php } ?>
+		</select>
+		<select name="date_sort" id="date_sort" class="date_sort">
+			<?php $date_sort = $_GET['date_sort']; ?>
+			<?php if($date_sort == ''){ ?>
+				<option value="" selected><?php echo esc_html( 'Trier par date' , 'monemploi' ); ?></option>
+			<?php } else { ?>
+				<option value=""><?php echo esc_html( 'Trier par date' , 'monemploi' ); ?></option>
+			<?php } ?>
+			<?php if($date_sort == 1){ ?>
+				<option value="1" selected>Ascendants</option>
+			<?php } else { ?>
+				<option value="1">Ascendants</option>
+			<?php } ?>
+			<?php if($date_sort == 2){ ?>
+				<option value="2" selected>Descendants</option>
+			<?php } else { ?>
+				<option value="2">Descendants</option>
+			<?php } ?>
+		</select>
+		<?php if($user_role == 'employeur') { ?>
+			<select name="status_sort" id="status_sort" class="status_sort">
+				<?php $status_sort = $_GET['status_sort']; ?>
+				<?php if($status_sort == ''){ ?>
+					<option value="" selected><?php echo esc_html( 'Trier par status' , 'monemploi' ); ?></option>
+				<?php } else { ?>
+					<option value=""><?php echo esc_html( 'Trier par status' , 'monemploi' ); ?></option>
+				<?php } ?>
+				<?php if($status_sort == 1){ ?>
+					<option value="1" selected>Publier</option>
+				<?php } else { ?>
+					<option value="1">Publier</option>
+				<?php } ?>
+				<?php if($status_sort == 2){ ?>
+					<option value="2" selected>Programmer</option>
+				<?php } else { ?>
+					<option value="2">Programmer</option>
+				<?php } ?>
+				<?php if($status_sort == 3){ ?>
+					<option value="3" selected>Brouillon</option>
+				<?php } else { ?>
+					<option value="3">Brouillon</option>
+				<?php } ?>
+			</select>
+		<?php } ?>
 	    <input type="submit" value="Filter">
-	</form><?php
+	</form>
+	<?php
 
 	$i = 0;
 	
@@ -264,14 +345,168 @@ function monemploi_job_dashboard() {
 	$user_role = $user_meta->roles[0];
 
 	if($user_role == 'employeur'){
-	
-	        $get_jobs_args = array(
-	            'post_type' => 'emploi',
-	            'post_status'    => array('publish', 'draft', 'future'),
-	            'posts_per_page' => -1,
-	            'orderby'	     => 'date',
-	            'order'	=> 'DESC'
-	        );
+		
+		$status_sort = $_GET['status_sort'];
+		$title_sort = $_GET['title_sort'];		
+		if($status_sort == 1) {
+			if($title_sort == 1) {
+			        $get_jobs_args = array(
+			            'post_type' => 'emploi',
+			            'post_status'    => array('publish'),
+			            'posts_per_page' => -1,
+			            'orderby'	     => 'title',
+			            'order'	=> 'ASC'
+			        );
+		        } elseif($title_sort == 2) {
+			        $get_jobs_args = array(
+			            'post_type' => 'emploi',
+			            'post_status'    => array('publish'),
+			            'posts_per_page' => -1,
+			            'orderby'	     => 'title',
+			            'order'	=> 'DESC'
+			        );
+		        }
+		} elseif($status_sort == 2) {
+			if($title_sort == 1) {
+			        $get_jobs_args = array(
+			            'post_type' => 'emploi',
+			            'post_status'    => array('future'),
+			            'posts_per_page' => -1,
+			            'orderby'	     => 'title',
+			            'order'	=> 'ASC'
+			        );
+		        } elseif($title_sort == 2) {
+			        $get_jobs_args = array(
+			            'post_type' => 'emploi',
+			            'post_status'    => array('future'),
+			            'posts_per_page' => -1,
+			            'orderby'	     => 'title',
+			            'order'	=> 'DESC'
+			        );
+		        }
+		} elseif($status_sort == 3) {
+			if($title_sort == 1) {
+			        $get_jobs_args = array(
+			            'post_type' => 'emploi',
+			            'post_status'    => array('draft'),
+			            'posts_per_page' => -1,
+			            'orderby'	     => 'title',
+			            'order'	=> 'ASC'
+			        );
+		        } elseif($title_sort == 2) {
+			        $get_jobs_args = array(
+			            'post_type' => 'emploi',
+			            'post_status'    => array('draft'),
+			            'posts_per_page' => -1,
+			            'orderby'	     => 'title',
+			            'order'	=> 'DESC'
+			        );
+		        }
+		        
+		} elseif($status_sort == '') {
+			if($title_sort == 1) {
+			        $get_jobs_args = array(
+			            'post_type' => 'emploi',
+			            'post_status'    => array('publish', 'future', 'draft'),
+			            'posts_per_page' => -1,
+			            'orderby'	     => 'title',
+			            'order'	=> 'ASC'
+			        );
+		        } elseif($title_sort == 2) {
+			        $get_jobs_args = array(
+			            'post_type' => 'emploi',
+			            'post_status'    => array('publish', 'future', 'draft'),
+			            'posts_per_page' => -1,
+			            'orderby'	     => 'title',
+			            'order'	=> 'DESC'
+			        );
+		        }
+		}
+	        
+	       	$date_sort = $_GET['date_sort'];
+	       	if($status_sort == 1) {
+		        if($date_sort == 1) {
+			        $get_jobs_args = array(
+			            'post_type' => 'emploi',
+			            'post_status'    => array('publish'),
+			            'posts_per_page' => -1,
+			            'orderby'	     => 'date',
+			            'order'	=> 'ASC'
+			        );
+		        } elseif($date_sort == 2) {
+			        $get_jobs_args = array(
+			            'post_type' => 'emploi',
+			            'post_status'    => array('publish'),
+			            'posts_per_page' => -1,
+			            'orderby'	     => 'date',
+			            'order'	=> 'DESC'
+			        );
+		        }
+		} elseif($status_sort == 2) {
+			if($date_sort == 1) {
+			        $get_jobs_args = array(
+			            'post_type' => 'emploi',
+			            'post_status'    => array('future'),
+			            'posts_per_page' => -1,
+			            'orderby'	     => 'date',
+			            'order'	=> 'ASC'
+			        );
+		        } elseif($date_sort == 2) {
+			        $get_jobs_args = array(
+			            'post_type' => 'emploi',
+			            'post_status'    => array('future'),
+			            'posts_per_page' => -1,
+			            'orderby'	     => 'date',
+			            'order'	=> 'DESC'
+			        );
+		        }
+		} elseif($status_sort == 3) {
+			if($date_sort == 1) {
+			        $get_jobs_args = array(
+			            'post_type' => 'emploi',
+			            'post_status'    => array('draft'),
+			            'posts_per_page' => -1,
+			            'orderby'	     => 'date',
+			            'order'	=> 'ASC'
+			        );
+		        } elseif($date_sort == 2) {
+			        $get_jobs_args = array(
+			            'post_type' => 'emploi',
+			            'post_status'    => array('draft'),
+			            'posts_per_page' => -1,
+			            'orderby'	     => 'date',
+			            'order'	=> 'DESC'
+			        );
+		        }
+		} elseif($status_sort == '') {
+			if($date_sort == 1) {
+			        $get_jobs_args = array(
+			            'post_type' => 'emploi',
+			            'post_status'    => array('publish', 'future', 'draft'),
+			            'posts_per_page' => -1,
+			            'orderby'	     => 'date',
+			            'order'	=> 'ASC'
+			        );
+		        } elseif($date_sort == 2) {
+			        $get_jobs_args = array(
+			            'post_type' => 'emploi',
+			            'post_status'    => array('publish', 'future', 'draft'),
+			            'posts_per_page' => -1,
+			            'orderby'	     => 'date',
+			            'order'	=> 'DESC'
+			        );
+		        }
+		}
+	        
+	        if($title_sort == '' && $date_sort == '' && $status_sort == '') {
+		        $get_jobs_args = array(
+		            'post_type' => 'emploi',
+		            'post_status'    => array('publish', 'draft', 'future'),
+		            'posts_per_page' => -1,
+		            'orderby'	     => 'date',
+		            'order'	=> 'DESC'
+		        );
+	        }
 	        
 	         if ( $_GET['city'] != ''  ) {
 	        	$get_jobs_args['meta_query'][] = array(
@@ -405,13 +640,53 @@ function monemploi_job_dashboard() {
     	        
         } else {
         
-	        $get_jobs_args = array(
-	            'post_type' => 'emploi',
-	            'post_status'    => array('publish'),
-	            'posts_per_page' => -1,
-	            'orderby'	     => 'date',
-	            'order'	=> 'DESC'
-	        );
+		$title_sort = $_GET['title_sort'];
+		if($title_sort == 1) {
+		        $get_jobs_args = array(
+		            'post_type' => 'emploi',
+		            'post_status'    => array('publish'),
+		            'posts_per_page' => -1,
+		            'orderby'	     => 'title',
+		            'order'	=> 'ASC'
+		        );
+	        } elseif($title_sort == 2) {
+		        $get_jobs_args = array(
+		            'post_type' => 'emploi',
+		            'post_status'    => array('publish'),
+		            'posts_per_page' => -1,
+		            'orderby'	     => 'title',
+		            'order'	=> 'DESC'
+		        );
+	        } 
+	        
+	       	$date_sort = $_GET['date_sort'];
+	        if($date_sort == 1) {
+		        $get_jobs_args = array(
+		            'post_type' => 'emploi',
+		            'post_status'    => array('publish'),
+		            'posts_per_page' => -1,
+		            'orderby'	     => 'date',
+		            'order'	=> 'ASC'
+		        );
+	        } elseif($date_sort == 2) {
+		        $get_jobs_args = array(
+		            'post_type' => 'emploi',
+		            'post_status'    => array('publish'),
+		            'posts_per_page' => -1,
+		            'orderby'	     => 'date',
+		            'order'	=> 'DESC'
+		        );
+	        }
+	        
+	        if($title_sort == '' && $date_sort == '') {
+		        $get_jobs_args = array(
+		            'post_type' => 'emploi',
+		            'post_status'    => array('publish'),
+		            'posts_per_page' => -1,
+		            'orderby'	     => 'date',
+		            'order'	=> 'DESC'
+		        );
+	        }
 	        
 	         if ( $_GET['city'] != ''  ) {
 	        	$get_jobs_args['meta_query'][] = array(
@@ -546,13 +821,13 @@ function monemploi_job_dashboard() {
         }
         
         $get_jobs = new WP_Query($get_jobs_args);
-
+        
+        echo '<div class="job-wrapper">';
 	if ( $get_jobs->have_posts() ) : while ( $get_jobs->have_posts() ) : $get_jobs->the_post();
 		if(get_post_status(get_the_ID()) == 'draft' || get_post_status(get_the_ID()) == 'future') {	
 				if(get_current_user_id() == $get_jobs->post->post_author) {
 					if($user_role == 'employeur'){
-						echo '<div class="job-wrapper-box" id="job-wrapper-box-'.$i.'">';
-					    		echo '<div style="display: block;">';
+						echo '<div class="job-wrapper-box" id="job-wrapper-box-'.$i.'" style="display: block;">';
 					    			echo '<a href="' . get_permalink( get_the_ID() ) .'">' . get_the_ID() . ' - ' . $get_jobs->post->post_title . '</a> - ';
 								$author_id = $get_jobs->post->post_author;
 								echo the_author_meta( 'user_nicename' , $author_id );
@@ -575,7 +850,7 @@ function monemploi_job_dashboard() {
 								echo '<span class="autocompleteDeparture">';
 									echo '<span class="autocompleteDeparture_'.  $i . '" style="display:none;">'. implode($field_data) . '</span>';
 									echo '<span class="autocompleteArrival_' . $i . '" style="display: none;">' . get_post_meta( get_the_ID(), 'my_code_postal_key', true ) . '</span>';
-									echo ' - <span class="distance_' . $i . '"></span>';
+									echo ' - <span class="distance_' . $i . ' distance"></span>';
 								echo '</span>';
 							}
 							
@@ -596,7 +871,6 @@ function monemploi_job_dashboard() {
 							} else {
 								echo ' - <span class="get-the-date-difference-'.$i.'">' . $round_difference . ' Jours</span>';
 							}
-							?></div><?php
 						echo '</div>';
 					
 					}
@@ -604,8 +878,8 @@ function monemploi_job_dashboard() {
 				}
 			
 			} else {
-				echo '<div class="job-wrapper-box" id="job-wrapper-box-'.$i.'">';
-			    		echo '<div style="display: block;"><a href="' . get_permalink( get_the_ID() ) .'">' . get_the_ID() . ' - ' . $get_jobs->post->post_title . '</a> - ';
+				echo '<div class="job-wrapper-box" id="job-wrapper-box-'.$i.'" style="display: block;">';
+			    		echo '<a href="' . get_permalink( get_the_ID() ) .'">' . get_the_ID() . ' - ' . $get_jobs->post->post_title . '</a> - ';
 						$author_id = $get_jobs->post->post_author;
 						echo the_author_meta( 'user_nicename' , $author_id );
 						$usermetadata = get_user_meta(get_current_user_id());
@@ -627,7 +901,7 @@ function monemploi_job_dashboard() {
 						echo '<span class="autocompleteDeparture">';
 							echo '<span class="autocompleteDeparture_'.  $i . '" style="display:none;">'. implode($field_data) . '</span>';
 							echo '<span class="autocompleteArrival_' . $i . '" style="display: none;">' . get_post_meta( get_the_ID(), 'my_code_postal_key', true ) . '</span>';
-							echo ' - <span class="distance_' . $i . '"></span>';
+							echo ' - <span class="distance_' . $i . ' distance"></span>';
 						echo '</span>';
 					}
 					
@@ -643,12 +917,11 @@ function monemploi_job_dashboard() {
 						echo ' - <span class="get-the-date-difference-'.$i.'">' . $round_difference . ' Jours</span>';
 					}
 	
-					
-					?></div><?php
 				echo '</div>';	
 			}	    		
 	    	$i++;
 	endwhile; endif;
 	wp_reset_postdata();
+	?> </div> <?php
 }
 add_shortcode('monemploi-job-dashboard', 'monemploi_job_dashboard');
