@@ -91,9 +91,9 @@ function monemploi_job_dashboard() {
 				<option value="2">1 an</option>
 			<?php } ?>
 			<?php if($annees_dexperience == 3){ ?>
-				<option value="2" selected>2-3 an</option>
+				<option value="3" selected>2-3 an</option>
 			<?php } else { ?>
-				<option value="2">2-3 an</option>
+				<option value="3">2-3 an</option>
 			<?php } ?>
 			<?php if($annees_dexperience == 4){ ?>
 				<option value="4" selected>4-5 ans</option>
@@ -274,7 +274,7 @@ function monemploi_job_dashboard() {
 	        );
 	        
 	         if ( $_GET['city'] != ''  ) {
-	        	$get_jobs_args['meta_query'] = array(
+	        	$get_jobs_args['meta_query'][] = array(
 		        	array(
 			            'key'     => 'my_city_key',
 			            'value'   => sanitize_text_field( $_GET['city'] ),
@@ -284,7 +284,7 @@ function monemploi_job_dashboard() {
 		 }
 		 
 		if ( $_GET['salary'] != ''  ) {
-	        	$get_jobs_args['meta_query'] = array(
+	        	$get_jobs_args['meta_query'][] = array(
 			 	array(
 			            'key'     => 'my_salaire_key',
 			            'value'   => intval( $_GET['salary'] ),
@@ -294,7 +294,7 @@ function monemploi_job_dashboard() {
 		 }
 		 
 		 if ( $_GET['experience'] != ''  ) {
-	        	$get_jobs_args['meta_query'] = array(
+	        	$get_jobs_args['meta_query'][] = array(
 			      	array(
 			            'key'     => 'my_annees_dexperience_key',
 			            'value'   => intval( $_GET['experience'] ),
@@ -304,7 +304,7 @@ function monemploi_job_dashboard() {
 		 }
 		 
 		 if ( $_GET['hours'] != ''  ) {
-	        	$get_jobs_args['meta_query'] = array(
+	        	$get_jobs_args['meta_query'][] = array(
 			       	array(
 			            'key'     => 'my_add_heures_key',
 			            'value'   => intval( $_GET['hours'] ),
@@ -314,7 +314,7 @@ function monemploi_job_dashboard() {
 		 }
 
 		 if ( $_GET['type'] != ''  ) {
-	        	$get_jobs_args['meta_query'] = array(
+	        	$get_jobs_args['meta_query'][] = array(
 			        array(
 			            'key'     => 'my_type_demploi_key',
 			            'value'   => intval( $_GET['type'] ),
@@ -324,7 +324,7 @@ function monemploi_job_dashboard() {
 		 }
 		 
 		if ( $_GET['activite'] != ''  ) {
-	        	$get_jobs_args['meta_query'] = array(
+	        	$get_jobs_args['meta_query'][] = array(
 			        array(
 			            'key'     => 'my_activite_professionnelle_key',
 			            'value'   => intval( $_GET['activite'] ),
@@ -334,7 +334,7 @@ function monemploi_job_dashboard() {
 		 }
 
 		if ( $_GET['disponibilites'] != ''  ) {
-	        	$get_jobs_args['meta_query'] = array(
+	        	$get_jobs_args['meta_query'][] = array(
 			        array(
 			            'key'     => 'my_disponibilites1_key',
 			            'value'   => intval( $_GET['disponibilites']  ),
@@ -344,7 +344,7 @@ function monemploi_job_dashboard() {
 		 }
 		 
 		 if ( $_GET['disponibilites'] != ''  ) {
-	        	$get_jobs_args['meta_query'] = array(
+	        	$get_jobs_args['meta_query'][] = array(
 			        array(
 			            'key'     => 'my_disponibilites2_key',
 			            'value'   => intval( $_GET['disponibilites']  ),
@@ -354,7 +354,7 @@ function monemploi_job_dashboard() {
 		 }
 
 		 if ( $_GET['duree'] != ''  ) {
-	        	$get_jobs_args['meta_query'] = array(
+	        	$get_jobs_args['meta_query'][] = array(
 			        array(
 			            'key'     => ' my_duree_emploi_key',
 			            'value'   => intval( $_GET['duree'] ),
@@ -364,7 +364,7 @@ function monemploi_job_dashboard() {
 		 }
 
 		 if ( $_GET['permis'] != ''  ) {
-	        	$get_jobs_args['meta_query'] = array(
+	        	$get_jobs_args['meta_query'][] = array(
 			        array(
 			            'key'     => 'my_permis_conduire_key',
 			            'value'   => intval( $_GET['permis'] ),
@@ -374,7 +374,7 @@ function monemploi_job_dashboard() {
 		 }
 		 
 		 if ( $_GET['voiture'] != ''  ) {
-	        	$get_jobs_args['meta_query'] = array(
+	        	$get_jobs_args['meta_query'][] = array(
 			        array(
 			            'key'     => 'my_besoin_voiture_key',
 			            'value'   => intval( $_GET['voiture'] ),
@@ -384,7 +384,7 @@ function monemploi_job_dashboard() {
 		 }
 		 
 		 if ( $_GET['school'] != ''  ) {
-	        	$get_jobs_args['meta_query'] = array(
+	        	$get_jobs_args['meta_query'][] = array(
 			        array(
 			            'key'     => 'my_education_key',
 			            'value'   => intval( $_GET['school'] ),
@@ -404,7 +404,7 @@ function monemploi_job_dashboard() {
 	        );
 	        
 	        if ( $_GET['city'] != ''  ) {
-	        	$get_jobs_args['meta_query'] = array(
+	        	$get_jobs_args['meta_query'][] = array(
 		        	array(
 			            'key'     => 'my_city_key',
 			            'value'   => sanitize_text_field( $_GET['city'] ),
@@ -414,7 +414,7 @@ function monemploi_job_dashboard() {
 		 }
 		 
 		if ( $_GET['salary'] != ''  ) {
-	        	$get_jobs_args['meta_query'] = array(
+	        	$get_jobs_args['meta_query'][] = array(
 			 	array(
 			            'key'     => 'my_salaire_key',
 			            'value'   => intval( $_GET['salary'] ),
@@ -424,7 +424,7 @@ function monemploi_job_dashboard() {
 		 }
 		 
 		 if ( $_GET['experience'] != ''  ) {
-	        	$get_jobs_args['meta_query'] = array(
+	        	$get_jobs_args['meta_query'][] = array(
 			      	array(
 			            'key'     => 'my_annees_dexperience_key',
 			            'value'   => intval( $_GET['experience'] ),
@@ -434,7 +434,7 @@ function monemploi_job_dashboard() {
 		 }
 		 
 		 if ( $_GET['hours'] != ''  ) {
-	        	$get_jobs_args['meta_query'] = array(
+	        	$get_jobs_args['meta_query'][] = array(
 			       	array(
 			            'key'     => 'my_add_heures_key',
 			            'value'   => intval( $_GET['hours'] ),
@@ -444,7 +444,7 @@ function monemploi_job_dashboard() {
 		 }
 
 		 if ( $_GET['type'] != ''  ) {
-	        	$get_jobs_args['meta_query'] = array(
+	        	$get_jobs_args['meta_query'][] = array(
 			        array(
 			            'key'     => 'my_type_demploi_key',
 			            'value'   => intval( $_GET['type'] ),
@@ -454,7 +454,7 @@ function monemploi_job_dashboard() {
 		 }
 		 
 		if ( $_GET['activite'] != ''  ) {
-	        	$get_jobs_args['meta_query'] = array(
+	        	$get_jobs_args['meta_query'][] = array(
 			        array(
 			            'key'     => 'my_activite_professionnelle_key',
 			            'value'   => intval( $_GET['activite'] ),
@@ -464,7 +464,7 @@ function monemploi_job_dashboard() {
 		 }
 
 		if ( $_GET['disponibilites'] != ''  ) {
-	        	$get_jobs_args['meta_query'] = array(
+	        	$get_jobs_args['meta_query'][] = array(
 			        array(
 			            'key'     => 'my_disponibilites1_key',
 			            'value'   => intval( $_GET['disponibilites']  ),
@@ -474,7 +474,7 @@ function monemploi_job_dashboard() {
 		 }
 		 
 		 if ( $_GET['disponibilites'] != ''  ) {
-	        	$get_jobs_args['meta_query'] = array(
+	        	$get_jobs_args['meta_query'][] = array(
 			        array(
 			            'key'     => 'my_disponibilites2_key',
 			            'value'   => intval( $_GET['disponibilites']  ),
@@ -484,7 +484,7 @@ function monemploi_job_dashboard() {
 		 }
 
 		 if ( $_GET['duree'] != ''  ) {
-	        	$get_jobs_args['meta_query'] = array(
+	        	$get_jobs_args['meta_query'][] = array(
 			        array(
 			            'key'     => ' my_duree_emploi_key',
 			            'value'   => intval( $_GET['duree'] ),
@@ -494,7 +494,7 @@ function monemploi_job_dashboard() {
 		 }
 
 		 if ( $_GET['permis'] != ''  ) {
-	        	$get_jobs_args['meta_query'] = array(
+	        	$get_jobs_args['meta_query'][] = array(
 			        array(
 			            'key'     => 'my_permis_conduire_key',
 			            'value'   => intval( $_GET['permis'] ),
@@ -504,7 +504,7 @@ function monemploi_job_dashboard() {
 		 }
 		 
 		 if ( $_GET['voiture'] != ''  ) {
-	        	$get_jobs_args['meta_query'] = array(
+	        	$get_jobs_args['meta_query'][] = array(
 			        array(
 			            'key'     => 'my_besoin_voiture_key',
 			            'value'   => intval( $_GET['voiture'] ),
@@ -514,7 +514,7 @@ function monemploi_job_dashboard() {
 		 }
 		 
 		 if ( $_GET['school'] != ''  ) {
-	        	$get_jobs_args['meta_query'] = array(
+	        	$get_jobs_args['meta_query'][] = array(
 			        array(
 			            'key'     => 'my_education_key',
 			            'value'   => intval( $_GET['school'] ),
