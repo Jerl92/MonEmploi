@@ -196,6 +196,38 @@ function monemploi_newjob_from() {
 					<?php } ?>
 				</select>
 				
+				<p>Activité professionnelle</p>
+	                	<select name="activite_professionnelle" class="activite_professionnelle" id="activite_professionnelle">
+		                	<?php if(isset($postid) && $author_id = get_current_user_id()){ ?>
+		                		<?php $type_demploi = get_post_meta( $postid, 'my_activite_professionnelle_key', true); ?>
+		                		<?php if($activite_professionnelle == 0){ ?>
+							<option value="0" selected><?php echo esc_html( 'Type d&#8216;activité professionnelle' , 'monemploi' ); ?></option>
+						<?php } else { ?>
+							<option value="0" ><?php echo esc_html( 'Type d&#8216;activité professionnelle' , 'monemploi' ); ?></option>
+						<?php } ?>
+						<?php if($activite_professionnelle == 1){ ?>
+							<option value="1" selected>Travail en présentiel</option>
+						<?php } else { ?>
+							<option value="1">Travail en présentiel</option>
+						<?php } ?>
+						<?php if($activite_professionnelle == 2){ ?>
+							<option value="2"selected>Télétravail</option>
+						<?php } else { ?>
+							<option value="2">Télétravail</option>
+						<?php } ?>
+						<?php if($activite_professionnelle == 3){ ?>
+							<option value="2"selected>Mode hybride</option>
+						<?php } else { ?>
+							<option value="2">Mode hybride</option>
+						<?php } ?>
+					<?php } else { ?>
+						<option value="0"><?php echo esc_html( 'Un type d&#8216;activité professionnelle' , 'monemploi' ); ?></option>
+						<option value="1">Travail en présentiel</option>
+						<option value="2">Télétravail</option>
+						<option value="3">Mode hybride</option>
+					<?php } ?>
+				</select>
+				
 				<p>Type d&#8216;horaire</p>
 	                	<select name="type_dhoraire" class="type_dhoraire" id="type_dhoraire">
 	                		<?php if(isset($postid) && $author_id = get_current_user_id()){ ?>

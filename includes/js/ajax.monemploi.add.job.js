@@ -65,6 +65,7 @@ function monemploi_add_job($){
 		var duree_emploi = jQuery('.duree_emploi').find(':selected').val();
 		var permis_conduire = jQuery('.permis_conduire').find(':selected').val();
 		var besoin_voiture = jQuery('.besoin_voiture').find(':selected').val();
+		var activite_professionnelle = jQuery('.activite_professionnelle').find(':selected').val();
 	  	
 	  	jQuery('.ns_submit').text('Veuillez patienter');
 		jQuery('.ns_submit').prop('disabled', true);
@@ -257,6 +258,19 @@ function monemploi_add_job($){
 		} else {
 		    jQuery('.besoin_voiture').css('border', '0.5px solid gray');
 		}
+		
+		if(jQuery('.activite_professionnelle').val() == 0){
+			erreur = 1;
+			jQuery('.ns_submit').text('Soumettre');
+			jQuery('.ns_submit').prop('disabled', false);
+			jQuery('.new_job_error').append('<div class="activite_professionnelle_error" style="color: red;">Choisissez votre activité professionnelle</div>');
+			jQuery('.activite_professionnelle').css('border', '1.5px solid red');
+			setTimeout(function() {
+				 jQuery('.activite_professionnelle_error').remove();
+			}, 10000);
+		} else {
+		    jQuery('.activite_professionnelle').css('border', '0.5px solid gray');
+		}
 	
 		if(erreur == 0){
 		        jQuery.ajax({
@@ -282,6 +296,7 @@ function monemploi_add_job($){
 		                'duree_emploi': duree_emploi,
 		                'permis_conduire': permis_conduire,
 		                'besoin_voiture': besoin_voiture,
+		                'activite_professionnelle': activite_professionnelle,
 		                'job_status': job_status,
 		                'postid': postid,
 		                'action': 'monemploi_add_job'
@@ -308,6 +323,7 @@ function monemploi_add_job($){
 				jQuery('.duree_emploi').val(0);
 				jQuery('.permis_conduire').val(0);
 				jQuery('.besoin_voiture').val(0);
+				jQuery('.activite_professionnelle').val(0);
 			  	
 		                jQuery('#monemploi-new-form-sumbit').html('');
 		                jQuery('#monemploi-new-form-sumbit').html(data);

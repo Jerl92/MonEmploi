@@ -305,6 +305,7 @@ function monemploi_add_job($post) {
         $duree_emploi = $_POST['duree_emploi'];
         $permis_conduire = $_POST['permis_conduire'];
         $besoin_voiture = $_POST['besoin_voiture'];
+        $activite_professionnelle = $_POST['activite_professionnelle'];
         $job_status =  $_POST['job_status'];
         $postid_update =  $_POST['postid'];
         
@@ -381,6 +382,7 @@ function monemploi_add_job($post) {
 		add_post_meta( $postid, 'my_duree_emploi_key', $duree_emploi );
 		add_post_meta( $postid, 'my_permis_conduire_key', $permis_conduire );
 		add_post_meta( $postid, 'my_besoin_voiture_key', $besoin_voiture );
+		add_post_meta( $postid, 'my_activite_professionnelle_key', $activite_professionnelle );
 	}
 	
 	if($job_status == 'update' && $postid_update != 0){
@@ -459,6 +461,7 @@ function monemploi_add_job($post) {
 		update_post_meta( $postid_update, 'my_duree_emploi_key', $duree_emploi );
 		update_post_meta( $postid_update, 'my_permis_conduire_key', $permis_conduire );
 		update_post_meta( $postid_update, 'my_besoin_voiture_key', $besoin_voiture );
+		update_post_meta( $postid_update, 'my_activite_professionnelle_key', $activite_professionnelle );
 	
 	}
 	

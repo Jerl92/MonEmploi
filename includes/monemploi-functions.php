@@ -152,6 +152,7 @@ function your_custom_menu_item($items, $args) {
 }
 add_filter('wp_nav_menu_items', 'your_custom_menu_item', 10, 2);
 
+
 function send_email_on_future_publish( $new_status, $old_status, $post ) {
     // Check if the new status is 'publish' and the old status was 'future'
     if ( 'publish' === $new_status && 'future' === $old_status ) {
