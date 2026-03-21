@@ -88,7 +88,7 @@ function monemploi_newjob_from() {
 		                <p>Diplôme</p>
 		                <select name="education_terms" class="education_terms" id="education_terms">
 				 <?php if ( $education_terms ) {
-					echo '<option value="0">'. esc_html__( 'Choisiser un niveau deducation' , 'monemploi' ) .'</option>';
+					echo '<option value="0">'. esc_html__( 'Choisiser un niveau d&#8216;éducation' , 'monemploi' ) .'</option>';
 					foreach ( $education_terms as $education_term ) {
 						if(isset($postid) && $author_id = get_current_user_id()){
 							$education = get_post_meta( $postid, 'my_education_key', true);
@@ -117,9 +117,9 @@ function monemploi_newjob_from() {
 	                		<?php if(isset($postid) && $author_id = get_current_user_id()){ ?>
 	                			<?php $annees_dexperience = get_post_meta( $postid, 'my_annees_dexperience_key', true); ?>
 	                			<?php if($annees_dexperience == 0){ ?>
-							<option value="0" selected><?php echo esc_html( 'Choisissez un années d&#8216;expérience' , 'monemploi' ); ?></option>
+							<option value="0" selected><?php echo esc_html( 'Choisissez un année d&#8216;expérience' , 'monemploi' ); ?></option>
 						<?php } else { ?>
-							<option value="0"><?php echo esc_html( 'Choisissez un années d&#8216;expérience' , 'monemploi' ); ?></option>
+							<option value="0"><?php echo esc_html( 'Choisissez un année d&#8216;expérience' , 'monemploi' ); ?></option>
 						<?php } ?>
 						<?php if($annees_dexperience == 1){ ?>
 							<option value="1" selected>Auccun</option>
@@ -152,7 +152,7 @@ function monemploi_newjob_from() {
 							<option value="6">10 ans+</option>
 						<?php } ?>
 					<?php } else { ?>
-						<option value="0"><?php echo esc_html( 'Choisissez un années d&#8216;expérience' , 'monemploi' ); ?></option>
+						<option value="0"><?php echo esc_html( 'Choisissez un année d&#8216;expérience' , 'monemploi' ); ?></option>
 						<option value="1">Auccun</option>
 						<option value="2">1 an</option>
 						<option value="3">2-3 ans</option>
@@ -199,7 +199,7 @@ function monemploi_newjob_from() {
 				<p>Activité professionnelle</p>
 	                	<select name="activite_professionnelle" class="activite_professionnelle" id="activite_professionnelle">
 		                	<?php if(isset($postid) && $author_id = get_current_user_id()){ ?>
-		                		<?php $type_demploi = get_post_meta( $postid, 'my_activite_professionnelle_key', true); ?>
+		                		<?php $activite_professionnelle = get_post_meta( $postid, 'my_activite_professionnelle_key', true); ?>
 		                		<?php if($activite_professionnelle == 0){ ?>
 							<option value="0" selected><?php echo esc_html( 'Type d&#8216;activité professionnelle' , 'monemploi' ); ?></option>
 						<?php } else { ?>
@@ -216,12 +216,12 @@ function monemploi_newjob_from() {
 							<option value="2">Télétravail</option>
 						<?php } ?>
 						<?php if($activite_professionnelle == 3){ ?>
-							<option value="2"selected>Mode hybride</option>
+							<option value="3"selected>Mode hybride</option>
 						<?php } else { ?>
-							<option value="2">Mode hybride</option>
+							<option value="3">Mode hybride</option>
 						<?php } ?>
 					<?php } else { ?>
-						<option value="0"><?php echo esc_html( 'Un type d&#8216;activité professionnelle' , 'monemploi' ); ?></option>
+						<option value="0"><?php echo esc_html( 'Type d&#8216;activité professionnelle' , 'monemploi' ); ?></option>
 						<option value="1">Travail en présentiel</option>
 						<option value="2">Télétravail</option>
 						<option value="3">Mode hybride</option>
@@ -374,6 +374,8 @@ function monemploi_newjob_from() {
 				<div id="monemploi-new-form-sumbit"></div>
 				
 				<div class="new_job_error"></div>
+				
+				<br>
 												
 				<?php if(isset($postid) && $author_id = get_current_user_id()){ ?>
 					<button class="ns_submit" data-object-status="update" data-object-id="<?php echo $postid; ?>">

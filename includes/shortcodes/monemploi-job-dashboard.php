@@ -40,10 +40,10 @@ function monemploi_job_dashboard() {
 	ksort($get_city_array);
 		
 	?><form action="" method="GET">
-	    <select name="filter_city" id="filter_city">
+	    <select name="city" id="city_filter">
 	        <option value="">Tout les villes</option>
 	        <?php foreach ($get_city_array as $key => $values) { ?>
-	        	<?php if($key == $_GET['filter_city']) { ?>
+	        	<?php if($key == $_GET['city']) { ?>
 	        		<option value="<?php echo $key ?>" selected><?php echo $key ?></option>
 	    		<?php } else { ?>
 	        		<option value="<?php echo $key ?>"><?php echo $key ?></option>
@@ -51,9 +51,208 @@ function monemploi_job_dashboard() {
 	        <?php }  ?>
 	    </select>
 	    <?php if(is_user_logged_in()) { ?>
-	    	<input type="number" id="km_filter" name="km_filter" class="km_filter" min="0" max="1000" placeholder="KM" value="">
+	    	<input type="number" id="km_filter" name="km" class="km_filter" min="0" max="1000" placeholder="KM" value="">
 	    <?php } ?>
-	    <input type="number" id="day_filter" name="day_filter" class="day_filter" min="0" max="1000" placeholder="Jour" value="">
+	    <input type="number" id="day_filter" name="day" class="day_filter" min="0" max="1000" placeholder="Jour" value="">
+	    <input type="number" id="salary_filter" name="salary" class="salary_filter" min="0" max="1000" placeholder="Salaire" value="<?php echo $_GET['salary']; ?>">
+		<?php $education_terms = get_terms( array(
+			'taxonomy' => 'education',
+			'orderby' => 'term_id',
+			'order' => 'ASC', // or ASC
+			'hide_empty' => false,
+		) ); ?>
+		<?php if ( $education_terms ) {
+			echo '<select name="school" id="school_filter">';
+			echo '<option value="">'. esc_html__( 'Niveau d&#8216;éducation' , 'monemploi' ) .'</option>';
+			foreach ( $education_terms as $education_term ) {
+				if($_GET['school'] == $education_term->term_id){
+					echo '<option value="'. $education_term->term_id .'" selected>'. $education_term->name.'</option>';
+				} else {
+					echo '<option value="'. $education_term->term_id .'">'. $education_term->name.'</option>';
+				}
+			}
+			echo '</select>';
+		} ?>
+		<select name="experience" id="experience_filter">
+			<?php $annees_dexperience = $_GET['experience']; ?>
+			<?php if($annees_dexperience == ''){ ?>
+				<option value="" selected><?php echo esc_html( 'Choisissez un année d&#8216;expérience' , 'monemploi' ); ?></option>
+			<?php } else { ?>
+				<option value=""><?php echo esc_html( 'Choisissez un année d&#8216;expérience' , 'monemploi' ); ?></option>
+			<?php } ?>
+			<?php if($annees_dexperience == 1){ ?>
+				<option value="1" selected>Auccun</option>
+			<?php } else { ?>
+				<option value="1">Auccun</option>
+			<?php } ?>
+			<?php if($annees_dexperience == 2){ ?>
+				<option value="2" selected>1 an</option>
+			<?php } else { ?>
+				<option value="2">1 an</option>
+			<?php } ?>
+			<?php if($annees_dexperience == 3){ ?>
+				<option value="2" selected>2-3 an</option>
+			<?php } else { ?>
+				<option value="2">2-3 an</option>
+			<?php } ?>
+			<?php if($annees_dexperience == 4){ ?>
+				<option value="4" selected>4-5 ans</option>
+			<?php } else { ?>
+				<option value="4">4-5 ans</option>
+			<?php } ?>
+			<?php if($annees_dexperience == 5){ ?>
+				<option value="5" selected>6-9 ans</option>
+			<?php } else { ?>
+				<option value="5">6-9 ans</option>
+			<?php }	 ?>
+			<?php if($annees_dexperience == 6){ ?>
+				<option value="6" selected>10 ans+</option>
+			<?php } else { ?>
+				<option value="6">10 ans+</option>
+			<?php } ?>
+		</select>
+		<input type="number" id="hours_filter" name="hours" class="hours_filter" min="0" max="1000" placeholder="Heures" value="<?php echo $_GET['hours']; ?>">
+		<select name="type" id="type_filter">
+			<?php $type_demploi = $_GET['type']; ?>
+			<?php if($type_demploi == ''){ ?>
+				<option value="" selected><?php echo esc_html( 'type d&#8216;emploi' , 'monemploi' ); ?></option>
+			<?php } else { ?>
+				<option value="" ><?php echo esc_html( 'Type d&#8216;emploi' , 'monemploi' ); ?></option>
+			<?php } ?>
+			<?php if($type_demploi == 1){ ?>
+				<option value="1" selected>Temps plein</option>
+			<?php } else { ?>
+				<option value="1">Temps plein</option>
+			<?php } ?>
+			<?php if($type_demploi == 2){ ?>
+				<option value="2"selected>Temps partiel</option>
+			<?php } else { ?>
+				<option value="2">Temps partiel</option>
+			<?php } ?>
+		</select>
+		<select name="activite" id="activite_filter">
+	                <?php $activite_professionnelle = $_GET['activite']; ?>
+			<?php if($activite_professionnelle == ''){ ?>
+				<option value="" selected><?php echo esc_html( 'Type d&#8216;activité professionnelle' , 'monemploi' ); ?></option>
+			<?php } else { ?>
+				<option value="" ><?php echo esc_html( 'Type d&#8216;activité professionnelle' , 'monemploi' ); ?></option>
+			<?php } ?>
+			<?php if($activite_professionnelle == 1){ ?>
+				<option value="1" selected>Travail en présentiel</option>
+			<?php } else { ?>
+				<option value="1">Travail en présentiel</option>
+			<?php } ?>
+			<?php if($activite_professionnelle == 2){ ?>
+				<option value="2"selected>Télétravail</option>
+			<?php } else { ?>
+				<option value="2">Télétravail</option>
+			<?php } ?>
+			<?php if($activite_professionnelle == 3){ ?>
+				<option value="3"selected>Mode hybride</option>
+			<?php } else { ?>
+				<option value="3">Mode hybride</option>
+			<?php } ?>
+		</select>
+		<select name="horaire" id="horaire_filter">
+	        	<?php $type_dhoraire = $_GET['horaire']; ?>
+			<?php if($type_dhoraire == ''){ ?>
+				<option value="" selected><?php echo esc_html( 'Choisissez un type d&#8216;horaire' , 'monemploi' ); ?></option>
+			<?php } else { ?>
+				<option value=""><?php echo esc_html( 'Choisissez un type d&#8216;horaire' , 'monemploi' ); ?></option>
+			<?php } ?>
+			<?php if($type_dhoraire == 1){ ?>
+				<option value="1" selected>Jour</option>
+			<?php } else { ?>
+				<option value="1">Jour</option>
+			<?php } ?>
+			<?php if($type_dhoraire == 2){ ?>
+				<option value="2" selected>Soir</option>
+			<?php } else { ?>
+				<option value="2">Soir</option>
+			<?php } ?>
+			<?php if($type_dhoraire == 3){ ?>
+				<option value="3" selected>Nuit</option>
+			<?php } else { ?>
+				<option value="3">Nuit</option>
+			<?php } ?>
+		</select>
+	    	<select name="disponibilites" id="disponibilites_filter">
+			<?php $type_disponibilites = $_GET['disponibilites']; ?>
+			<?php if($type_disponibilites == ''){ ?>
+				<option value="" selected><?php echo esc_html( 'Type de disponibilités' , 'monemploi' ); ?></option>
+			<?php } else { ?>
+				<option value=""><?php echo esc_html( 'Type de disponibilités' , 'monemploi' ); ?></option>
+			<?php } ?>
+			<?php if($type_disponibilites == 1){ ?>
+				<option value="1" selected>Semaine</option>
+			<?php } else { ?>
+				<option value="1">Semaine</option>
+			<?php } ?>
+			<?php if($type_disponibilites == 2){ ?>
+				<option value="2" selected>Fin de semaine</option>
+			<?php } else { ?>
+				<option value="2">Fin de semaine</option>
+			<?php } ?>
+		</select>
+		<select name="duree" id="duree_filter">
+	        	<?php $duree_emploi = $_GET['duree']; ?>
+			<?php if($duree_emploi == ''){ ?>
+				<option value="" selected><?php echo esc_html( 'Durée de l&#8216;emploi' , 'monemploi' ); ?></option>
+			<?php } else { ?>
+				<option value=""><?php echo esc_html( 'Durée de l&#8216;emploi' , 'monemploi' ); ?></option>
+			<?php } ?>
+			<?php if($duree_emploi == 1){ ?>
+				<option value="1" selected>Permanent</option>
+			<?php } else { ?>
+				<option value="1">Permanent</option>
+			<?php } ?>
+			<?php if($duree_emploi == 2){ ?>
+				<option value="2" selected>Contrat</option>
+			<?php } else { ?>
+				<option value="2">Contrat</option>
+			<?php } ?>
+			<?php if($duree_emploi == 3){ ?>
+				<option value="3" selected>Sur appel</option>
+			<?php } else { ?>
+				<option value="3">Sur appel</option>
+			<?php } ?>
+		</select>
+		<select name="permis" id="permis_filter">
+	        	<?php $permis_conduire = $_GET['permis'];  ?>
+			<?php if($permis_conduire == ''){ ?>
+				<option value="" selected><?php echo esc_html( 'Permis de conduire' , 'monemploi' ); ?></option>
+			<?php } else { ?>
+				<option value=""><?php echo esc_html( 'Permis de conduire' , 'monemploi' ); ?></option>
+			<?php } ?>
+			<?php if($permis_conduire == 1){ ?>
+				<option value="1" selected>Non</option>
+			<?php } else { ?>
+				<option value="1">Non</option>
+			<?php } ?>
+			<?php if($permis_conduire == 2){ ?>
+				<option value="2" selected>Oui</option>
+			<?php } else { ?>
+				<option value="2">Oui</option>
+			<?php } ?>
+		</select>
+		<select name="voiture" id="voiture_filter">
+                	<?php $besoin_voiture = $_GET['voiture']; ?>
+			<?php if($besoin_voiture == ''){ ?>
+				<option value="" selected><?php echo esc_html( 'Voiture' , 'monemploi' ); ?></option>
+			<?php } else { ?>
+				<option value=""><?php echo esc_html( 'Voiture' , 'monemploi' ); ?></option>
+			<?php } ?>
+			<?php if($besoin_voiture == 1){ ?>
+				<option value="1" selected>Non</option>
+			<?php } else { ?>
+				<option value="1">Non</option>
+			<?php } ?>
+			<?php if($besoin_voiture == 2){ ?>
+				<option value="2" selected>Oui</option>
+			<?php } else { ?>
+				<option value="2">Oui</option>
+			<?php } ?>
+		</select>
 	    <input type="submit" value="Filter">
 	</form><?php
 
@@ -65,62 +264,277 @@ function monemploi_job_dashboard() {
 	$user_role = $user_meta->roles[0];
 
 	if($user_role == 'employeur'){
-	       if ( isset( $_GET['filter_city'] ) && ! empty( $_GET['filter_city'] ) ) {
-    	        $get_jobs_args = array(
-    	            'post_type' => 'emploi',
-    	            'post_status'    => array('publish', 'draft', 'future'),
-    	            'posts_per_page' => -1,
-    	            'orderby'	     => 'date',
-    	            'order'	=> 'DESC',
-                    'meta_key'     => 'my_city_key',
-                    'meta_value'   => sanitize_text_field( $_GET['filter_city'] )
-    	        );
-	       } else {
-	           
-	           $get_jobs_args = array(
-    	            'post_type' => 'emploi',
-    	            'post_status'    => array('publish', 'draft', 'future'),
-    	            'posts_per_page' => -1,
-    	            'orderby'	     => 'date',
-    	            'order'	=> 'DESC'
-    	        );
-	           
-	       }
+	
+	        $get_jobs_args = array(
+	            'post_type' => 'emploi',
+	            'post_status'    => array('publish', 'draft', 'future'),
+	            'posts_per_page' => -1,
+	            'orderby'	     => 'date',
+	            'order'	=> 'DESC'
+	        );
+	        
+	         if ( $_GET['city'] != ''  ) {
+	        	$get_jobs_args['meta_query'] = array(
+		        	array(
+			            'key'     => 'my_city_key',
+			            'value'   => sanitize_text_field( $_GET['city'] ),
+			            'compare' => '=',
+			        )
+			);
+		 }
+		 
+		if ( $_GET['salary'] != ''  ) {
+	        	$get_jobs_args['meta_query'] = array(
+			 	array(
+			            'key'     => 'my_salaire_key',
+			            'value'   => intval( $_GET['salary'] ),
+			            'compare' => '>=',
+			        )
+			);
+		 }
+		 
+		 if ( $_GET['experience'] != ''  ) {
+	        	$get_jobs_args['meta_query'] = array(
+			      	array(
+			            'key'     => 'my_annees_dexperience_key',
+			            'value'   => intval( $_GET['experience'] ),
+			            'compare' => '=',
+			        )
+			);
+		 }
+		 
+		 if ( $_GET['hours'] != ''  ) {
+	        	$get_jobs_args['meta_query'] = array(
+			       	array(
+			            'key'     => 'my_add_heures_key',
+			            'value'   => intval( $_GET['hours'] ),
+			            'compare' => '<=',
+			        )
+			);
+		 }
+
+		 if ( $_GET['type'] != ''  ) {
+	        	$get_jobs_args['meta_query'] = array(
+			        array(
+			            'key'     => 'my_type_demploi_key',
+			            'value'   => intval( $_GET['type'] ),
+			            'compare' => '=',
+			        )
+			);
+		 }
+		 
+		if ( $_GET['activite'] != ''  ) {
+	        	$get_jobs_args['meta_query'] = array(
+			        array(
+			            'key'     => 'my_activite_professionnelle_key',
+			            'value'   => intval( $_GET['activite'] ),
+			            'compare' => '=',
+			        )
+			);
+		 }
+
+		if ( $_GET['disponibilites'] != ''  ) {
+	        	$get_jobs_args['meta_query'] = array(
+			        array(
+			            'key'     => 'my_disponibilites1_key',
+			            'value'   => intval( $_GET['disponibilites']  ),
+			            'compare' => '=',
+			        )
+			);
+		 }
+		 
+		 if ( $_GET['disponibilites'] != ''  ) {
+	        	$get_jobs_args['meta_query'] = array(
+			        array(
+			            'key'     => 'my_disponibilites2_key',
+			            'value'   => intval( $_GET['disponibilites']  ),
+			            'compare' => '=',
+			        )
+			);
+		 }
+
+		 if ( $_GET['duree'] != ''  ) {
+	        	$get_jobs_args['meta_query'] = array(
+			        array(
+			            'key'     => ' my_duree_emploi_key',
+			            'value'   => intval( $_GET['duree'] ),
+			            'compare' => '=',
+			        )
+			);
+		 }
+
+		 if ( $_GET['permis'] != ''  ) {
+	        	$get_jobs_args['meta_query'] = array(
+			        array(
+			            'key'     => 'my_permis_conduire_key',
+			            'value'   => intval( $_GET['permis'] ),
+			            'compare' => '=',
+			        )
+			);
+		 }
+		 
+		 if ( $_GET['voiture'] != ''  ) {
+	        	$get_jobs_args['meta_query'] = array(
+			        array(
+			            'key'     => 'my_besoin_voiture_key',
+			            'value'   => intval( $_GET['voiture'] ),
+			            'compare' => '=',
+			        )
+			);
+		 }
+		 
+		 if ( $_GET['school'] != ''  ) {
+	        	$get_jobs_args['meta_query'] = array(
+			        array(
+			            'key'     => 'my_education_key',
+			            'value'   => intval( $_GET['school'] ),
+			            'compare' => '=',
+			        )
+			);
+		 }
+    	        
         } else {
-	       if ( isset( $_GET['filter_city'] ) && ! empty( $_GET['filter_city'] ) ) {
-    	        $get_jobs_args = array(
-    	            'post_type' => 'emploi',
-    	            'post_status'    => array('publish'),
-    	            'posts_per_page' => -1,
-    	            'orderby'	     => 'date',
-    	            'order'	=> 'DESC',
-                    'meta_key'     => 'my_city_key',
-                    'meta_value'   => sanitize_text_field( $_GET['filter_city'] )
-    	        );
-	       } else {
-	           
-	           $get_jobs_args = array(
-    	            'post_type' => 'emploi',
-    	            'post_status'    => array('publish'),
-    	            'posts_per_page' => -1,
-    	            'orderby'	     => 'date',
-    	            'order'	=> 'DESC'
-    	        );
-	           
-	       }
+        
+	        $get_jobs_args = array(
+	            'post_type' => 'emploi',
+	            'post_status'    => array('publish'),
+	            'posts_per_page' => -1,
+	            'orderby'	     => 'date',
+	            'order'	=> 'DESC'
+	        );
+	        
+	        if ( $_GET['city'] != ''  ) {
+	        	$get_jobs_args['meta_query'] = array(
+		        	array(
+			            'key'     => 'my_city_key',
+			            'value'   => sanitize_text_field( $_GET['city'] ),
+			            'compare' => '=',
+			        )
+			);
+		 }
+		 
+		if ( $_GET['salary'] != ''  ) {
+	        	$get_jobs_args['meta_query'] = array(
+			 	array(
+			            'key'     => 'my_salaire_key',
+			            'value'   => intval( $_GET['salary'] ),
+			            'compare' => '>=',
+			        )
+			);
+		 }
+		 
+		 if ( $_GET['experience'] != ''  ) {
+	        	$get_jobs_args['meta_query'] = array(
+			      	array(
+			            'key'     => 'my_annees_dexperience_key',
+			            'value'   => intval( $_GET['experience'] ),
+			            'compare' => '=',
+			        )
+			);
+		 }
+		 
+		 if ( $_GET['hours'] != ''  ) {
+	        	$get_jobs_args['meta_query'] = array(
+			       	array(
+			            'key'     => 'my_add_heures_key',
+			            'value'   => intval( $_GET['hours'] ),
+			            'compare' => '<=',
+			        )
+			);
+		 }
+
+		 if ( $_GET['type'] != ''  ) {
+	        	$get_jobs_args['meta_query'] = array(
+			        array(
+			            'key'     => 'my_type_demploi_key',
+			            'value'   => intval( $_GET['type'] ),
+			            'compare' => '=',
+			        )
+			);
+		 }
+		 
+		if ( $_GET['activite'] != ''  ) {
+	        	$get_jobs_args['meta_query'] = array(
+			        array(
+			            'key'     => 'my_activite_professionnelle_key',
+			            'value'   => intval( $_GET['activite'] ),
+			            'compare' => '=',
+			        )
+			);
+		 }
+
+		if ( $_GET['disponibilites'] != ''  ) {
+	        	$get_jobs_args['meta_query'] = array(
+			        array(
+			            'key'     => 'my_disponibilites1_key',
+			            'value'   => intval( $_GET['disponibilites']  ),
+			            'compare' => '=',
+			        )
+			);
+		 }
+		 
+		 if ( $_GET['disponibilites'] != ''  ) {
+	        	$get_jobs_args['meta_query'] = array(
+			        array(
+			            'key'     => 'my_disponibilites2_key',
+			            'value'   => intval( $_GET['disponibilites']  ),
+			            'compare' => '=',
+			        )
+			);
+		 }
+
+		 if ( $_GET['duree'] != ''  ) {
+	        	$get_jobs_args['meta_query'] = array(
+			        array(
+			            'key'     => ' my_duree_emploi_key',
+			            'value'   => intval( $_GET['duree'] ),
+			            'compare' => '=',
+			        )
+			);
+		 }
+
+		 if ( $_GET['permis'] != ''  ) {
+	        	$get_jobs_args['meta_query'] = array(
+			        array(
+			            'key'     => 'my_permis_conduire_key',
+			            'value'   => intval( $_GET['permis'] ),
+			            'compare' => '=',
+			        )
+			);
+		 }
+		 
+		 if ( $_GET['voiture'] != ''  ) {
+	        	$get_jobs_args['meta_query'] = array(
+			        array(
+			            'key'     => 'my_besoin_voiture_key',
+			            'value'   => intval( $_GET['voiture'] ),
+			            'compare' => '=',
+			        )
+			);
+		 }
+		 
+		 if ( $_GET['school'] != ''  ) {
+	        	$get_jobs_args['meta_query'] = array(
+			        array(
+			            'key'     => 'my_education_key',
+			            'value'   => intval( $_GET['school'] ),
+			            'compare' => '=',
+			        )
+			);
+		 }
+
         }
         
-        $get_jobs = get_posts($get_jobs_args);
+        $get_jobs = new WP_Query($get_jobs_args);
 
-	if( ! empty( $get_jobs ) ){
-		foreach ( $get_jobs as $p ){
-		if(get_post_status($p->ID) == 'draft' || get_post_status($p->ID) == 'future') {	
-				if(get_current_user_id() == $p->post_author) {
+	if ( $get_jobs->have_posts() ) : while ( $get_jobs->have_posts() ) : $get_jobs->the_post();
+		if(get_post_status(get_the_ID()) == 'draft' || get_post_status(get_the_ID()) == 'future') {	
+				if(get_current_user_id() == $get_jobs->post->post_author) {
 					if($user_role == 'employeur'){
 						echo '<div class="job-wrapper-box" id="job-wrapper-box-'.$i.'">';
 					    		echo '<div style="display: block;">';
-					    			echo '<a href="' . get_permalink( $p->ID ) .'">' . $p->ID . ' - ' . $p->post_title . '</a> - ';
-								$author_id = $p->post_author;
+					    			echo '<a href="' . get_permalink( get_the_ID() ) .'">' . get_the_ID() . ' - ' . $get_jobs->post->post_title . '</a> - ';
+								$author_id = $get_jobs->post->post_author;
 								echo the_author_meta( 'user_nicename' , $author_id );
 								$usermetadata = get_user_meta(get_current_user_id());
 								
@@ -140,20 +554,20 @@ function monemploi_job_dashboard() {
 							if($field_data){
 								echo '<span class="autocompleteDeparture">';
 									echo '<span class="autocompleteDeparture_'.  $i . '" style="display:none;">'. implode($field_data) . '</span>';
-									echo '<span class="autocompleteArrival_' . $i . '" style="display: none;">' . get_post_meta( $p->ID, 'my_code_postal_key', true ) . '</span>';
+									echo '<span class="autocompleteArrival_' . $i . '" style="display: none;">' . get_post_meta( get_the_ID(), 'my_code_postal_key', true ) . '</span>';
 									echo ' - <span class="distance_' . $i . '"></span>';
 								echo '</span>';
 							}
 							
-							if(get_post_status($p->ID) == 'draft') {
+							if(get_post_status(get_the_ID()) == 'draft') {
 								echo ' - Brouillon';
 							} 
-							if(get_post_status($p->ID) == 'future') {
+							if(get_post_status(get_the_ID()) == 'future') {
 								echo ' - Programmer';
 							}
 							
-							echo ' - ' . get_post_meta( $p->ID, 'my_city_key', true );							
-							$from = strtotime(get_the_date('Y-m-d H:i:s', $p->ID));
+							echo ' - ' . get_post_meta( get_the_ID(), 'my_city_key', true );							
+							$from = strtotime(get_the_date('Y-m-d H:i:s', get_the_ID()));
 							$today = current_time('timestamp');
 							$difference = $today - $from;
 							$round_difference = round($difference / 60 / 60 / 24, 0);
@@ -171,8 +585,8 @@ function monemploi_job_dashboard() {
 			
 			} else {
 				echo '<div class="job-wrapper-box" id="job-wrapper-box-'.$i.'">';
-			    		echo '<div style="display: block;"><a href="' . get_permalink( $p->ID ) .'">' . $p->ID . ' - ' . $p->post_title . '</a> - ';
-						$author_id = $p->post_author;
+			    		echo '<div style="display: block;"><a href="' . get_permalink( get_the_ID() ) .'">' . get_the_ID() . ' - ' . $get_jobs->post->post_title . '</a> - ';
+						$author_id = $get_jobs->post->post_author;
 						echo the_author_meta( 'user_nicename' , $author_id );
 						$usermetadata = get_user_meta(get_current_user_id());
 						
@@ -192,14 +606,14 @@ function monemploi_job_dashboard() {
 					if($field_data){
 						echo '<span class="autocompleteDeparture">';
 							echo '<span class="autocompleteDeparture_'.  $i . '" style="display:none;">'. implode($field_data) . '</span>';
-							echo '<span class="autocompleteArrival_' . $i . '" style="display: none;">' . get_post_meta( $p->ID, 'my_code_postal_key', true ) . '</span>';
+							echo '<span class="autocompleteArrival_' . $i . '" style="display: none;">' . get_post_meta( get_the_ID(), 'my_code_postal_key', true ) . '</span>';
 							echo ' - <span class="distance_' . $i . '"></span>';
 						echo '</span>';
 					}
 					
-					echo ' - ' . get_post_meta( $p->ID, 'my_city_key', true );
+					echo ' - ' . get_post_meta( get_the_ID(), 'my_city_key', true );
 			
-					$from = strtotime(get_the_date('Y-m-d H:i:s', $p->ID));
+					$from = strtotime(get_the_date('Y-m-d H:i:s', get_the_ID()));
 					$today = current_time('timestamp');
 					$difference = $today - $from;
 					$round_difference = round($difference / 60 / 60 / 24, 0);
@@ -213,9 +627,8 @@ function monemploi_job_dashboard() {
 					?></div><?php
 				echo '</div>';	
 			}	    		
-	    	$i++;	
-	    	}
-	}
-
+	    	$i++;
+	endwhile; endif;
+	wp_reset_postdata();
 }
 add_shortcode('monemploi-job-dashboard', 'monemploi_job_dashboard');

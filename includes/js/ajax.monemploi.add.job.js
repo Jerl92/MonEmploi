@@ -60,7 +60,7 @@ function monemploi_add_job($){
 			disponibilites1 = 1;
 		}
 		if (jQuery('.disponibilites2').is(':checked')) {
-			disponibilites2 = 1;
+			disponibilites2 = 2;
 		}
 		var duree_emploi = jQuery('.duree_emploi').find(':selected').val();
 		var permis_conduire = jQuery('.permis_conduire').find(':selected').val();

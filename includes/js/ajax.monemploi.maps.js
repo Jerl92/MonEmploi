@@ -162,8 +162,8 @@ $('.departuretime').on('change', function() {
 }
 
 jQuery(window).on('load', function() {
-	var get_day = getUrlParameter('day_filter');
-	if(get_day) {
+	var getday = getUrlParameter('day');
+	if(getday) {
 		jQuery(".day_filter").val(get_day);
 		jQuery(".job-wrapper-box").each(function(index, element) {
 			var day = jQuery('.get-the-date-difference-'+index).html();
@@ -172,8 +172,8 @@ jQuery(window).on('load', function() {
 			}
 		});	
 	}
-	var get_km = getUrlParameter('km_filter');
-	if(get_km) {
+	var getkm = getUrlParameter('km');
+	if(getkm) {
 		jQuery(".km_filter").val(get_km);
 		jQuery(".job-wrapper-box").each(function(index, element) {
 			var distance = jQuery('.distance_'+index).html();
