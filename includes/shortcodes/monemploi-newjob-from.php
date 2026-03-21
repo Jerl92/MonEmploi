@@ -262,10 +262,15 @@ function monemploi_newjob_from() {
 
 				<p>Type de disponibilités</p>
 				<?php if(isset($postid) && $author_id = get_current_user_id()){ ?>
-					<?php $disponibilites1 = get_post_meta( $postid, 'my_disponibilites1_key', true); ?>
-					<?php if($disponibilites1 == 1){ ?>
-						<input type="checkbox" id="disponibilites1" class="disponibilites1" name="disponibilites1" checked>
-					<?php } else { ?>
+					<?php $disponibilites = get_post_meta( $postid, 'my_disponibilites_key', true); ?>
+					<?php foreach ( $disponibilites as $key => $values ) { ?>
+						<?php if($key == 'week' && $values == 1){ ?>
+							<input type="checkbox" id="disponibilites1" class="disponibilites1" name="disponibilites1" checked>
+						<?php } elseif($key == 'week' && $values == 0) { ?>
+							<input type="checkbox" id="disponibilites1" class="disponibilites1" name="disponibilites1">
+						<?php } ?>
+					<?php } ?>
+					<?php if(!is_array($disponibilites)) { ?>
 						<input type="checkbox" id="disponibilites1" class="disponibilites1" name="disponibilites1">
 					<?php } ?>
 				<?php } else { ?>
@@ -273,10 +278,15 @@ function monemploi_newjob_from() {
 				<?php } ?>
 				<label for="disponibilites1">Semaine</label>
 				<?php if(isset($postid) && $author_id = get_current_user_id()){ ?>
-					<?php $disponibilites2 = get_post_meta( $postid, 'my_disponibilites2_key', true); ?>
-					<?php if($disponibilites2 == 1){ ?>
-						<input type="checkbox" id="disponibilites2" class="disponibilites2" name="disponibilites2" checked>
-					<?php } else { ?>
+					<?php $disponibilites = get_post_meta( $postid, 'my_disponibilites_key', true); ?>
+					<?php foreach ( $disponibilites as $key => $values ) { ?>
+						<?php if($key == 'weekend' && $values == 1){ ?>
+							<input type="checkbox" id="disponibilites2" class="disponibilites2" name="disponibilites2" checked>
+						<?php } elseif($key == 'weekend' && $values == 0)  { ?>
+							<input type="checkbox" id="disponibilites2" class="disponibilites2" name="disponibilites2">
+						<?php } ?>
+					<?php } ?>
+					<?php if(!is_array($disponibilites)) { ?>
 						<input type="checkbox" id="disponibilites2" class="disponibilites2" name="disponibilites2">
 					<?php } ?>
 				<?php } else { ?>
