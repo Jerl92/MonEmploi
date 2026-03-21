@@ -219,4 +219,3 @@ function monemploi_job_dashboard() {
 
 }
 add_shortcode('monemploi-job-dashboard', 'monemploi_job_dashboard');
-?>

@@ -151,4 +151,15 @@ function auto_approve_all_comments( $approved, $commentdata ) {
 }
 add_filter( 'pre_comment_approved', 'auto_approve_all_comments', 99, 2 );
 
+function your_custom_menu_item($items, $args) {
+    // Only add to the primary menu location
+    if ($args->theme_location == 'top-header-menu') { 
+        if (is_user_logged_in()) {
+            $items .= '<li><a href="'. wp_logout_url( home_url() ) .'" class="">Déconnexion</a></li>'; 
+        }
+    }
+    return $items;
+}
+add_filter('wp_nav_menu_items', 'your_custom_menu_item', 10, 2);
+
 ?>
