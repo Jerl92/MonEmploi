@@ -38,8 +38,6 @@ function monemploi_job_dashboard() {
 	}
 	
 	ksort($get_city_array);
-	
-	echo '<div class="test"></div>';
 		
 	?><form action="" method="GET">
 	    <select name="filter_city" id="filter_city">
@@ -221,3 +219,4 @@ function monemploi_job_dashboard() {
 
 }
 add_shortcode('monemploi-job-dashboard', 'monemploi_job_dashboard');
+?>
