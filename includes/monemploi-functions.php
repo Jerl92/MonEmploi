@@ -1,15 +1,5 @@
 <?php
 
-/**
- * All the Functions
- *
- * All the responsible functions for NanoSupport.
- *
- * @author      nanodesigns
- * @category    Core
- * @package     NanoSupport
- */
-
 if (!defined('ABSPATH')) {
     exit;
 }
