@@ -156,9 +156,9 @@ function monemploi_job_dashboard() {
 		<select name="horaire" id="horaire_filter">
 	        	<?php $type_dhoraire = $_GET['horaire']; ?>
 			<?php if($type_dhoraire == ''){ ?>
-				<option value="" selected><?php echo esc_html( 'Choisissez un type d&#8216;horaire' , 'monemploi' ); ?></option>
+				<option value="" selected><?php echo esc_html( 'Type d&#8216;horaire' , 'monemploi' ); ?></option>
 			<?php } else { ?>
-				<option value=""><?php echo esc_html( 'Choisissez un type d&#8216;horaire' , 'monemploi' ); ?></option>
+				<option value=""><?php echo esc_html( 'Type d&#8216;horaire' , 'monemploi' ); ?></option>
 			<?php } ?>
 			<?php if($type_dhoraire == 1){ ?>
 				<option value="1" selected>Jour</option>
@@ -323,6 +323,16 @@ function monemploi_job_dashboard() {
 			);
 		 }
 		 
+		 if ( $_GET['horaire'] != ''  ) {
+	        	$get_jobs_args['meta_query'][] = array(
+			        array(
+			            'key'     => 'my_type_dhoraire_key',
+			            'value'   => intval( $_GET['horaire'] ),
+			            'compare' => '=',
+			        )
+			);
+		 }
+		 
 		if ( $_GET['activite'] != ''  ) {
 	        	$get_jobs_args['meta_query'][] = array(
 			        array(
@@ -403,7 +413,7 @@ function monemploi_job_dashboard() {
 	            'order'	=> 'DESC'
 	        );
 	        
-	        if ( $_GET['city'] != ''  ) {
+	         if ( $_GET['city'] != ''  ) {
 	        	$get_jobs_args['meta_query'][] = array(
 		        	array(
 			            'key'     => 'my_city_key',
@@ -448,6 +458,16 @@ function monemploi_job_dashboard() {
 			        array(
 			            'key'     => 'my_type_demploi_key',
 			            'value'   => intval( $_GET['type'] ),
+			            'compare' => '=',
+			        )
+			);
+		 }
+		 
+		 if ( $_GET['horaire'] != ''  ) {
+	        	$get_jobs_args['meta_query'][] = array(
+			        array(
+			            'key'     => 'my_type_dhoraire_key',
+			            'value'   => intval( $_GET['horaire'] ),
 			            'compare' => '=',
 			        )
 			);
