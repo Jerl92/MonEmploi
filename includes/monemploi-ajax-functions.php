@@ -12,10 +12,6 @@ function monemploi_ajax_scripts() {
 	$url = trailingslashit( plugin_dir_url( __FILE__ ) );
     
 	wp_enqueue_script( 'maps', "https://maps.googleapis.com/maps/api/js?key=AIzaSyAQJhQQ_wNHUOVollbuGpJG_eAQ6-4xz3E", array( 'jquery' ), '1.0.0', true );
-
-	wp_register_script( 'monemploi-ajax-send-scripts', $url . "js/ajax.monemploi.send.get.js", array( 'jquery' ), '1.0.0', true );
-	wp_localize_script( 'monemploi-ajax-send-scripts', 'send_monemploi_ajax_url', admin_url( 'admin-ajax.php', 'relative' ) );
-	wp_enqueue_script( 'monemploi-ajax-send-scripts' );
 	
 	wp_register_script( 'monemploi-ajax-send-cv-scripts', $url . "js/ajax.monemploi.send.js", array( 'jquery' ), '1.0.0', true );
 	wp_localize_script( 'monemploi-ajax-send-cv-scripts', 'send_cv_monemploi_ajax_url', admin_url( 'admin-ajax.php', 'relative' ) );
@@ -119,92 +115,6 @@ function monemploi_ajax_scripts() {
 
 }
 
-/* AJAX action callback */
-add_action( 'wp_ajax_monemploi_send_job', 'monemploi_send_job' );
-add_action( 'wp_ajax_nopriv_monemploi_send_job', 'monemploi_send_job' );
-function monemploi_send_job($post) {
-
-	$postid = $_POST['object_id'];
-	
-	$allready_candidacy = 0;
-	
-	// Arguments to query media attachments
-	$args = array(
-	    'post_type'      => 'attachment',
-	    'post_mime_type' => array('application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/pdf', 'application/msword'),
-	    'post_status'    => 'inherit',
-	    'author'         => get_current_user_id(),
-	    'posts_per_page' => -1,
-	    'orderby'        => 'date',
-	    'order'          => 'DESC'
-	);
-	
-	// Get the attachments
-	$attachments = get_posts( $args );
-	
-	$get_candidacys_args = array( 
-		'post_type' => 'candidacy',
-		'post_status'    => 'publish',
-		'author'         => get_current_user_id(),
-		'posts_per_page' => -1,
-		'orderby'        => 'date',
-		'order' => 'DESC'
-	);
-
-	$get_candidacys = get_posts( $get_candidacys_args );
-	
-	foreach($get_candidacys as $get_candidacy){
-		
-		$my_postid_key = get_post_meta( $get_candidacy->ID, 'my_postid_key', true );
-
-		if($my_postid_key == $postid){
-		
-			$allready_candidacy = 1;
-		
-		}
-	
-	}
-	
-	if($allready_candidacy == 0){
-		// Check if any attachments were found
-		if ( $attachments ) :
-		    $html[] .= '<h2>Vos documents</h2>';
-		    $html[] .= '<ul>';
-		    
-		    foreach ( $attachments as $attachment ) :
-		        // Get the URL of the media file
-		        $file_url = wp_get_attachment_url( $attachment->ID );
-		        // Get the title
-		        $file_title = apply_filters( 'the_title', $attachment->post_title );
-		
-		        $html[] .= '<li>';
-		        
-		        	$html[] .= '<input type="checkbox" id="cv" name="cv" class="cv" value="' . $attachment->ID . '">';
-		        	$html[] .= ' - ';
-		        	$html[] .= '<a href="' . esc_url( $file_url ) . '">' . esc_html( $file_title ) . '</a>';
-		        
-		        $html[] .= '</li>';
-		    endforeach;
-		
-		    $html[] .= '</ul>';
-		endif;    
-		
-		$html[] .= '<br>';
-		$html[] .= '<label>Votre lettre de présentation</label>';
-		$html[] .= '<textarea id="lettre_reference" name="lettre_presentation" class="lettre_presentation" rows="5" cols="30">';
-		$html[] .= '</textarea>';
-		
-		$html[] .= '<button class="submit_cv">Soumettre</button>';
-		
-	} else {
-	
-		$html[] .= '<span>Vous avez deja postulé sur cette emploi.</span>';	
-			
-	}
-	
-        wp_send_json ( implode($html) );
-}	
-
 function get_user_ip() {
     // Check for Cloudflare header
     if (isset($_SERVER["HTTP_CF_CONNECTING_IP"])) {
@@ -231,6 +141,15 @@ add_action( 'wp_ajax_nopriv_monemploi_send_cv_job', 'monemploi_send_cv_job' );
 function monemploi_send_cv_job($post) {
 
 	$postid = $_POST['object_id'];
+	$age_legal = $_POST['age_legal'];
+	$situation_canada = $_POST['situation_canada'];
+	$permis_travail = $_POST['permis_travail'];
+	$deja_travaille = $_POST['deja_travaille'];
+	$sexe = $_POST['sexe'];
+	$origine_ethnique = $_POST['origine_ethnique'];
+	$autochtone = $_POST['autochtone'];
+	$handicap = $_POST['handicap'];
+	$handicap_ = $_POST['handicap_'];
 	$cv = $_POST['selectedValues'];
 	$lettre_presentation = $_POST['lettre_presentation'];
     
@@ -256,21 +175,30 @@ function monemploi_send_cv_job($post) {
 	       	update_post_meta( $post_id, 'my_postid_key', $postid );
 	       	update_post_meta( $post_id, 'my_author_id_key', $author_id );
 	       	update_post_meta( $post_id, 'my_lettre_presentation_key', $lettre_presentation );  
+	       	
+	       	update_post_meta( $post_id, 'my_age_legal_key', $age_legal );
+	       	update_post_meta( $post_id, 'my_situation_canada_key', $situation_canada );
+	       	update_post_meta( $post_id, 'my_permis_travail_key', $permis_travail );
+	       	update_post_meta( $post_id, 'my_deja_travaille_key', $deja_travaille );
+	       	update_post_meta( $post_id, 'my_sexe_key', $sexe );
+	       	update_post_meta( $post_id, 'my_origine_ethnique_key', $origine_ethnique );
+	       	update_post_meta( $post_id, 'my_autochtone_key', $autochtone );
+	       	update_post_meta( $post_id, 'my_handicap_key', $handicap );
+	       	update_post_meta( $post_id, 'my_handicap__key', $handicap_ );
 
-
-		$authorid      = get_post_field( 'post_author', $postid );
-		$author_email   = get_the_author_meta( 'user_email', $authorid );
-		
-		$to = $author_email;
-		$subject = sprintf ( __( 'Nouvelle candidature #%s — %s — %s', 'monemploi' ), $post_id, get_the_title($post_id), get_bloginfo( 'name', 'display' ) );
-		$headers = array('Content-Type: text/html; charset=UTF-8');
-		
-		$message[] .= '<p>';
-		$message[] .= 'Nouvelle candidature #' . $post_id;
-		$message[] .= '</p>';
-		$message[] .= '<a href="' . get_permalink( $post_id ) . '">Voire la candidature</a>';
-
-		wp_mail($to, $subject, implode($message), $headers);
+    		$authorid      = get_post_field( 'post_author', $postid );
+    		$author_email   = get_the_author_meta( 'user_email', $authorid );
+    		
+    		$to = $author_email;
+    		$subject = sprintf ( __( 'Nouvelle candidature #%s — %s — %s', 'monemploi' ), $post_id, get_the_title($post_id), get_bloginfo( 'name', 'display' ) );
+    		$headers = array('Content-Type: text/html; charset=UTF-8');
+    		
+    		$message[] .= '<p>';
+    		$message[] .= 'Nouvelle candidature #' . $post_id;
+    		$message[] .= '</p>';
+    		$message[] .= '<a href="' . get_permalink( $post_id ) . '">Voire la candidature</a>';
+    
+    		wp_mail($to, $subject, implode($message), $headers);
   
 	    }
 	   

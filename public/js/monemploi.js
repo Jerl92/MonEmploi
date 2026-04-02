@@ -70,3 +70,20 @@ jQuery(document).ready(function($) {
 		jQuery('.title_sort').val('');
 	});
 });
+
+jQuery(document).ready(function($) {
+    jQuery('.handicap').change(function() {
+        if($(this).val() == 2) {
+            jQuery('.handicap_wrapper').css('display', 'block');
+        } else  {
+            jQuery('.handicap_wrapper').css('display', 'none');
+        }
+    });
+    jQuery('.situation_canada').change(function() {
+        if($(this).val() == 3) {
+            jQuery('.permis_travail_wrapper').css('display', 'block');
+        } else  {
+            jQuery('.permis_travail_wrapper').css('display', 'none');
+        }
+    });
+});
