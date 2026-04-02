@@ -86,4 +86,14 @@ jQuery(document).ready(function($) {
             jQuery('.permis_travail_wrapper').css('display', 'none');
         }
     });
+    jQuery('.deja_travaille').change(function() {
+        if($(this).val() == 1) {
+            jQuery('.superieur-info').css('display', 'block');
+        } else  {
+            jQuery('.superieur-info').css('display', 'none');
+        }
+    });
+    jQuery(".superieur_numero").keyup(function() {
+	    jQuery(this).val(jQuery(this).val().replace(/^(\d{3})(\d{3})(\d+)$/, "($1)$2-$3"));
+    });
 });

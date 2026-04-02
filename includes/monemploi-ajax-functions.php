@@ -145,6 +145,10 @@ function monemploi_send_cv_job($post) {
 	$situation_canada = $_POST['situation_canada'];
 	$permis_travail = $_POST['permis_travail'];
 	$deja_travaille = $_POST['deja_travaille'];
+	$superieur_nom = $_POST['superieur_nom'];
+	$superieur_email = $_POST['superieur_email'];
+	$superieur_numero = $_POST['superieur_numero'];
+	$superieur_poste = $_POST['superieur_poste'];
 	$sexe = $_POST['sexe'];
 	$origine_ethnique = $_POST['origine_ethnique'];
 	$autochtone = $_POST['autochtone'];
@@ -152,6 +156,7 @@ function monemploi_send_cv_job($post) {
 	$handicap_ = $_POST['handicap_'];
 	$cv = $_POST['selectedValues'];
 	$lettre_presentation = $_POST['lettre_presentation'];
+	$confidentialite = $_POST['confidentialite'];
     
 	  // Post data array
 	    $my_post = array(
@@ -179,12 +184,17 @@ function monemploi_send_cv_job($post) {
 	       	update_post_meta( $post_id, 'my_age_legal_key', $age_legal );
 	       	update_post_meta( $post_id, 'my_situation_canada_key', $situation_canada );
 	       	update_post_meta( $post_id, 'my_permis_travail_key', $permis_travail );
-	       	update_post_meta( $post_id, 'my_deja_travaille_key', $deja_travaille );
+	       	update_post_meta( $post_id, 'my_deja_travaille_key', $deja_travaille );	       	
+	       	update_post_meta( $post_id, 'my_superieur_nom_key', $superieur_nom );
+	       	update_post_meta( $post_id, 'my_superieur_email_key', $superieur_email );
+	       	update_post_meta( $post_id, 'my_superieur_numero_key', $superieur_numero );
+	       	update_post_meta( $post_id, 'my_superieur_poste_key', $superieur_poste );	       	
 	       	update_post_meta( $post_id, 'my_sexe_key', $sexe );
 	       	update_post_meta( $post_id, 'my_origine_ethnique_key', $origine_ethnique );
 	       	update_post_meta( $post_id, 'my_autochtone_key', $autochtone );
 	       	update_post_meta( $post_id, 'my_handicap_key', $handicap );
 	       	update_post_meta( $post_id, 'my_handicap__key', $handicap_ );
+	       	update_post_meta( $post_id, 'my_confidentialite_key', $confidentialite );
 
     		$authorid      = get_post_field( 'post_author', $postid );
     		$author_email   = get_the_author_meta( 'user_email', $authorid );

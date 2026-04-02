@@ -13,6 +13,10 @@ function monemploie_send_job() {
 		var situation_canada = jQuery('.situation_canada').val();
 		var permis_travail = jQuery('.permis_travail').val();
 		var deja_travaille = jQuery('.deja_travaille').val();
+		var superieur_nom = jQuery('.superieur_nom').val();
+		var superieur_email = jQuery('.superieur_email').val();
+		var superieur_numero = jQuery('.superieur_numero').val();
+		var superieur_poste = jQuery('.superieur_poste').val();
 		var sexe = jQuery('.sexe').val();
 		var origine_ethnique = jQuery('.origine_ethnique').val();
 		var autochtone = jQuery('.autochtone').val();
@@ -24,6 +28,15 @@ function monemploie_send_job() {
 		}).get();
 		 	 
 		var lettre_presentation = jQuery('.lettre_presentation').val();
+		
+		var confidentialite = jQuery('.confidentialite').is(':checked');
+		var confidentialite_ = 0;
+		if(confidentialite == false) {
+			confidentialite_ = 0;
+		}
+		if(confidentialite == true) {
+			confidentialite_ = 1;
+		}
 		
 		jQuery('.submit_cv').text('Veuillez patienter');
 		jQuery('.submit_cv').prop('disabled', true);
@@ -64,6 +77,35 @@ function monemploie_send_job() {
 		    jQuery('.deja_travaille').css('border', '1.5px solid red');
 		} else {
 	        	jQuery('.deja_travaille').css('border', '0.5px solid gray');
+		}
+		
+		if(jQuery('.deja_travaille').val() == 1){
+			if(jQuery('.superieur_nom').val() == ''){
+				error = 1;
+				jQuery('.submit_cv').text('Soumettre');
+				jQuery('.submit_cv').prop('disabled', false);
+				jQuery('.superieur_nom').css('border', '1.5px solid red');
+			} else {
+				jQuery('.superieur_nom').css('border', '0.5px solid gray');
+			}
+			
+			if(jQuery('.superieur_email').val() == '') {
+				error = 1;
+				jQuery('.submit_cv').text('Soumettre');
+				jQuery('.submit_cv').prop('disabled', false);
+				jQuery('.superieur_email').css('border', '1.5px solid red');
+			} else  {
+				jQuery('.superieur_email').css('border', '0.5px solid gray');
+			}
+			
+			if(jQuery('.superieur_numero').val() == '') {
+				error = 1;
+				jQuery('.submit_cv').text('Soumettre');
+				jQuery('.submit_cv').prop('disabled', false);
+				jQuery('.superieur_numero').css('border', '1.5px solid red');
+			} else  {
+				jQuery('.superieur_numero').css('border', '0.5px solid gray');
+			}
 		}
 		
 		if(jQuery('.sexe').val() == 0){
@@ -122,6 +164,16 @@ function monemploie_send_job() {
 	        	jQuery('.cv-table-wrapper').css('border', '0px solid gray');
 		}
 		
+		if(jQuery('.confidentialite').is(':checked') == false ){
+		    error = 1;
+		    jQuery('.submit_cv').text('Soumettre');
+		    jQuery('.submit_cv').prop('disabled', false);
+		    jQuery('.confidentialite-checkbox').css('border', '1.5px solid red');
+		} else {
+			jQuery('.confidentialite-checkbox').css('border', '0px solid gray');
+		}
+		
+		
         if(error == 0){
     		jQuery.ajax({
     			type: 'post',
@@ -132,6 +184,10 @@ function monemploie_send_job() {
     				'situation_canada': situation_canada,
     				'permis_travail': permis_travail,
     				'deja_travaille': deja_travaille,
+    				'superieur_nom': superieur_nom,
+				'superieur_email': superieur_email,
+				'superieur_numero': superieur_numero,
+				'superieur_poste': superieur_poste,
     				'sexe': sexe,
     				'origine_ethnique': origine_ethnique,
     				'autochtone': autochtone,
@@ -139,6 +195,7 @@ function monemploie_send_job() {
     				'handicap_': handicap_,
     				'selectedValues': selectedValues,
     				'lettre_presentation': lettre_presentation,
+    				'confidentialite': confidentialite_,
     				'action': 'monemploi_send_cv_job'
                 },
                 dataType: 'JSON',
