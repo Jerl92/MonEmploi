@@ -29,7 +29,7 @@ function monemploi_register() {
     $city = sanitize_text_field($_POST['city']);
     $province = sanitize_text_field($_POST['province']);
     $country = sanitize_text_field($_POST['country']);
-    $postal_code = $_POST['postalcode'];
+    $postalcode = $_POST['postalcode'];
     $phone = $_POST['phone'];
     $poste = $_POST['poste'];
     

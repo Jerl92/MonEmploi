@@ -237,7 +237,7 @@ add_action('init', function(){
     $city = sanitize_text_field($_POST['city']);
     $province = sanitize_text_field($_POST['province']);
     $country = sanitize_text_field($_POST['country']);
-    $postal_code = $_POST['postalcode'];
+    $postalcode = $_POST['postalcode'];
     $phone = $_POST['phone'];
     $poste = $_POST['poste'];
     
@@ -296,7 +296,7 @@ add_action('init', function(){
 	    update_user_meta($user_id, 'city_key', $city);
 	    update_user_meta($user_id, 'province_key', $province);
 	    update_user_meta($user_id, 'country_key', $country);
-	    update_user_meta($user_id, 'postal_code_key', $postal_code);
+	    update_user_meta($user_id, 'postal_code_key', $postalcode);
 	    update_user_meta($user_id, 'phone_key', $phone);
 	    update_user_meta($user_id, 'poste_key', $poste);
         
