@@ -93,6 +93,7 @@ The answer is no.<br>
 
 ## Changelog 
 
+0.4 - Add support for full-width display and add a custom login from.<br>
 0.3.6 - Fix sorting options for job listings.<br>
 0.3.5 - Add sort by km, title, date in jobs dashboard with few bug fix.<br>
 0.3 - Various bug fix in profile, in the add job from, everything should work good.<br>
