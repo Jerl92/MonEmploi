@@ -2,7 +2,7 @@
 
 MonEmploi is a job board.
 
-<img style="max-width: 100%;" src="https://i.imgur.com/4Kz2UeT.png" /><br>
+<img style="max-width: 100%;" src="https://i.ibb.co/QvDv8ykZ/monemploi11.png" /><br>
 
 ## Description
 
@@ -86,10 +86,10 @@ The answer is no.<br>
 
 ## Screenshots 
 
-<img style="max-width: 100%;" src="https://i.imgur.com/UPs2581.png" /><br>
-<img style="max-width: 100%;" src="https://i.imgur.com/zBBtbfQ.png" /><br>
-<img style="max-width: 100%;" src="https://i.imgur.com/0Dq7Grb.png" /><br>
-<img style="max-width: 100%;" src="https://i.ibb.co/v4pT5CYZ/monemploi20.png" /><br>
+<img style="max-width: 100%;" src="https://i.ibb.co/yFGpt8k1/monemploi13.png" /><br>
+<img style="max-width: 100%;" src="https://i.ibb.co/pvB26nTr/monemploi14.png" /><br>
+<img style="max-width: 100%;" src="https://i.ibb.co/Jwpz3P7v/monemploi10.png" /><br>
+<img style="max-width: 100%;" src="https://i.ibb.co/fYJD4BCW/monemploi12.png" /><br>
 
 ## Changelog 
 
