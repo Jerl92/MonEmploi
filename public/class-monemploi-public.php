@@ -74,6 +74,8 @@ class Monemploi_Public {
 		 */
 
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/monemploi-public.css', array(), $this->version, 'all' );
+		
+		wp_enqueue_style( 'monemploicss', plugin_dir_url( __FILE__ ) . 'css/monemploi.css', array(), $this->version, 'all' );
 		        
         	wp_enqueue_style( 'datepicker', plugin_dir_url( __FILE__ ) . 'css/datepicker.css', array(), $this->version, 'all' );
         	

@@ -13,49 +13,56 @@ function employeur_dashboard() {
 			$user_meta = get_userdata($userid);
 			$user_role = $user_meta->roles[0];
 			if($user_role == 'employeur'){
+			    
+			    echo '<h2>'. $get_user_by_username->user_firstname . ' ' . $get_user_by_username->user_lastname . '</h2>';
+				echo '<br>';
+				echo '<h3>' . get_user_meta($user_id, 'company_key', true) . '</h3>';
 				
 				?><div><?php 
 				   
 				    $user_id = intval($userid); // Replace with the desired user ID
-				    um_fetch_user( $user_id );
-				    
-				    echo um_user( 'cover_photo' );
+				    $userdata = get_userdata( $user_id );
+				    echo '<div style="display: block;">';
+					echo get_user_meta($user_id, 'cover_photo', true);
 				    
 				    // Get the URL of the profile picture with a specific size (e.g., 150x150 pixels)
 					$image_url = get_avatar_url( $user_id, array( 'size' => 75 ) );
 					
 					if ( $image_url ) {
-					    echo '<img src="' . esc_url( $image_url ) . '" alt="User Profile Image" style="border-radius: 50%; width: 75px;">';
+					    echo '<img src="' . esc_url( $image_url ) . '" alt="User Profile Image" style="border-radius: 50%; width: 75px ">';
 					} else {
 					    echo 'Profile image not found.';
 					}
+					echo '</div>';
 									    
 				    
 				    echo $get_user_by_username->user_nicename;
 				    echo ' - ';
-				    echo um_user('name_org');
-				    echo ' - ';
-			 	    echo um_user('first_name');
-			 	    echo ' ';
-				    echo um_user('last_name');
-				    echo ' - ';
-			 	    echo um_user('user_email');
-				    echo '<br>';
-				    echo um_user('Adresse');
-				    echo ' - ';
-				    echo um_user('Province');
-				    echo ' - ';
-				    echo um_user('Pays');
-				    echo ' - ';
-				    echo um_user('Code_postal');
-				    echo ' - ';
-				    echo um_user('number_phone');
-				    if(!um_user('poste') == ''){
+				    echo $get_user_by_username->user_firstname;
+				    echo ' ';
+				    echo $get_user_by_username->user_lastname;
+				    if(get_user_meta($user_id, 'company_key', true) != ''){
 					    echo ' - ';
-					    echo um_user('poste');
+					    echo get_user_meta($user_id, 'company_key', true);
+				    }	
+				    echo '<br>';
+				    echo get_user_meta($user_id, 'adresse_key', true);
+				    echo ' - ';
+				    echo get_user_meta($user_id, 'city_key', true);
+				    echo ' - ';
+				    echo get_user_meta($user_id, 'province_key', true);
+				    echo ' - ';
+				    echo get_user_meta($user_id, 'country_key', true);
+				    echo ' - ';
+				    echo get_user_meta($user_id, 'postal_code_key', true);
+				    echo '<br>';
+				    echo get_user_meta($user_id, 'phone_key', true);
+				    if(get_user_meta($user_id, 'poste_key', true) != ''){
+				    	echo ' - ';
+				    	echo get_user_meta($user_id, 'poste_key', true);
 				    }
-				    um_reset_user();
-				    
+				    echo ' - ';
+				    echo $userdata->user_email;	    
 				    echo '<br>';
 				    
 				   

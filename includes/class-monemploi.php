@@ -158,6 +158,8 @@ class Monemploi {
 		
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/shortcodes/monemploi-register.php';
 		
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/shortcodes/monemploi-user-edit-info.php';
+		
 		$this->loader = new Monemploi_Loader();
 
 	}

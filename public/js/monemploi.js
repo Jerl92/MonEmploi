@@ -118,12 +118,7 @@ jQuery(document).ready(function($) {
     jQuery("#phone").keyup(function() {
 	    jQuery(this).val(jQuery(this).val().replace(/^(\d{3})(\d{3})(\d+)$/, "($1)$2-$3"));
     });
-    jQuery("#postalcode").keyup(function() {
-	    var regex = /^[A-Za-z]\d[A-Za-z] ?\d[A-Za-z]\d$/;
-	    if (!regex.test(jQuery('#postalcode').val())) {
-	        jQuery(this).css('border', '1px solide red');
-	    } else {
-	        jQuery(this).css('border', '1px solide green');
-	    }
-   });
+    jQuery("#phone_key").keyup(function() {
+	    jQuery(this).val(jQuery(this).val().replace(/^(\d{3})(\d{3})(\d+)$/, "($1)$2-$3"));
+    });
 });

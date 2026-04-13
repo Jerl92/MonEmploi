@@ -42,42 +42,14 @@ Is to show employeur list.<br>
 [monemploi-home]<br>
 Is to show statistique.<br>
 
-## Ultimate Member ##
+[monemploi-login]<br>
+Is to set a login from.<br>
 
-In order to make the registration page you need to install Ultimate Member and here the meta key for the user info.<br>
+[monemploi-register]<br>
+Is to set a registration from.<br>
 
-name_org<br>
-first_name<br>
-last_name<br>
-user_email<br>
-Adresse<br>
-Province<br>
-Pays<br>
-Code_postal<br>
-number_phone<br>
-poste<br>
-
-In the registration from you need to add a radio boutton selection.<br>
-In edit choices you need to add "Employer" and "Employeur", with the meta key "Status".<br>
-
-```js
-function my_custom_after_registration_action( $user_id, $args ) {
-    if ( empty( $user_id ) || is_wp_error( $user_id ) ) {
-        return;
-    }
-    
-  $user = new WP_User( $user_id );
-	$meta_for_user = get_user_meta( $user_id, 'status', true ); 
-	$meta_user_status = $meta_for_user[0];
-	if($meta_user_status == 'Employeur'){    
-		$user->set_role( 'employeur' );
-	}
-	if($meta_user_status == 'Employer'){ 
-		$user->set_role( 'employer' );
-	}
-}
-add_action( 'um_registration_set_extra_data', 'my_custom_after_registration_action', 10, 2 );
-```
+[monemploi-user-edit-info]<br>
+Is to set a page so you can edit basic info on the user.<br>
 
 ## Frequently Asked Questions 
 
@@ -93,6 +65,7 @@ The answer is no.<br>
 
 ## Changelog 
 
+0.4.5 - Remove Ultimate Member and use custom formulaire with short code.<br>
 0.4 - Add support for full-width display and add a custom login from.<br>
 0.3.6 - Fix sorting options for job listings.<br>
 0.3.5 - Add sort by km, title, date in jobs dashboard with few bug fix.<br>

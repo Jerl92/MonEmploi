@@ -116,6 +116,10 @@ function monemploi_ajax_scripts() {
 	wp_register_script( 'monemploi-ajax-comment-reply-scripts', $url . "js/ajax.monemploi.comment.reply.js", array( 'jquery' ), '1.0.0', true );
 	wp_localize_script( 'monemploi-ajax-comment-reply-scripts', 'comment_candidacy_reply_monemploi_ajax_url', admin_url( 'admin-ajax.php', 'relative' ) );
 	wp_enqueue_script( 'monemploi-ajax-comment-reply-scripts' );
+	
+	wp_register_script( 'monemploi-ajax-update-user-info-scripts', $url . "js/ajax.monemploi.update.user.info.js", array( 'jquery' ), '1.0.0', true );
+	wp_localize_script( 'monemploi-ajax-update-user-info-scripts', 'update_user_info_monemploi_ajax_url', admin_url( 'admin-ajax.php', 'relative' ) );
+	wp_enqueue_script( 'monemploi-ajax-update-user-info-scripts' );
 
 }
 
@@ -1904,6 +1908,74 @@ function comment_candidacy_reply($post) {
 		
 	wp_send_json( implode($html) );
 	
+}
+
+/* AJAX action callback */
+add_action( 'wp_ajax_update_user_info', 'update_user_info' );
+add_action( 'wp_ajax_nopriv_update_user_info', 'update_user_info' );
+function update_user_info($post) {
+    
+    $errors = new WP_Error();
+	
+	$user_firstname = $_POST['user_firstname'];
+	$user_lastname = $_POST['user_lastname'];
+	$user_email = $_POST['user_email'];
+	$company_key = $_POST['company_key'];
+	$adresse_key = $_POST['adresse_key'];
+	$city_key = $_POST['city_key'];
+	$province_key = $_POST['province_key'];
+	$country_key = $_POST['country_key'];
+	$postal_code_key = $_POST['postal_code_key'];
+	$phone_key = $_POST['phone_key'];
+	$poste_key = $_POST['poste_key'];
+	$user_id = $_POST['object_id'];
+	
+	$alreadyemail = 0;
+	$all_users = get_users();
+    foreach ($all_users as $user) {
+        if($user_email == $user->user_email && $user_id != $user->ID) {
+            $alreadyemail = 1;
+        }
+    }
+	
+	if($alreadyemail == 1) {
+    	$user_data = array(
+    	    'ID'         => $user_id,
+    	    'first_name' => $user_firstname,
+    	    'last_name'  => $user_lastname
+    	);
+	} else {
+    	$user_data = array(
+    	    'ID'         => $user_id,
+    	    'first_name' => $user_firstname,
+    	    'last_name'  => $user_lastname,
+    	    'user_email' => $user_email
+    	);
+	}
+	
+	$updated_user_id = wp_update_user( $user_data );
+	
+	if ( is_wp_error( $updated_user_id ) ) {
+        foreach ($errors->get_error_messages() as $error) {
+        	echo $error;
+        }
+    } else {
+    	update_user_meta($updated_user_id, 'company_key', $company_key);
+    	update_user_meta($updated_user_id, 'adresse_key', $adresse_key);
+    	update_user_meta($updated_user_id, 'city_key', $city_key);
+    	update_user_meta($updated_user_id, 'province_key', $province_key);
+    	update_user_meta($updated_user_id, 'country_key', $country_key);
+    	update_user_meta($updated_user_id, 'postal_code_key', $postal_code_key);
+    	update_user_meta($updated_user_id, 'phone_key', $phone_key);
+    	update_user_meta($updated_user_id, 'poste_key', $poste_key);
+    	
+    	if($alreadyemail == 1) {
+        	wp_send_json( "Le e-mail existe deja sur un autre compte." );
+    	} else  {
+        	wp_send_json( "Tous les infos ont été mis a jour." );
+    	} 
+    }
+
 }
 
 ?>
