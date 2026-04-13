@@ -253,7 +253,7 @@ function monemploi_job_dashboard() {
 				<option value="2">Oui</option>
 			<?php } ?>
 		</select>
-		<br />
+		</br>
 		<select name="km_sort" id="km_sort" class="km_sort">
 			<?php $km_sort = $_GET['km_sort']; ?>
 			<?php if($km_sort == ''){ ?>
@@ -855,13 +855,14 @@ function monemploi_job_dashboard() {
 								    echo um_user('last_name');
 								    um_reset_user();
 								}
-								
+							
+							$field_data_adresse = $usermetadata['Adresse'];
 							$field_data = $usermetadata['Code_postal'];
 							if($field_data){
 								echo '<span class="autocompleteDeparture">';
-									echo '<span class="autocompleteDeparture_'.  $i . '" style="display:none;">'. implode($field_data) . '</span>';
-									echo '<span class="autocompleteArrival_' . $i . '" style="display: none;">' . get_post_meta( get_the_ID(), 'my_code_postal_key', true ) . '</span>';
-									echo ' - <span class="distance_' . $i . ' distance"></span>';
+									echo '<span class="autocompleteDeparture_'.  $i . '" style="display:none;">'. implode($field_data_adresse) . ' ' .implode($field_data) . '</span>';
+									echo '<span class="autocompleteArrival_' . $i . '" style="display: none;">' . get_post_meta( $post->ID, 'my_code_postal_key', true ) . '</span>';
+									echo ' - <span class="distance_' . $i . '"></span>';
 								echo '</span>';
 							}
 							
@@ -907,12 +908,13 @@ function monemploi_job_dashboard() {
 						    um_reset_user();
 						}
 						
+					$field_data_adresse = $usermetadata['Adresse'];
 					$field_data = $usermetadata['Code_postal'];
 					if($field_data){
 						echo '<span class="autocompleteDeparture">';
-							echo '<span class="autocompleteDeparture_'.  $i . '" style="display:none;">'. implode($field_data) . '</span>';
-							echo '<span class="autocompleteArrival_' . $i . '" style="display: none;">' . get_post_meta( get_the_ID(), 'my_code_postal_key', true ) . '</span>';
-							echo ' - <span class="distance_' . $i . ' distance"></span>';
+							echo '<span class="autocompleteDeparture_'.  $i . '" style="display:none;">'. implode($field_data_adresse) . ' ' .implode($field_data) . '</span>';
+							echo '<span class="autocompleteArrival_' . $i . '" style="display: none;">' . get_post_meta( $post->ID, 'my_code_postal_key', true ) . '</span>';
+							echo ' - <span class="distance_' . $i . '"></span>';
 						echo '</span>';
 					}
 					

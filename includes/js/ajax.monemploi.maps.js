@@ -160,7 +160,7 @@ $('.departuretime').on('change', function() {
 });
 
 }
-  
+	  
 jQuery(document).ready(function($) {
     getDistance($);
     getDistance_($);

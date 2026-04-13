@@ -27,28 +27,26 @@ $args = array(
 $attachments = get_posts( $args );
 
 // Check if any attachments were found
-if ( $attachments ) :
+if ( $attachments )  {
     echo '<h2>Vos documents</h2>';
-    echo '<ul>';
 
-    foreach ( $attachments as $attachment ) :
+    foreach ( $attachments as $attachment )  {
         // Get the URL of the media file
         $file_url = wp_get_attachment_url( $attachment->ID );
         // Get the title
         $file_title = apply_filters( 'the_title', $attachment->post_title );
 
         echo '<div class="document-attachment-wrapper" style="display: flex;">';
-	        echo '<a href="' . esc_url( $file_url ) . '" style="width: 85%">' . esc_html( $file_title ) . '</a>';
-		echo '<div class="delete-document-attachment" style="width: 15%" data-object-id="' . $attachment->ID . '">';
+	        echo '<a href="' . esc_url( $file_url ) . '" style="width: calc(100% - 25px);">' . esc_html( $file_title ) . '</a>';
+		echo '<div class="delete-document-attachment" style="width: 25px" data-object-id="' . $attachment->ID . '">';
 			echo '<i class="material-icons">';
 				echo 'delete';
 			echo '</i>';
 		echo '</div>';
         echo '</div>';
-    endforeach;
-
-    echo '</ul>';
-endif;
+    }
+    
+}
 
 }
 add_shortcode('monemploi-resume-from', 'monemploi_resume_from');

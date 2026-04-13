@@ -73,9 +73,9 @@ function monemploi_newjob_from() {
 				
 				<p>Ville de l'emploi</p>
 				<?php if(isset($postid) && $author_id = get_current_user_id()){ ?>
-					<input type="text" class="monemploi_add_city_text" name="monemploi_add_city_text" id="monemploi_add_city_text" style="width: 100%;" value="<?php echo get_post_meta( $postid, 'my_city_key', true); ?>" disabled>
+					<input type="text" class="monemploi_add_city_text" name="monemploi_add_city_text" id="monemploi_add_city_text" style="width: 100%;" value="<?php echo get_post_meta( $postid, 'my_city_key', true); ?>">
 				<?php } else { ?>
-					<input type="text" class="monemploi_add_city_text" name="monemploi_add_city_text" id="monemploi_add_city_text" style="width: 100%;" disabled>
+					<input type="text" class="monemploi_add_city_text" name="monemploi_add_city_text" id="monemploi_add_city_text" style="width: 100%;">
 				<?php } ?>
                                
                 		<?php $education_terms = get_terms( array(

@@ -96,16 +96,17 @@ function employeur_dashboard() {
 			    		        if(get_current_user_id() == $post->post_author) {
 					
 							echo '<a href="' . get_permalink( $post->ID ) .'">' . $post->post_title . '</a>';
-							echo ' - ';
 							$usermetadata = get_user_meta(get_current_user_id());
+							$field_data_adresse = $usermetadata['Adresse'];
 							$field_data = $usermetadata['Code_postal'];
 							if($field_data){
 								echo '<span class="autocompleteDeparture">';
-									echo '<span class="autocompleteDeparture_'.  $i . '" style="display:none;">'. implode($field_data) . '</span>';
+									echo '<span class="autocompleteDeparture_'.  $i . '" style="display:none;">'. $field_data_adresse . ' ' .implode($field_data) . '</span>';
 									echo '<span class="autocompleteArrival_' . $i . '" style="display: none;">' . get_post_meta( $post->ID, 'my_code_postal_key', true ) . '</span>';
 									echo ' - <span class="distance_' . $i . '"></span> - ';
 								echo '</span>';
 							}
+							echo get_post_meta( $post->ID, 'my_city_key', true );
 							$from = strtotime(get_the_date('Y-m-d H:i:s', $post->ID));
 							$today = current_time('timestamp');
 							$difference = $today - $from;
@@ -115,7 +116,6 @@ function employeur_dashboard() {
 							} else {
 								echo ' - ' . $round_difference . ' Jours';
 							}
-							echo get_post_meta( $post->ID, 'my_city_key', true );
 							if(get_post_status($post->ID) == 'draft') {
 								echo ' - Brouillon';
 							} 
@@ -131,12 +131,13 @@ function employeur_dashboard() {
 					} else {
 					
 							echo '<a href="' . get_permalink( $post->ID ) .'">' . $post->post_title . '</a>';
-							echo ' - ';
 							$usermetadata = get_user_meta(get_current_user_id());
+							print_r($usermetadata);
+							$field_data_adresse = $usermetadata['Adresse'];
 							$field_data = $usermetadata['Code_postal'];
 							if($field_data){
 								echo '<span class="autocompleteDeparture">';
-									echo '<span class="autocompleteDeparture_'.  $i . '" style="display:none;">'. implode($field_data) . '</span>';
+									echo '<span class="autocompleteDeparture_'.  $i . '" style="display:none;">'. $field_data_adresse . ' ' .implode($field_data) . '</span>';
 									echo '<span class="autocompleteArrival_' . $i . '" style="display: none;">' . get_post_meta( $post->ID, 'my_code_postal_key', true ) . '</span>';
 									echo ' - <span class="distance_' . $i . '"></span> - ';
 								echo '</span>';

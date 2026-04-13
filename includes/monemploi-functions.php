@@ -115,11 +115,10 @@ function show_draft_posts_on_front( $query ) {
 add_filter( 'pre_get_posts', 'show_draft_posts_on_front' );
 
 function my_custom_after_registration_action( $user_id, $args ) {
-    if ( empty( $user_id ) || is_wp_error( $user_id ) ) {
-        return;
-    }
-    
-    $user = new WP_User( $user_id );
+	if ( empty( $user_id ) || is_wp_error( $user_id ) ) {
+		return;
+	}    
+	$user = new WP_User( $user_id );
 	$meta_for_user = get_user_meta( $user_id, 'status', true ); 
 	$meta_user_status = $meta_for_user[0];
 	if($meta_user_status == 'Employeur'){    
@@ -133,7 +132,9 @@ add_action( 'um_registration_set_extra_data', 'my_custom_after_registration_acti
 
 add_filter( 'login_url', 'um_custom_login_url', 10, 3 );
 function um_custom_login_url( $login_url, $redirect, $force_reauth ) {
-    return um_get_core_page( 'login' );
+	if(function_exists('um_get_core_page')) {
+    		return um_get_core_page( 'login' );
+    	}
 }
 
 function auto_approve_all_comments( $approved, $commentdata ) {
@@ -177,5 +178,22 @@ function send_email_on_future_publish( $new_status, $old_status, $post ) {
     }
 }
 add_action( 'transition_post_status', 'send_email_on_future_publish', 10, 3 );
+
+add_action('init', function(){
+
+  // not the login request?
+  if(!isset($_POST['action']) || $_POST['action'] !== 'my_login_action')
+    return;
+
+  // see the codex for wp_signon()
+  $result = wp_signon();
+
+  if(is_wp_error($result))
+    wp_die('Échec de la connexion. Mot de passe ou nom d&#8216;utilisateur incorrect?');
+
+  // redirect back to the requested page if login was successful    
+  header('Location: ' . $_SERVER['REQUEST_URI']);
+  exit;
+});
 
 ?>
