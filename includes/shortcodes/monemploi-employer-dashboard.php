@@ -136,7 +136,6 @@ function employeur_dashboard() {
 					
 							echo '<a href="' . get_permalink( $post->ID ) .'">' . $post->post_title . '</a>';
 							$usermetadata = get_user_meta(get_current_user_id());
-							print_r($usermetadata);
 							$field_data_adresse = $usermetadata['Adresse'];
 							$field_data = $usermetadata['Code_postal'];
 							if($field_data){

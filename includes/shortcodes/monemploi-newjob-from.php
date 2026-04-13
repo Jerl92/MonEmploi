@@ -44,7 +44,7 @@ function monemploi_newjob_from() {
 					$wp_editor_specs
 				); ?>
 				
-				<p>Debut de l'affichage de l'emploi</p>
+				<p>Debut de l'affichage de l&#8216;emploi</p>
 				<?php if(isset($postid) && $author_id = get_current_user_id()){ ?>
 					<input type="text" class="datepickerstartjobscheduled" data-toggle="datepickerstartjobscheduled" value="<?php echo get_post_meta( $postid, 'my_start_job_date_scheduled_key', true); ?>">
 				<?php } else { ?>
@@ -56,7 +56,7 @@ function monemploi_newjob_from() {
 					<input type="time" id="timestartjobscheduled" name="timestartjobscheduled">
 				<?php } ?>
 				
-				<p>Fin de l'affichage de l'emploi</p>
+				<p>Fin de l'affichage de l&#8216;emploi</p>
 				<?php if(isset($postid) && $author_id = get_current_user_id()){ ?>
 					<input type="text" class="datepickerendjobscheduled" data-toggle="datepickerendjobscheduled" value="<?php echo get_post_meta( $postid, 'my_end_job_date_scheduled_key', true); ?>">
 				<?php } else { ?>
@@ -68,21 +68,21 @@ function monemploi_newjob_from() {
 					<input type="time" id="timeendjobscheduled" name="timeendjobscheduled">
 				<?php } ?>
                 
-               			<p>Adresse de l'emploi</p>
-               			<?php if(isset($postid) && $author_id = get_current_user_id()){ ?>
+               	<p>Adresse de l&#8216;emploi</p>
+               	<?php if(isset($postid) && $author_id = get_current_user_id()){ ?>
 					<input type="text" class="monemploi_add_code_postal_text" name="monemploi_code_postal" id="monemploi_code_postal" style="width: 100%;" value="<?php echo get_post_meta( $postid, 'my_code_postal_key', true); ?>">
 				<?php } else { ?>
 					<input type="text" class="monemploi_add_code_postal_text" name="monemploi_code_postal" id="monemploi_code_postal" style="width: 100%;">
 				<?php } ?>
 				
-				<p>Ville de l'emploi</p>
+				<p>Ville de l&#8216;emploi</p>
 				<?php if(isset($postid) && $author_id = get_current_user_id()){ ?>
 					<input type="text" class="monemploi_add_city_text" name="monemploi_add_city_text" id="monemploi_add_city_text" style="width: 100%;" value="<?php echo get_post_meta( $postid, 'my_city_key', true); ?>">
 				<?php } else { ?>
 					<input type="text" class="monemploi_add_city_text" name="monemploi_add_city_text" id="monemploi_add_city_text" style="width: 100%;">
 				<?php } ?>
                                
-                		<?php $education_terms = get_terms( array(
+                <?php $education_terms = get_terms( array(
 					'taxonomy' => 'education',
 					'orderby' => 'term_id',
 				    'order' => 'ASC', // or ASC

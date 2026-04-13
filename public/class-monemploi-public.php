@@ -78,6 +78,8 @@ class Monemploi_Public {
         	wp_enqueue_style( 'datepicker', plugin_dir_url( __FILE__ ) . 'css/datepicker.css', array(), $this->version, 'all' );
         	
         	wp_enqueue_style( 'jquery-ui', plugin_dir_url( __FILE__ ) . 'css/jquery-ui.css', array(), $this->version, 'all' );
+        	
+        	wp_enqueue_style( 'passwordStrength', plugin_dir_url( __FILE__ ) . 'css/passwordStrength.css', array(), $this->version, 'all' );
 
 	}
 
@@ -103,6 +105,8 @@ class Monemploi_Public {
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/monemploi-public.js', array( 'jquery' ), $this->version, false );
         
 	        wp_enqueue_script( 'datepicker', plugin_dir_url( __FILE__ ) . 'js/datepicker.js', array( 'jquery' ), $this->version, false );
+	        
+	        wp_enqueue_script( 'passwordStrength.jquery', plugin_dir_url( __FILE__ ) . 'js/passwordStrength.jquery.js', array( 'jquery' ), $this->version, false );
 	        
 	       	wp_enqueue_script( 'monemploijs', plugin_dir_url( __FILE__ ) . 'js/monemploi.js', array( 'jquery' ), $this->version, false );
 	        

@@ -156,6 +156,8 @@ class Monemploi {
 		
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/shortcodes/monemploi-login.php';
 		
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/shortcodes/monemploi-register.php';
+		
 		$this->loader = new Monemploi_Loader();
 
 	}

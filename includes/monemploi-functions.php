@@ -186,14 +186,145 @@ add_action('init', function(){
     return;
 
   // see the codex for wp_signon()
-  $result = wp_signon();
+  $user = wp_signon();
 
   if(is_wp_error($result))
     wp_die('Échec de la connexion. Mot de passe ou nom d&#8216;utilisateur incorrect?');
+ 
+    $user_info = get_userdata($user->ID);
+    $user_roles = $user_info->roles;
+    if(implode($user_roles) != 'administrator'){
+        if(get_user_meta($user->ID, 'account_status', true) != 'approved'){
+            wp_logout();
+            wp_die('Votre compte n&#8216;est pas encore confirmé, veuillez regarder vos emails.');
+        }
+    }
 
   // redirect back to the requested page if login was successful    
   header('Location: ' . $_SERVER['REQUEST_URI']);
   exit;
+});
+
+function generateRandomString($length = 10) {
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $charactersLength = strlen($characters);
+    $randomString = '';
+
+    for ($i = 0; $i < $length; $i++) {
+        $randomString .= $characters[random_int(0, $charactersLength - 1)];
+    }
+
+    return $randomString;
+}
+
+add_action('init', function(){
+
+  // not the login request?
+  if(isset($_POST['action']) || $_POST['action'] === 'my_register_action') {
+    
+    $errors = new WP_Error();
+    
+    $username = sanitize_user($_POST['username']);
+    $email = sanitize_email($_POST['email']);
+    $password = sanitize_text_field($_POST['password']);
+    $verifypassword = sanitize_text_field($_POST['verifypassword']);
+    
+    $firstname = sanitize_text_field($_POST['firstname']);
+    $lastname = sanitize_text_field($_POST['lastname']);
+    
+    $company = sanitize_text_field($_POST['company']);
+    $adresse = sanitize_text_field($_POST['adresse']);
+    $city = sanitize_text_field($_POST['city']);
+    $province = sanitize_text_field($_POST['province']);
+    $country = sanitize_text_field($_POST['country']);
+    $postal_code = $_POST['postalcode'];
+    $phone = $_POST['phone'];
+    $poste = $_POST['poste'];
+    
+    $status = $_POST['status'];
+    
+    // Basic validation
+    if (username_exists($username) || email_exists($email)) {
+        $errors->add('user_exists', 'Ce nom d&#8216;utilisateur ou cette adresse e-mail est déjà enregistré(e).');
+    }
+    if (empty($username) || empty($email) || empty($password) || empty($status)) {
+        $errors->add('field_empty', 'Veuillez remplir tous les champs obligatoires.');
+    }    
+    if ($password != $verifypassword) {
+        $errors->add('not_same_password', 'Les mots de passe que vous avez renter ne sont pas identique.');
+    }
+    
+     // If no errors, register 
+    if (empty($errors->errors)) {
+        if ($status == 'employeur') {
+            $userdata = array(
+                'user_login'  => $username,
+                'first_name'    => $firstname,
+                'last_name'    => $lastname,
+                'user_email'   => $email,
+                'user_pass'   => $password,
+                'role' => 'employeur'
+            );
+        }
+    
+        if ($status == 'employer') {
+            $userdata = array(
+                'user_login'  => $username,
+                'first_name'    => $firstname,
+                'last_name'    => $lastname,
+                'user_email'   => $email,
+                'user_pass'   => $password,
+                'role' => 'employer'
+            );
+        }
+    }
+    
+    $user_id = wp_insert_user( $userdata );
+    
+    if (isset($user_id)){
+        $account_status = get_user_meta($user_id, 'account_status', true);
+                       
+	    $unique_key = generateRandomString();
+	    
+	    update_user_meta($user_id, 'unique_key', $unique_key);
+	    if($account_status != 'approved') {
+	    	update_user_meta($user_id, 'account_status', 'draft');
+	    }
+	    
+	    update_user_meta($user_id, 'company_key', $company);
+	    update_user_meta($user_id, 'adresse_key', $adresse);
+	    update_user_meta($user_id, 'city_key', $city);
+	    update_user_meta($user_id, 'province_key', $province);
+	    update_user_meta($user_id, 'country_key', $country);
+	    update_user_meta($user_id, 'postal_code_key', $postal_code);
+	    update_user_meta($user_id, 'phone_key', $phone);
+	    update_user_meta($user_id, 'poste_key', $poste);
+        
+        if($account_status == 'draft' || $account_status == ''){
+    
+            $subject = 'Votre compte ' . $username . ' vous devez confirmer votre compte.';
+            $message = '
+                <p>Bonjour ' . $firstname . ' ' . $lastname . '</p>
+                <p>Votre compte est maintenant crée il ne reste juste qu&#8216;à confirmer le tout.</p>
+                <p>Veuiller cliquer ici: <a href="https://monemploi.net/login/?key=' . $unique_key . '">Lien d&#8216;activation</a></p>
+            ';
+            $headers = array('Content-Type: text/html; charset=UTF-8');
+    
+            // Send the email
+            wp_mail( $email, $subject, $message, $headers );
+        }
+    }
+    
+    if (!is_wp_error($user_id)) {
+        header("Location: " . $_SERVER['REQUEST_URI'] . "?new_user=true");
+    } else {
+        foreach ($errors->get_error_messages() as $error) {
+        	echo $error;
+        }
+    }
+    
+  }
+
 });
 
 ?>

@@ -96,4 +96,34 @@ jQuery(document).ready(function($) {
     jQuery(".superieur_numero").keyup(function() {
 	    jQuery(this).val(jQuery(this).val().replace(/^(\d{3})(\d{3})(\d+)$/, "($1)$2-$3"));
     });
+    if (jQuery('.employeur').prop('checked')) {
+        jQuery('.employer').prop("checked", false);
+    }
+    if (jQuery('.employer').prop('checked')) {
+        jQuery('.employeur').prop("checked", false);
+    }
+});
+
+jQuery(document).ready(function($) {
+    jQuery("#password").passwordStrength({
+        targetDiv:'passwordStrength'
+    });
+    jQuery("#verifypassword").keyup(function() {
+	if(jQuery("#password").val() === jQuery("#verifypassword").val()) {
+		jQuery("#verifyPasswordCheck").html('<span style="background-color: green; padding: 5px;">Le mot de passe est identique</span>');
+	} else  {
+		jQuery("#verifyPasswordCheck").html('<span style="background-color: red; padding: 5px;">Le mot de passe n&#39;est pas identique</span>');
+	}
+    });
+    jQuery("#phone").keyup(function() {
+	    jQuery(this).val(jQuery(this).val().replace(/^(\d{3})(\d{3})(\d+)$/, "($1)$2-$3"));
+    });
+    jQuery("#postalcode").keyup(function() {
+	    var regex = /^[A-Za-z]\d[A-Za-z] ?\d[A-Za-z]\d$/;
+	    if (!regex.test(jQuery('#postalcode').val())) {
+	        jQuery(this).css('border', '1px solide red');
+	    } else {
+	        jQuery(this).css('border', '1px solide green');
+	    }
+   });
 });
