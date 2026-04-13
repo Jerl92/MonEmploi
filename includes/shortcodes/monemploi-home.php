@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 function monemploi_home() {
 
 	echo '<h4>MonEmploi.net est un site québécois de recherche d&#39;emploi pour la province de Québec.</h4>';

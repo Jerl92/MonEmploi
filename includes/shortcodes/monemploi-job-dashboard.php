@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 function monemploi_job_dashboard() {
 
 	$current_user = wp_get_current_user();

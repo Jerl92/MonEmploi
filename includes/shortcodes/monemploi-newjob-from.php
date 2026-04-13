@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 function monemploi_newjob_from() {
 	$current_user = wp_get_current_user();
 	$user_meta = get_userdata($current_user->ID);

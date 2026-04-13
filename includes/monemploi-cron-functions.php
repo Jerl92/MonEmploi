@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 	function myprefix_custom_cron_schedule( $schedules ) {
 	    $schedules['every_one_minute'] = array(
 	        'interval' => 60,

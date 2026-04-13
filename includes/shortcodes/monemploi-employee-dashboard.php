@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 function employee_dashboard() {
 	if ($_GET['user']) {
 	

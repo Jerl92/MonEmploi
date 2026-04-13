@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /* Enqueue Script */
 add_action( 'wp_enqueue_scripts', 'monemploi_ajax_scripts' );
 
