@@ -188,8 +188,9 @@ add_action('init', function(){
   // see the codex for wp_signon()
   $user = wp_signon();
 
-  if(is_wp_error($result))
-    wp_die('Échec de la connexion. Mot de passe ou nom d&#8216;utilisateur incorrect?');
+    if(is_wp_error($user)){
+    	wp_die('Échec de la connexion. Mot de passe ou nom d&#8216;utilisateur incorrect?');3
+    }
  
     $user_info = get_userdata($user->ID);
     $user_roles = $user_info->roles;
@@ -201,7 +202,7 @@ add_action('init', function(){
     }
 
   // redirect back to the requested page if login was successful    
-  header('Location: ' . $_SERVER['REQUEST_URI']);
+  // header('Location: ' . $_SERVER['REQUEST_URI']);
   exit;
 });
 
@@ -288,7 +289,7 @@ add_action('init', function(){
 	    
 	    update_user_meta($user_id, 'unique_key', $unique_key);
 	    if($account_status != 'approved') {
-	    	update_user_meta($user_id, 'account_status', 'draft');
+	    	update_user_meta($user_id, 'account_status', 'pending');
 	    }
 	    
 	    update_user_meta($user_id, 'company_key', $company);
@@ -300,7 +301,7 @@ add_action('init', function(){
 	    update_user_meta($user_id, 'phone_key', $phone);
 	    update_user_meta($user_id, 'poste_key', $poste);
         
-        if($account_status == 'draft' || $account_status == ''){
+        if($account_status == 'pending' || $account_status == ''){
     
             $subject = 'Votre compte ' . $username . ' vous devez confirmer votre compte.';
             $message = '
@@ -326,5 +327,12 @@ add_action('init', function(){
   }
 
 });
+
+function enqueue_frontend_media_scripts() {
+    if (is_user_logged_in()) { // Optional: restrict to logged-in users
+        wp_enqueue_media();
+    }
+}
+add_action('wp_enqueue_scripts', 'enqueue_frontend_media_scripts');
 
 ?>
