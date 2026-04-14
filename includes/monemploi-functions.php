@@ -202,7 +202,7 @@ add_action('init', function(){
     }
 
   // redirect back to the requested page if login was successful    
-  // header('Location: ' . $_SERVER['REQUEST_URI']);
+  header('Location: ' . $_SERVER['REQUEST_URI']);
   exit;
 });
 
