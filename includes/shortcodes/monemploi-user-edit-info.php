@@ -59,7 +59,7 @@ function monemploi_user_edit_info() {
 	    <input type="file" name="cover_photo_file" id="cover_photo_file" />
 	    <input type="submit" name="submit_upload_cover_photo" value="Upload cover photo" />
 	</form><?php
-	h
+	
 	?><form id="user-avatar-upload" method="POST" enctype="multipart/form-data">
 	    <?php wp_nonce_field('user_avatar_media_upload', 'user_avatar_media_nonce'); ?>
 	    <input type="file" name="user_avatar_file" id="user_avatar_file" />
