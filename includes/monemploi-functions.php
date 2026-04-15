@@ -183,27 +183,27 @@ add_action('init', function(){
 
   // not the login request?
   if(!isset($_POST['action']) || $_POST['action'] !== 'my_login_action')
-    return;
-
-  // see the codex for wp_signon()
-  $user = wp_signon();
-
-    if(is_wp_error($user)){
-    	wp_die('Échec de la connexion. Mot de passe ou nom d&#8216;utilisateur incorrect?');3
-    }
- 
-    $user_info = get_userdata($user->ID);
-    $user_roles = $user_info->roles;
-    if(implode($user_roles) != 'administrator'){
-        if(get_user_meta($user->ID, 'account_status', true) != 'approved'){
-            wp_logout();
-            wp_die('Votre compte n&#8216;est pas encore confirmé, veuillez regarder vos emails.');
+      return;
+  
+      // see the codex for wp_signon()
+      $user = wp_signon();
+    
+        if(is_wp_error($user)){
+        	wp_die('Échec de la connexion. Mot de passe ou nom d&#8216;utilisateur incorrect?');
         }
-    }
-
-  // redirect back to the requested page if login was successful    
-  header('Location: ' . $_SERVER['REQUEST_URI']);
-  exit;
+     
+        $user_info = get_userdata($user->ID);
+        $user_roles = $user_info->roles;
+        if(implode($user_roles) != 'administrator'){
+            if(get_user_meta($user->ID, 'account_status', true) != 'approved'){
+                wp_logout();
+                wp_die('Votre compte n&#8216;est pas encore confirmé, veuillez regarder vos emails.');
+            }
+        }
+    
+      // redirect back to the requested page if login was successful    
+      header('Location: ' . $_SERVER['REQUEST_URI']);
+      exit;
 });
 
 function generateRandomString($length = 10) {
@@ -221,7 +221,8 @@ function generateRandomString($length = 10) {
 add_action('init', function(){
 
   // not the login request?
-  if(isset($_POST['action']) || $_POST['action'] === 'my_register_action') {
+  if(!isset($_POST['action']) || $_POST['action'] !== 'my_register_action')
+      return;
     
     $errors = new WP_Error();
     
@@ -323,8 +324,6 @@ add_action('init', function(){
         	echo $error;
         }
     }
-    
-  }
 
 });
 
@@ -334,5 +333,370 @@ function enqueue_frontend_media_scripts() {
     }
 }
 add_action('wp_enqueue_scripts', 'enqueue_frontend_media_scripts');
+
+add_action('init', function(){
+
+  // not the login request?
+  if(!isset($_POST['action']) || $_POST['action'] !== 'update_user_info_action')
+      return;
+    
+    $errors = new WP_Error();
+    
+    $user_firstname = $_POST['user_firstname'];
+    $user_lastname = $_POST['user_lastname'];
+    $user_email = $_POST['user_email'];
+    $company_key = $_POST['company_key'];
+    $adresse_key = $_POST['adresse_key'];
+    $city_key = $_POST['city_key'];
+    $province_key = $_POST['province_key'];
+    $country_key = $_POST['country_key'];
+    $postal_code_key = $_POST['postal_code_key'];
+    $phone_key = $_POST['phone_key'];
+    $poste_key = $_POST['poste_key'];
+    
+    $user_id = get_current_user_id();
+    
+    $already_email = 0;
+    $all_users = get_users();
+    foreach ($all_users as $user) {
+        if($user_email == $user->user_email && $user_id != $user->ID) {
+            $errors->add('already_email', 'Le email existe deja sur un autre compte.');
+            $alreadyemail = 1;
+        }
+    }
+    
+    $unique_key = generateRandomString();
+    $current_user = wp_get_current_user();
+    $user_email_ = $current_user->user_email;
+    if($already_email === 0 && $user_email_ != $user_email) {
+        update_user_meta($user_id, 'unique_email_key', $unique_key);
+        update_user_meta($user_id, 'new_email_key', $user_email);
+        $subject = 'Votre compte ' . $username . ' vous devez confirmer votre compte.';
+            $message = '
+                <p>Bonjour ' . $firstname . ' ' . $lastname . '</p>
+                <p>Votre compte a une nouvelle adresse couriel. il ne reste juste qu&#8216;à confirmer le tout.</p>
+                <p>Veuiller cliquer ici: <a href="https://monemploi.net/profile/?new_email=' . $unique_key . '">Lien d&#8216;activation</a></p>
+            ';
+            $headers = array('Content-Type: text/html; charset=UTF-8');
+    
+            // Send the email
+            wp_mail( $user_email, $subject, $message, $headers );
+       
+    }
+	
+    	$user_data = array(
+    	    'ID'         => $user_id,
+    	    'first_name' => $user_firstname,
+    	    'last_name'  => $user_lastname
+    	);
+	
+	$updated_user_id = wp_update_user( $user_data );
+	
+	if ( is_wp_error( $updated_user_id ) ) {
+        foreach ($errors->get_error_messages() as $error) {
+        	echo $error;
+        }
+    } else {
+    	update_user_meta($updated_user_id, 'company_key', $company_key);
+    	update_user_meta($updated_user_id, 'adresse_key', $adresse_key);
+    	update_user_meta($updated_user_id, 'city_key', $city_key);
+    	update_user_meta($updated_user_id, 'province_key', $province_key);
+    	update_user_meta($updated_user_id, 'country_key', $country_key);
+    	update_user_meta($updated_user_id, 'postal_code_key', $postal_code_key);
+    	update_user_meta($updated_user_id, 'phone_key', $phone_key);
+    	update_user_meta($updated_user_id, 'poste_key', $poste_key);
+    	
+        header("Location: " . $_SERVER['REQUEST_URI'] . "?update=true");
+   
+    }
+    
+});
+
+
+add_action('init', function(){
+
+  // not the login request?
+  if(!isset($_POST['action']) || $_POST['action'] !== 'delete_document_attachment')
+      return;
+      
+      	$object_id = $_POST['attachmentid'];
+	
+	$deleted_attachment = wp_delete_attachment( $object_id, true);
+	
+	if ( $deleted_attachment ) {
+		header("Location: " . $_SERVER['REQUEST_URI'] . "?delete_attachment=". $object_id ."");
+	}
+	
+});
+
+add_action('init', function(){
+
+  // not the login request?
+  if(!isset($_POST['action']) || $_POST['action'] !== 'ns_submit')
+      return;
+
+	$emploi_job_title = $_POST['job_title'];
+	$ticket_details = $_POST['new_job_details'];
+	$code_postal = $_POST['code_postal'];
+	$education = $_POST['education'];
+	$annees_dexperience = $_POST['annees_dexperience'];
+	$salaire = $_POST['salaire'];
+	$city = $_POST['city'];
+	$datepickerstartjobscheduled = $_POST['datepickerstartjobscheduled'];
+	$datepickerendjobscheduled = $_POST['datepickerendjobscheduled'];
+	$timestartjobscheduled = $_POST['timestartjobscheduled'];
+	$timeendjobscheduled = $_POST['timeendjobscheduled'];
+        $add_heures = $_POST['add_heures'];
+        $type_demploi = $_POST['type_demploi'];
+        $type_dhoraire = $_POST['type_dhoraire'];
+        $disponibilites1 = $_POST['disponibilites1'];
+        $disponibilites2 = $_POST['disponibilites2'];
+        $duree_emploi = $_POST['duree_emploi'];
+        $permis_conduire = $_POST['permis_conduire'];
+        $besoin_voiture = $_POST['besoin_voiture'];
+        $activite_professionnelle = $_POST['activite_professionnelle'];
+        $job_status =  $_POST['job_status'];
+        $postid_update =  $_POST['postid'];
+        
+	if($job_status == 'new' && $postid_update == 0){
+	
+		if($datepickerstartjobscheduled != null && $timestartjobscheduled != null) {
+			$schedule_timestamp = strtotime($datepickerstartjobscheduled . 'T' . $timestartjobscheduled);	
+			$strtotime_now = current_time('timestamp');
+			$publish_date = date('Y-m-d H:i:s', $schedule_timestamp);
+			$publish_date_gmt = get_gmt_from_date($publish_date);
+			
+			if($strtotime_now < $schedule_timestamp) {
+			
+				$new_post = array(
+					'post_title' => $emploi_job_title,
+					'post_content' => $ticket_details,
+					'post_status' => 'future',
+				    	'post_date'     => $publish_date,
+				    	'post_date_gmt' => $publish_date_gmt,
+					'post_author' => get_current_user_id(),
+					'post_type' => 'emploi'
+				);
+			
+			} else if($strtotime_now > $schedule_timestamp) {
+			
+				$new_post = array(
+					'post_title' => $emploi_job_title,
+					'post_content' => $ticket_details,
+					'post_status' => 'publish',
+					'post_date_gmt' => date('Y-m-d H:i:s'),
+					'post_author' => get_current_user_id(),
+					'post_type' => 'emploi'
+				);
+			}
+			
+		} else {
+			
+			$new_post = array(
+				'post_title' => $emploi_job_title,
+				'post_content' => $ticket_details,
+				'post_status' => 'publish',
+				'post_date_gmt' => date('Y-m-d H:i:s'),
+				'post_author' => get_current_user_id(),
+				'post_type' => 'emploi'
+			);
+			
+		}
+		$postid = wp_insert_post($new_post);
+	    
+	    	add_post_meta( $postid, 'my_code_postal_key', $code_postal );
+	    	add_post_meta( $postid, 'my_education_key', $education );
+	    	add_post_meta( $postid, 'my_annees_dexperience_key', $annees_dexperience );
+	    	add_post_meta( $postid, 'my_salaire_key', $salaire );
+	    	add_post_meta( $postid, 'my_city_key', $city );
+	    	if($datepickerstartjobscheduled == '' && $timestartjobscheduled == ''){
+	    		add_post_meta( $postid, 'my_start_job_scheduled_key', '');
+	    	} else {
+	    		add_post_meta( $postid, 'my_start_job_scheduled_key', strtotime($datepickerstartjobscheduled . 'T' . $timestartjobscheduled));
+	    	}
+	    	if($datepickerendjobscheduled == '' && $timeendjobscheduled == ''){
+			add_post_meta( $postid, 'my_end_job_scheduled_key', '');
+	    	} else {
+	    		add_post_meta( $postid, 'my_end_job_scheduled_key', strtotime($datepickerendjobscheduled . 'T' . $timeendjobscheduled));
+	    	}
+	    	add_post_meta( $postid, 'my_start_job_date_scheduled_key', $datepickerstartjobscheduled );
+	    	add_post_meta( $postid, 'my_start_job_time_scheduled_key', $timestartjobscheduled );
+	    	add_post_meta( $postid, 'my_end_job_date_scheduled_key', $datepickerendjobscheduled );
+	    	add_post_meta( $postid, 'my_end_job_time_scheduled_key', $timeendjobscheduled );   	
+	    	add_post_meta( $postid, 'my_add_heures_key', $add_heures );
+	    	add_post_meta( $postid, 'my_type_demploi_key', $type_demploi );
+		add_post_meta( $postid, 'my_type_dhoraire_key', $type_dhoraire );
+		add_post_meta( $postid, 'my_disponibilites1_key', $disponibilites1 );
+		add_post_meta( $postid, 'my_disponibilites2_key', $disponibilites2 );
+		add_post_meta( $postid, 'my_duree_emploi_key', $duree_emploi );
+		add_post_meta( $postid, 'my_permis_conduire_key', $permis_conduire );
+		add_post_meta( $postid, 'my_besoin_voiture_key', $besoin_voiture );
+		add_post_meta( $postid, 'my_activite_professionnelle_key', $activite_professionnelle );
+	}
+	
+	if($job_status == 'update' && $postid_update != 0){
+		
+		if($datepickerstartjobscheduled != null && $timestartjobscheduled != null) {
+			$schedule_timestamp = strtotime($datepickerstartjobscheduled . 'T' . $timestartjobscheduled);	
+			$strtotime_now = current_time('timestamp');
+			$publish_date = date('Y-m-d H:i:s', $schedule_timestamp);
+			$publish_date_gmt = get_gmt_from_date($publish_date);
+			
+			if($strtotime_now < $schedule_timestamp) {
+			
+				$arg = array(
+					'ID'           => $postid_update,
+					'post_title' => $emploi_job_title,
+					'post_content' => $ticket_details,
+					'post_status' => 'future',
+				    	'post_date'     => $publish_date,
+				    	'post_date_gmt' => $publish_date_gmt,
+					'post_author' => get_current_user_id(),
+					'post_type' => 'emploi'
+				);
+			
+			} else if($strtotime_now >= $schedule_timestamp) {
+			
+				$arg = array(
+					'ID'           => $postid_update,
+					'post_title' => $emploi_job_title,
+					'post_content' => $ticket_details,
+					'post_status' => 'publish',
+					'post_date_gmt' => date('Y-m-d H:i:s'),
+					'post_author' => get_current_user_id(),
+					'post_type' => 'emploi'
+				);
+			}
+			
+		} else {
+			
+			$arg = array(
+				'ID'           => $postid_update,
+				'post_title' => $emploi_job_title,
+				'post_content' => $ticket_details,
+				'post_status' => 'publish',
+				'post_date_gmt' => date('Y-m-d H:i:s'),
+				'post_author' => get_current_user_id(),
+				'post_type' => 'emploi'
+			);
+			
+		}
+		wp_update_post( $arg );
+	    
+	    	update_post_meta( $postid_update, 'my_code_postal_key', $code_postal );
+	    	update_post_meta( $postid_update, 'my_education_key', $education );
+	    	update_post_meta( $postid_update, 'my_annees_dexperience_key', $annees_dexperience );
+	    	update_post_meta( $postid_update, 'my_salaire_key', $salaire );
+	    	update_post_meta( $postid_update, 'my_city_key', $city );
+	    	if($datepickerstartjobscheduled == '' && $timestartjobscheduled == ''){
+	    		update_post_meta( $postid_update, 'my_start_job_scheduled_key', '');
+	    	} else {
+	    		update_post_meta( $postid_update, 'my_start_job_scheduled_key', strtotime($datepickerstartjobscheduled . 'T' . $timestartjobscheduled));
+	    	}
+	    	if($datepickerendjobscheduled == '' && $timeendjobscheduled == ''){
+			update_post_meta( $postid_update, 'my_end_job_scheduled_key', '');
+	    	} else {
+	    		update_post_meta( $postid_update, 'my_end_job_scheduled_key', strtotime($datepickerendjobscheduled . 'T' . $timeendjobscheduled));
+	    	}
+	    	update_post_meta( $postid_update, 'my_start_job_date_scheduled_key', $datepickerstartjobscheduled );
+	    	update_post_meta( $postid_update, 'my_start_job_time_scheduled_key', $timestartjobscheduled );
+	    	update_post_meta( $postid_update, 'my_end_job_date_scheduled_key', $datepickerendjobscheduled );
+	    	update_post_meta( $postid_update, 'my_end_job_time_scheduled_key', $timeendjobscheduled );   	
+	    	update_post_meta( $postid_update, 'my_add_heures_key', $add_heures );
+	    	update_post_meta( $postid_update, 'my_type_demploi_key', $type_demploi );
+		update_post_meta( $postid_update, 'my_type_dhoraire_key', $type_dhoraire );
+		update_post_meta( $postid_update, 'my_disponibilites1_key', $disponibilites1 );
+		update_post_meta( $postid_update, 'my_disponibilites2_key', $disponibilites2 );
+		update_post_meta( $postid_update, 'my_duree_emploi_key', $duree_emploi );
+		update_post_meta( $postid_update, 'my_permis_conduire_key', $permis_conduire );
+		update_post_meta( $postid_update, 'my_besoin_voiture_key', $besoin_voiture );
+		update_post_meta( $postid_update, 'my_activite_professionnelle_key', $activite_professionnelle );
+	
+	}
+	
+	if($job_status === 'new' && $postid_update === 0){
+	
+		$url = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+		$clean_url = explode('?', $url)[0];			
+		header("Location: " . $clean_url . "?add_job=". $postid ."");
+	
+	}	
+	
+	if($job_status === 'update' && $postid_update !== 0){
+	
+		$url = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+		$clean_url = explode('?', $url)[0];
+		header("Location: " . $clean_url . "?update_job=". $postid_update ."");
+	
+	}
+	
+});
+
+add_action('init', function(){
+
+  // not the login request?
+  if(!isset($_POST['action']) || $_POST['action'] !== 'submit_response')
+      return;
+      
+        $errors = 0;
+
+	$postid = $_POST['postid'];
+	$comment = $_POST['ns_response_msg'];
+	$current_user_id = get_current_user_id();
+	$current_user = get_user_by( 'id', $current_user_id );
+	
+	if(strlen($comment) < 3){
+		$errors = 'Le commentaire est doit etre 3 caractère ou plus.';
+	}
+
+	if($errors === 0){
+		$commentdata = array(
+			'comment_post_ID'       => absint($postid),
+			'comment_author'        => wp_strip_all_tags($current_user->display_name),
+			'comment_author_email'  => sanitize_email($current_user->user_email),
+			'comment_author_url'    => esc_url($current_user->user_url),
+			'comment_content'       => $comment,
+			'comment_type'          => 'candidacy_response',
+			'comment_parent'        => 0,
+			'user_id'               => absint($current_user->ID),
+			'comment_approved'      => 1
+		);
+
+		$comment_id = wp_new_comment($commentdata);
+	
+		$current_user = wp_get_current_user();
+		$user_meta = get_userdata($current_user->ID);
+		$user_role = $user_meta->roles[0];
+		
+		if($user_role == 'employeur'){
+			$authorid = get_post_field( 'post_author', $postid );
+			$author_email = get_the_author_meta( 'user_email', $authorid );
+			$to = $author_email;
+		}
+		if($user_role == 'employer'){
+			$authorid = get_post_meta( $postid, 'my_author_id_key', true );
+			$author_email = get_the_author_meta( 'user_email', $authorid );
+			$to = $author_email;
+		}
+		
+		$subject = sprintf ( __( 'Nouvelle résponse #%s — %s — %s', 'monemploi' ), $postid, get_the_title($postid), get_bloginfo( 'name', 'display' ) );
+		$headers = array('Content-Type: text/html; charset=UTF-8');
+		
+		$message[] .= '<p>';
+		$message[] .= 'Nouvelle résponse #' . $postid;
+		$message[] .= '</p>';
+		$message[] .= '<a href="' . get_permalink( $postid ) . '">Voire la résponse</a>';
+		
+		wp_mail($to, $subject, implode($message), $headers);
+	
+	}
+	
+	if ($errors === 0) {
+        	header("Location: " . $_SERVER['REQUEST_URI'] . "?add_comment=". $comment_id ."");
+    	} else {
+		 wp_die($errors);
+	}
+	
+});
 
 ?>

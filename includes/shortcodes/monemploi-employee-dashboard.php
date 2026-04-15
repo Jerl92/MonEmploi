@@ -18,26 +18,31 @@ function employee_dashboard() {
 			$user_meta = get_userdata($userid);
 			$user_role = $user_meta->roles[0];
 			
-				echo '<h2>'. $get_user_by_username->user_firstname . ' ' . $get_user_by_username->user_lastname . '</h2>';
-				echo ' - ';
-				echo '<h3>' . get_user_meta($user_id, 'company_key', true) . '</h3>';
+				echo '<h1>'. $get_user_by_username->user_firstname . ' ' . $get_user_by_username->user_lastname . ' - ' . get_user_meta($userid, 'company_key', true) . '</h1>';
 				
 				?><div><?php 
 				   
 				    $user_id = intval($userid); // Replace with the desired user ID
 				    $userdata = get_userdata( $user_id );
 				    echo '<div style="display: block;">';
-					echo get_user_meta($user_id, 'cover_photo', true);
+					$cover_photo = get_user_meta($user_id, 'cover_photo', true);
+					$cover_url = wp_get_attachment_url($cover_photo);
+					if($cover_url){
+						echo '<img src="'. $cover_url .'" style="width: 100%; height: 300px; object-fit: cover; object-position: center;">';
+				    	} else {
+					    echo 'Cover image not found.';
+					}
 				    
 				    // Get the URL of the profile picture with a specific size (e.g., 150x150 pixels)
-					$image_url = get_avatar_url( $user_id, array( 'size' => 75 ) );
+				    	$user_avatar = get_user_meta($user_id, 'user_avatar', true);
+					$image_url = wp_get_attachment_url($user_avatar);
 					
 					if ( $image_url ) {
-					    echo '<img src="' . esc_url( $image_url ) . '" alt="User Profile Image" style="border-radius: 50%; width: 75px ">';
+					    echo '<img src="' . esc_url( $image_url ) . '" style="border-radius: 50%; width: 150px ">';
 					} else {
 					    echo 'Profile image not found.';
 					}
-					echo '</div>';
+				   echo '</div>';
 									    
 				    
 				    echo $get_user_by_username->user_nicename;

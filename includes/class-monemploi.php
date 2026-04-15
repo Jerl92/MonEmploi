@@ -70,7 +70,7 @@ class Monemploi {
 		if ( defined( 'MONEMPLOI_VERSION' ) ) {
 			$this->version = MONEMPLOI_VERSION;
 		} else {
-			$this->version = '1.0.0';
+			$this->version = '0.4.5';
 		}
 		$this->plugin_name = 'monemploi';
 

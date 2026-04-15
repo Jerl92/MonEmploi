@@ -115,6 +115,8 @@ class Monemploi_Public {
 	        wp_enqueue_script( 'jquery-ui', plugin_dir_url( __FILE__ ) . 'js/jquery-ui.js', array( 'jquery' ), $this->version, false );
 	
 	        wp_enqueue_script( 'jQuery-ui-touch-punch', plugin_dir_url( __FILE__ ) . 'js/jQuery-ui-touch-punch.js', array( 'jquery' ), $this->version, false );
+	        
+	        wp_enqueue_script( 'media-uploader', plugin_dir_url( __FILE__ ) . 'js/media-uploader.js', array( 'jquery' ), $this->version, false );
 
 	}
 

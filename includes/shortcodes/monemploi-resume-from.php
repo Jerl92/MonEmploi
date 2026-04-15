@@ -7,6 +7,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 function monemploi_resume_from() {
 
     if(is_user_logged_in()){
+    	
+    	    if (isset($_GET['delete_attachment'])) {
+	        echo "<p>Attachment ID ".$_GET['delete_attachment']." permanently deleted.</p>";
+	    }
     
         ?><form action="<?php echo esc_url( admin_url('admin-post.php') ); ?>" method="post" enctype="multipart/form-data">
             <!-- Security field -->
@@ -43,11 +47,17 @@ function monemploi_resume_from() {
                 $file_title = apply_filters( 'the_title', $attachment->post_title );
         
                 echo '<div class="document-attachment-wrapper" style="display: flex;">';
-        	        echo '<a href="' . esc_url( $file_url ) . '" style="width: calc(100% - 25px);">' . esc_html( $file_title ) . '</a>';
-            		echo '<div class="delete-document-attachment" style="width: 25px" data-object-id="' . $attachment->ID . '">';
-            			echo '<i class="material-icons">';
-            				echo 'delete';
-            			echo '</i>';
+        	        echo '<a href="' . esc_url( $file_url ) . '" style="width: calc(100% - 75px);">' . esc_html( $file_title ) . '</a>';
+            		echo '<div class="delete-document-attachment" style="width: 75px">';
+	                        echo '<form action="'. $_SERVER['REQUEST_URI'] .'" method="post">';
+		                        echo '<input type="hidden" name="attachmentid" value="' . $attachment->ID . '" />';
+		                        echo '<input type="hidden" name="action" value="delete_document_attachment" />';
+		                        echo '<button type="submit" name="submit" style="padding: 0; margin: 0;">';
+		                        	echo '<i class="material-icons">';
+		            				echo 'delete';
+		            			echo '</i>';
+		            		echo '</button>';
+	                        echo '</form>';
             		echo '</div>';
                 echo '</div>';
             }
