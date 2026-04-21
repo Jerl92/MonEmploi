@@ -181,19 +181,18 @@ function monemploi_job_dashboard() {
 			<?php } ?>
 		</select>
 	    	<select name="disponibilites" id="disponibilites_filter">
-			<?php $type_disponibilites1 = $_GET['disponibilites1']; ?>
-			<?php $type_disponibilites2 = $_GET['disponibilites2']; ?>
-			<?php if($type_disponibilites1 == '' && $type_disponibilites2 == ''){ ?>
+			<?php $type_disponibilites = $_GET['disponibilites']; ?>
+			<?php if($type_disponibilites == ''){ ?>
 				<option value="" selected><?php echo esc_html( 'Type de disponibilités' , 'monemploi' ); ?></option>
 			<?php } else { ?>
 				<option value=""><?php echo esc_html( 'Type de disponibilités' , 'monemploi' ); ?></option>
 			<?php } ?>
-			<?php if($type_disponibilites1 == 1){ ?>
+			<?php if($type_disponibilites == 1){ ?>
 				<option value="1" selected>Semaine</option>
 			<?php } else { ?>
 				<option value="1">Semaine</option>
 			<?php } ?>
-			<?php if($type_disponibilites2 == 1){ ?>
+			<?php if($type_disponibilites == 2){ ?>
 				<option value="2" selected>Fin de semaine</option>
 			<?php } else { ?>
 				<option value="2">Fin de semaine</option>
@@ -594,7 +593,7 @@ function monemploi_job_dashboard() {
 			);
 		}
 		 
-		if ( $_GET['disponibilites'] != ''  ) {
+		if ( $_GET['disponibilites'] != '' ) {
 			if($_GET['disponibilites'] == 1) {
 		        	$get_jobs_args['meta_query'][] = array(
 				        array(
@@ -774,7 +773,7 @@ function monemploi_job_dashboard() {
 			);
 		 }
 
-		if ( $_GET['disponibilites1'] == 1 || $_GET['disponibilites2'] == 1) {
+		if ( $_GET['disponibilites'] != '' ) {
 			if($_GET['disponibilites'] == 1) {
 		        	$get_jobs_args['meta_query'][] = array(
 				        array(
@@ -783,7 +782,7 @@ function monemploi_job_dashboard() {
 				            'compare' => '=',
 				        )
 				);	
-			} elseif ($_GET['disponibilites2'] == 1) {
+			} elseif ($_GET['disponibilites'] == 2) {
 		        	$get_jobs_args['meta_query'][] = array(
 				        array(
 				            'key'     => 'my_disponibilites2_key',
@@ -791,21 +790,6 @@ function monemploi_job_dashboard() {
 				            'compare' => '=',
 				        )
 				);	
-			} else  {
-		        	$get_jobs_args['meta_query'][] = array(
-				        array(
-				            'key'     => 'my_disponibilites1_key',
-				            'value'   => intval( '0' ),
-				            'compare' => '=',
-				        )
-				    );	
-				    $get_jobs_args['meta_query'][] = array(
-				        array(
-				            'key'     => 'my_disponibilites2_key',
-				            'value'   => intval( '0' ),
-				            'compare' => '=',
-				        )
-				    );	
 			}
 		 }
 
