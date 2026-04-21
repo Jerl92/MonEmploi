@@ -266,8 +266,6 @@ function employee_dashboard() {
 			    $usermetadata_ = get_user_meta($user_id);
 			    echo '<a href="'. get_site_url() .'/employee/?user='. $user->user_nicename .'">' . $user->user_nicename. '</a>';
 			    echo ' - ';
-			    echo '<a href="'. get_site_url() .'/profile/?user='. $user->user_nicename .'">Profile</a>';
-			    echo ' - ';
 			    echo get_user_meta($user_id, 'company_key', true);
 			    echo ' - ';
 		 	    echo $usermetadata_->user_firstname;

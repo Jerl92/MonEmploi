@@ -43,27 +43,17 @@ function monemploi_candidacy_dashboard() {
 			echo '<a href="' . get_permalink( $get_candidacy->ID ) . '">' . $get_candidacy->ID . '</a>';
 		echo '</li>';
 		echo '<li>';
-			echo '<a href="' . get_permalink( get_post_meta($get_candidacy->ID, 'my_postid_key', true) ) . '">' . $get_candidacy->post_title . '</a>';
+			$my_postid = get_post_meta($get_candidacy->ID, 'my_postid_key', true);
+			echo '<a href="' . get_permalink( $my_postid ) . '">' . $get_candidacy->post_title . '</a>';
 		echo '</li>';
 		echo '<li>';
-			if($user_role == 'employeur'){
-				$author = get_post_field( 'post_author', $get_candidacy->ID );
-				$meta_data_rma_author = get_userdata( $author );
-				echo $meta_data_rma_author->first_name;
-				echo ' ';
-				echo $meta_data_rma_author->last_name;
-			}
-			if ($user_role == 'employer'){
-			
-				um_fetch_user( get_post_meta($get_candidacy->ID, 'my_author_id_key', true) );
-				echo um_user('first_name');
-				echo ' ';
-				echo um_user('last_name');
-				echo ' - ';
-				echo um_user('name_org');
-				um_reset_user();
-			
-			}
+			$author = get_post_field( 'post_author', $get_candidacy->ID );
+			$get_user_by_username = get_userdata( $author );
+			echo $get_user_by_username->user_firstname;
+			echo ' ';
+			echo $get_user_by_username->user_lastname;
+			echo ' - ';
+			echo get_user_meta($author, 'company_key', true);
 		echo '</li>';
 		echo '<li>';
 			echo get_the_date( "l F j, Y", $get_candidacy->ID) . ' - ' . get_the_time( '', $get_candidacy->ID );

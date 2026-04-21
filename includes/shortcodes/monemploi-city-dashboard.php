@@ -67,18 +67,14 @@ function monemploi_city() {
 								$author_id = $value[author];
 								echo the_author_meta( 'user_nicename' , $author_id );
 								$usermetadata = get_user_meta(get_current_user_id());
+								$get_user_by_username = get_user_by('ID', $author_id);
 								
-								if ( function_exists( 'um_user_profile_url' ) ) {
-									um_fetch_user( $author_id );
-									$profile_url = um_user_profile_url();
-									echo ' - ';
-									echo um_user('name_org');
-									echo ' - ';
-									echo um_user('first_name');
-									echo ' ';
-									echo um_user('last_name');
-									um_reset_user();
-								}
+								echo ' - ';
+								echo get_user_meta($author_id, 'company_key', true);
+								echo ' - ';
+								echo $get_user_by_username->user_firstname;
+								echo ' ';
+								echo $get_user_by_username->user_lastname;
 												
 								$field_data = $usermetadata['Code_postal'];				
 								if($field_data){
@@ -106,19 +102,15 @@ function monemploi_city() {
 						$author_id = $value[author];
 						echo the_author_meta( 'user_nicename' , $author_id );
 						$usermetadata = get_user_meta(get_current_user_id());
+						$get_user_by_username = get_user_by('ID', $author_id);
 						
-						if ( function_exists( 'um_user_profile_url' ) ) {
-							um_fetch_user( $author_id );
-							$profile_url = um_user_profile_url();
-							echo ' - ';
-							echo um_user('name_org');
-							echo ' - ';
-							echo um_user('first_name');
-							echo ' ';
-							echo um_user('last_name');
-							um_reset_user();
-						}
-										
+						echo ' - ';
+						echo get_user_meta($author_id, 'company_key', true);
+						echo ' - ';
+						echo $get_user_by_username->user_firstname;
+						echo ' ';
+						echo $get_user_by_username->user_lastname;
+								
 						$field_data = $usermetadata['Code_postal'];				
 						if($field_data){
 							echo '<span class="autocompleteDeparture">';

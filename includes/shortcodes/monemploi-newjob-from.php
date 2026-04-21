@@ -405,7 +405,9 @@ function monemploi_newjob_from() {
 				
 			</div><?php
 	} else {
-		?><h2>Vous n'avez pas les autorisations pour cree un emploi.<h2><?php
+	
+		echo '<h2>Vous n&#39;avez pas les autorisations pour crée un emploi.<h2>';
+		
 	}
 }
 add_shortcode('monemploi-newjob-from', 'monemploi_newjob_from');
