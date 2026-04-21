@@ -795,7 +795,7 @@ add_action('init', function(){
 add_action('init', function(){
 
 	// not the login request?
-	if(!isset($_POST['action']) || $_POST['action'] !== 'my_frogot_password_action')
+	if(!isset($_POST['action']) || $_POST['action'] !== 'my_forget_password_action')
 		return;
 
     $login = sanitize_text_field($_POST['login']);
@@ -803,7 +803,7 @@ add_action('init', function(){
     $current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . strtok($_SERVER['REQUEST_URI'], '?');
 
     if($login == ''){
-        header("Location: " . $current_url . "?frogot_password_empty=true");
+        header("Location: " . $current_url . "?forget_password_empty=true");
         return;
     } else {
         if(filter_var($login, FILTER_VALIDATE_EMAIL)) {
@@ -817,25 +817,25 @@ add_action('init', function(){
     
     update_user_meta($user->ID, 'unique_string', $unique_string);
     
-            $subject = 'Votre mot de passe ' . $user->user_login . ' vous devez confirmer votre nouveaux mot de passe.';
-            $message = '
-                <p>Bonjour ' . $user->first_name . ' ' . $user->last_name . '</p>
-                <p>Vous avez demander un renisilisation du mot de passe de votre compte.</p>
-                <p>Veuiller cliquer ici: <a href="'. $current_url .'?frogot_password_key='. $unique_string .'">Lien de récuperation</a></p>
-            ';
-            $headers = array('Content-Type: text/html; charset=UTF-8');
-    
-            // Send the email
-            wp_mail( $user->user_email, $subject, $message, $headers );
+    $subject = 'Votre mot de passe ' . $user->user_login . ' vous devez confirmer votre nouveaux mot de passe.';
+    $message = '
+        <p>Bonjour ' . $user->first_name . ' ' . $user->last_name . '</p>
+        <p>Vous avez demandé un réinitialisation du mot de passe de votre compte.</p>
+        <p>Veuillez cliquer ici: <a href="'. $current_url .'?forget_password_key='. $unique_string .'">Lien de récuperation</a></p>
+    ';
+    $headers = array('Content-Type: text/html; charset=UTF-8');
 
-            header("Location: " . $current_url . "?frogot_password_send=true");
+    // Send the email
+    wp_mail( $user->user_email, $subject, $message, $headers );
+
+    header("Location: " . $current_url . "?forget_password_send=true");
             
 });
 
 add_action('init', function(){
 
 	// not the login request?
-	if(!isset($_POST['action']) || $_POST['action'] !== 'my_frogot_password_new_action')
+	if(!isset($_POST['action']) || $_POST['action'] !== 'my_forget_password_new_action')
 		return;
     
     $samepassword = 0;
@@ -861,7 +861,7 @@ add_action('init', function(){
         
         if ( ! is_wp_error( $result ) ) {
             update_user_meta($userid, 'unique_string', null);
-            header("Location: " . $current_url . "?frogot_password_new=true");
+            header("Location: " . $current_url . "?forget_password_new=true");
         }
     }
 });
@@ -895,5 +895,24 @@ function employer_user_role() {
         )
     );
 }
+
+add_action( 'init', 'redirect_to_custom_login' );
+function redirect_to_custom_login() {
+    global $pagenow;
+    // Check if on the login page and NOT trying to log out
+    if ( 'wp-login.php' == $pagenow && !isset($_GET['action']) ) {
+        wp_redirect( home_url( '/login/' ) );
+        exit();
+    }
+}
+
+/**
+ * Redirect default login URL to a custom page
+ */
+function my_custom_login_url( $login_url, $redirect, $force_reauth ) {
+    $custom_login_page = home_url( '/login/' ); // Your custom page slug
+    return add_query_arg( 'redirect_to', $redirect, $custom_login_page );
+}
+add_filter( 'login_url', 'my_custom_login_url', 10, 3 );
 
 ?>
