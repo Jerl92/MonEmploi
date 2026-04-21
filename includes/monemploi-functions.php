@@ -784,6 +784,18 @@ add_action('init', function(){
 		foreach ($all_emplois as $post) {
 		    wp_delete_post($post->ID, false);
 		}
+		$args = array(
+		    'post_type'      => 'attachment',
+		    'post_status'    => 'inherit', // Attachments usually have 'inherit' status
+		    'author'         => $user->ID,
+		    'posts_per_page' => -1,          // Get all attachments
+		);
+		$attachments = get_posts($args);
+		if ($attachments) {
+			foreach ($attachments as $attachment) {
+				wp_delete_attachment($attachment->ID, false);
+			}
+		}
 		wp_logout();
 		header("Location: " . trailingslashit( get_home_url() ) . "?delete_account=true");
 	} else {
@@ -870,14 +882,8 @@ add_action( 'init', 'employeur_user_role' );
 
 function employeur_user_role() {
     add_role(
-        'employeur', // Internal role ID
-        __( 'Employeur' ), // Display name
-        array(
-            'read'         => true,
-            'edit_posts'   => true,
-            'upload_files' => true,
-            'delete_posts' => true,
-        )
+        'employeur',
+        __( 'Employeur' ),
     );
 }
 
@@ -885,14 +891,8 @@ add_action( 'init', 'employer_user_role' );
 
 function employer_user_role() {
     add_role(
-        'employer', // Internal role ID
-        __( 'Employer' ), // Display name
-        array(
-            'read'         => true,
-            'edit_posts'   => true,
-            'upload_files' => true,
-            'delete_posts' => true,
-        )
+        'employer',
+        __( 'Employer' ),
     );
 }
 
@@ -914,5 +914,24 @@ function my_custom_login_url( $login_url, $redirect, $force_reauth ) {
     return add_query_arg( 'redirect_to', $redirect, $custom_login_page );
 }
 add_filter( 'login_url', 'my_custom_login_url', 10, 3 );
+
+function hide_admin_bar_settings() {
+?>
+    <style type="text/css">
+        .show-admin-bar {
+            display: none;
+        }
+    </style>
+<?php
+}
+
+function disable_admin_bar()
+{
+    if(current_user_can('employeur') || current_user_can('employer')) {
+        add_filter( 'show_admin_bar', '__return_false' );
+        add_action( 'admin_print_scripts-profile.php', 'hide_admin_bar_settings' );
+    }
+}
+add_action('init', 'disable_admin_bar', 9);
 
 ?>

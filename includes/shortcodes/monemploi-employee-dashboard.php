@@ -259,31 +259,37 @@ function employee_dashboard() {
 		   ?><div style="padding-bottom: 25px;"><?php 
 		   
 		   foreach ($users as $user) {
-		   
-		   	?><div><?php
-			    $user_id = $user->ID; // Replace with the desired user ID
-			    $usermetadata = get_user_meta(get_current_user_id());
-			    $usermetadata_ = get_user_meta($user_id);
-			    echo '<a href="'. get_site_url() .'/employee/?user='. $user->user_nicename .'">' . $user->user_nicename. '</a>';
-			    echo ' - ';
-			    echo get_user_meta($user_id, 'company_key', true);
-			    echo ' - ';
-		 	    echo $usermetadata_->user_firstname;
-		 	    echo ' ';
-			    echo $usermetadata_->user_lastname;
-			    $field_data = $usermetadata['Code_postal'];
-			    	$field_data_ = $usermetadata_['Code_postal'];
-			    	if($field_data && $field_data_){
-					echo '<span class="autocompleteDeparture">';
-						echo '<span class="autocompleteDeparture_'.  $i . '" style="display:none;">'. implode($field_data) . '</span>';
-						echo '<span class="autocompleteArrival_' . $i . '" style="display: none;">' . implode($field_data_) . '</span>';
-						echo ' - <span class="distance_' . $i . '"></span>';
-					echo '</span>';
-				}
-			
-			 ?></div><?php 
-			 
-			 $i++;
+    		   
+    		   	?><div><?php
+    			    $user_id = $user->ID; // Replace with the desired user ID
+    			    $usermetadata = get_user_meta(get_current_user_id());
+    			    $usermetadata_ = get_user_meta($user_id);
+    			    $get_user_by_username = get_user_by('ID', $user_id);
+    			    $company_key = get_user_meta($user_id, 'company_key', true);
+    			    echo '<a href="'. get_site_url() .'/employee/?user='. $user->user_nicename .'">' . $user->user_nicename. '</a>';
+    			    echo ' - ';
+    		 	    echo $get_user_by_username->user_firstname;
+    		 	    echo ' ';
+    			    echo $get_user_by_username->user_lastname;
+    			    if($company_key != ''){
+    			        echo ' - ';
+    			        echo $company_key;
+    			    }
+    			    echo ' - ';
+    			    echo get_user_meta($user_id, 'city_key', true);
+    			    $departure = get_user_meta(get_current_user_id(), 'adresse_key', true) . ' ' . get_user_meta(get_current_user_id(), 'postal_code_key', true);
+    		    	$arrival = get_user_meta($user_id, 'adresse_key', true) . ' ' . get_user_meta($user_id, 'postal_code_key', true);
+    		    	if($departure && $arrival){
+        				echo '<span class="autocompleteDeparture">';
+        					echo '<span class="autocompleteDeparture_'.  $i . '" style="display:none;">'. implode($departure) . '</span>';
+        					echo '<span class="autocompleteArrival_' . $i . '" style="display: none;">' . implode($arrival) . '</span>';
+        					echo ' - <span class="distance_' . $i . '"></span>';
+        				echo '</span>';
+    		        }
+    			
+    			 ?></div><?php 
+    			 
+    			 $i++;
 	    		
 	    	  }
     		
@@ -294,14 +300,13 @@ function employee_dashboard() {
     		 	echo '<h3>Vous n&#8216;avez pas les autorisation pour consulter cette page.</h3>';
     		 	
     		 	$current_user = wp_get_current_user();
-			$user_meta = get_userdata($current_user->ID);
-			$user_role = $user_meta->roles[0];
-			if($user_role == 'employer'){
-					
-				header("Location: " . get_site_url() . "/employee/?user=" . $user_meta->user_nicename . "");
-				die();
-				
-			}
+    			$user_meta = get_userdata($current_user->ID);
+    			$user_role = $user_meta->roles[0];
+    			if($user_role == 'employer'){
+    					
+    				header("Location: " . get_site_url() . "/employee/?user=" . $user_meta->user_nicename . "");
+    				
+    			}
     		 
     		 }
 	

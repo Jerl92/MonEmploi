@@ -112,7 +112,7 @@ function employeur_dashboard() {
 				    if ( get_post_status ( $post->ID ) == 'draft' || get_post_status ( $post->ID ) == 'future' ) {
 			    		        if(get_current_user_id() == $post->post_author) {
 					
-							echo '<a href="' . get_permalink( $post->ID ) .'">' . $post->post_title . '</a>';
+							echo '<a href="' . get_permalink( $post->ID ) .'">' .  $post->ID . ' - ' . $post->post_title . '</a>';
 							$usermetadata = get_user_meta(get_current_user_id());
 							$field_data_adresse = $usermetadata['Adresse'];
 							$field_data = $usermetadata['Code_postal'];
@@ -147,7 +147,7 @@ function employeur_dashboard() {
 					
 					} else {
 					
-							echo '<a href="' . get_permalink( $post->ID ) .'">' . $post->post_title . '</a>';
+							echo '<a href="' . get_permalink( $post->ID ) .'">' .  $post->ID . ' - ' . $post->post_title . '</a>';
 							$usermetadata = get_user_meta(get_current_user_id());
 							$field_data_adresse = $usermetadata['Adresse'];
 							$field_data = $usermetadata['Code_postal'];
@@ -177,11 +177,8 @@ function employeur_dashboard() {
 				}
 				wp_reset_postdata();
 				
-				?>
-				<h4>Avis</h4>
-				
-				<?php
-				
+				echo '<h4>Avis</h4>';
+					
 				$allready_avis = 0;
 								
 				$get_args_avis = array( 
@@ -281,7 +278,7 @@ function employeur_dashboard() {
 
 												</h3>
 												<?php if (intval($avis->post_author) == intval(get_current_user_id())){ ?>
-												<div class="delete-avis" style="width: 25px; padding-top: 25px;" data-object-id="<?php echo $avis->ID; ?>" data-object-string="<?php echo $ramdonstring; ?>" data-object-userid="<?php echo $userid; ?>">												<i class="material-icons">
+												<div class="delete-avis" style="width: 25px; padding-top: 25px;" data-object-id="<?php echo $avis->ID; ?>" data-object-string="<?php echo $ramdonstring; ?>" data-object-userid="<?php echo $userid; ?>">								<i class="material-icons">
 														delete
 													</i>
 												</div>
@@ -350,18 +347,21 @@ function employeur_dashboard() {
 		   
 			   foreach ($users as $user) {
 			   
-			   	$get_user = get_user_by('id', $user->ID);
-			   
 			   	?><div><?php 
 				   
 				    $user_id = $user->ID; // Replace with the desired user ID
-				    echo '<a href="'. get_site_url() .'/employeur/?user='. $get_user->user_nicename .'">Profile</a>';
+				    $company_key = get_user_meta($user->ID, 'company_key', true);
+				    echo '<a href="'. get_site_url() .'/employeur/?user='. $user->user_nicename .'">'. $user->user_nicename .'</a>';
 				    echo ' - ';
-				    echo get_user_meta($user_id, 'company_key', true);
-				    echo ' - ';
-			 	    echo $get_user->user_firstname;
+			 	    echo $user->user_firstname;
 			 	    echo ' ';
-				    echo $get_user->user_lastname;
+				    echo $user->user_lastname;
+				    if($company_key != ''){
+					    echo ' - ';
+					    echo $company_key;
+				    }
+				    echo ' - ';
+				    echo get_user_meta($user->ID, 'city_key', true);
 				
 				 ?></div><?php 
 		    		

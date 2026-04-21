@@ -23,6 +23,8 @@ class monemploi_new_employers_widgets extends WP_Widget {
 	}
 
 	function widget( $args, $instance ) {
+	    
+	    echo '<div>';
 
 		$title = apply_filters( 'widget_title', $instance['title'] );
 		
@@ -57,6 +59,8 @@ class monemploi_new_employers_widgets extends WP_Widget {
 		   echo '</div>'; 
 	    		
 	    }
+	    
+	echo '</div>';
 
 	}
 

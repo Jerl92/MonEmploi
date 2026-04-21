@@ -50,11 +50,18 @@ $current_user = wp_get_current_user();
 		     ?><div><?php 
 		                   
 			    $user_id = $user->ID;
+			    $company_key = get_user_meta($user_id, 'company_key', true);
 			    echo '<a href="'. get_site_url() .'/employee/?user='. $user->user_nicename .'">' . $user->user_nicename. '</a>';
 			    echo ' - ';
 		 	    echo $user->user_firstname;
 		 	    echo ' ';
 			    echo $user->user_lastname;
+			    if($company_key != ''){
+			        echo ' - ';
+			        echo $company_key;
+			    }
+			    echo ' - ';
+			    echo get_user_meta($user_id, 'city_key', true);
 
 	    	}
 	    	
