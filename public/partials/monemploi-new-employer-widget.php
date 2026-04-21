@@ -24,8 +24,6 @@ class monemploi_new_employers_widgets extends WP_Widget {
 
 	function widget( $args, $instance ) {
 
-		?><div><?php 
-
 		$title = apply_filters( 'widget_title', $instance['title'] );
 		
 		echo $args['before_widget'];
@@ -43,27 +41,22 @@ class monemploi_new_employers_widgets extends WP_Widget {
 		   
 		   foreach ($users as $user) {
 		   
-		   	?><div><?php 
+		   echo '<div>'; 
 	
-	                if ( function_exists( 'um_user_profile_url' ) ) {
 			    $user_id = $user->ID; // Replace with the desired user ID
-			    um_fetch_user( $user_id );
 			    echo '<a href="'. get_site_url() .'/employeur/?user='. $user->user_nicename .'">' . $user->user_nicename . '</a>';
 			    echo ' - ';
-			    echo um_user('name_org');
-			    echo ' - ';
-		 	    echo um_user('first_name');
+		 	    echo $user->user_firstname;
 		 	    echo ' ';
-			    echo um_user('last_name');
-			    um_reset_user();
-			}
+			    echo $user->user_lastname;
+			    echo ' - ';
+			    echo get_user_meta($user_id, 'company_key', true);
+			    echo ' - ';
+			    echo get_user_meta($user_id, 'city_key', true);
 			
-			 ?></div><?php 
+		   echo '</div>'; 
 	    		
-	    	}
-    		
-    		?></div><?php 
-
+	    }
 
 	}
 

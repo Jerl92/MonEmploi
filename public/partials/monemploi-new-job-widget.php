@@ -60,7 +60,7 @@ class monemploi_new_jobs_widget extends WP_Widget {
 	
 		if( ! empty( $get_jobs ) ){
 			foreach ( $get_jobs as $p ){
-			$get_user_by_username = wp_get_current_user();
+			$get_user_by_username = get_user_by( 'ID', $p->post_author );
 			$userid = $get_user_by_username->ID;
 			$user_meta = get_userdata($userid);
 			$user_role = $user_meta->roles[0];
@@ -68,22 +68,15 @@ class monemploi_new_jobs_widget extends WP_Widget {
 					if(get_current_user_id() == $p->post_author) {
 						if($user_role == 'employeur' || $user_role == 'administrator'){
 							echo '<div style="display: block;"><a href="' . get_permalink( $p->ID ) .'">' . $p->ID . ' - ' . $p->post_title . '</a> - ';
-								$author_id = $p->post_author;
-								echo the_author_meta( 'user_nicename' , $author_id );
-								$usermetadata = get_user_meta(get_current_user_id());
+								echo '<a href="'. get_site_url() .'/employeur/?user='. $get_user_by_username->user_nicename .'">' . $get_user_by_username->user_nicename . '</a>';						
+								echo ' - ';
+								echo get_user_meta($userid, 'company_key', true);
+								echo ' - ';
+								echo $get_user_by_username->user_firstname;
+								echo ' ';
+								echo $get_user_by_username->user_lastname;
 								
-								if ( function_exists( 'um_user_profile_url' ) ) {
-								    um_fetch_user( $author_id );
-								    $profile_url = um_user_profile_url();
-								    echo ' - ';
-								    echo um_user('name_org');
-								    echo ' - ';
-							 	    echo um_user('first_name');
-							 	    echo ' ';
-								    echo um_user('last_name');
-								    um_reset_user();
-								}
-														
+								$usermetadata = get_user_meta(get_current_user_id());						
 								$field_data = $usermetadata['Code_postal'];
 								if($field_data){
 									echo '<span class="completeDeparture">';
@@ -113,21 +106,15 @@ class monemploi_new_jobs_widget extends WP_Widget {
 				} else {
 				
 					echo '<div style="display: block;"><a href="' . get_permalink( $p->ID ) .'">' . $p->ID . ' - ' . $p->post_title . '</a> - ';
-						$author_id = $p->post_author;
-						echo the_author_meta( 'user_nicename' , $author_id );
-						$usermetadata = get_user_meta(get_current_user_id());
+						echo '<a href="'. get_site_url() .'/employeur/?user='. $get_user_by_username->user_nicename .'">' . $get_user_by_username->user_nicename . '</a>';							
+						echo ' - ';
+						echo get_user_meta($userid, 'company_key', true);
+						echo ' - ';
+						echo $get_user_by_username->user_firstname;
+						echo ' ';
+						echo $get_user_by_username->user_lastname;
 						
-						if ( function_exists( 'um_user_profile_url' ) ) {
-						    um_fetch_user( $author_id );
-						    $profile_url = um_user_profile_url();
-						    echo ' - ';
-						    echo um_user('name_org');
-						    echo ' - ';
-					 	    echo um_user('first_name');
-					 	    echo ' ';
-						    echo um_user('last_name');
-						    um_reset_user();
-						}
+						$usermetadata = get_user_meta(get_current_user_id());	
 												
 						$field_data = $usermetadata['Code_postal'];
 						if($field_data){

@@ -866,4 +866,34 @@ add_action('init', function(){
     }
 });
 
+add_action( 'init', 'employeur_user_role' );
+
+function employeur_user_role() {
+    add_role(
+        'employeur', // Internal role ID
+        __( 'Employeur' ), // Display name
+        array(
+            'read'         => true,
+            'edit_posts'   => true,
+            'upload_files' => true,
+            'delete_posts' => true,
+        )
+    );
+}
+
+add_action( 'init', 'employer_user_role' );
+
+function employer_user_role() {
+    add_role(
+        'employer', // Internal role ID
+        __( 'Employer' ), // Display name
+        array(
+            'read'         => true,
+            'edit_posts'   => true,
+            'upload_files' => true,
+            'delete_posts' => true,
+        )
+    );
+}
+
 ?>

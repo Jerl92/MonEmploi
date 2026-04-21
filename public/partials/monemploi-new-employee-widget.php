@@ -49,19 +49,12 @@ $current_user = wp_get_current_user();
 		   
 		     ?><div><?php 
 		                   
-	                if ( function_exists( 'um_user_profile_url' ) ) {
 			    $user_id = $user->ID;
-			    um_fetch_user( $user_id );
-			    $profile_url = um_user_profile_url();
-			    echo '<a href="' .  $profile_url . '">' . $user->user_nicename. '</a>';
+			    echo '<a href="'. get_site_url() .'/employee/?user='. $user->user_nicename .'">' . $user->user_nicename. '</a>';
 			    echo ' - ';
-			    echo '<a href="'. get_site_url() .'/profile/?user='. $user->user_nicename .'">Profile</a>';
-			    echo ' - ';
-		 	    echo um_user('first_name');
+		 	    echo $user->user_firstname;
 		 	    echo ' ';
-			    echo um_user('last_name');
-			    um_reset_user();
-			}
+			    echo $user->user_lastname;
 
 	    	}
 	    	
