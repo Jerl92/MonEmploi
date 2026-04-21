@@ -24,25 +24,26 @@ function employee_dashboard() {
 				   
 				    $user_id = intval($userid); // Replace with the desired user ID
 				    $userdata = get_userdata( $user_id );
-				    echo '<div style="display: block;">';
-					$cover_photo = get_user_meta($user_id, 'cover_photo', true);
-					$cover_url = wp_get_attachment_url($cover_photo);
-					if($cover_url){
-						echo '<img src="'. $cover_url .'" style="width: 100%; height: 300px; object-fit: cover; object-position: center;">';
-				    	} else {
-					    echo 'Cover image not found.';
-					}
-				    
-				    // Get the URL of the profile picture with a specific size (e.g., 150x150 pixels)
-				    	$user_avatar = get_user_meta($user_id, 'user_avatar', true);
-					$image_url = wp_get_attachment_url($user_avatar);
+				    echo '<div class="container-image-cover">';
+    					$cover_photo = get_user_meta($user_id, 'cover_photo', true);
+    					$cover_url = wp_get_attachment_url($cover_photo);
+    					if($cover_url){
+    						echo '<img src="'. $cover_url .'" class="image-fond">';
+    				    	} else {
+    						//
+    					}
+    				    
+    				    // Get the URL of the profile picture with a specific size (e.g., 150x150 pixels)
+    				    $user_avatar = get_user_meta($user_id, 'user_avatar', true);
+    					$image_url = wp_get_attachment_url($user_avatar);
+    					
+    					if ( $image_url ) {
+    					   	echo '<img src="' . esc_url( $image_url ) . '" class="image-dessus">';
+    					} else {
+    						//
+    					}
 					
-					if ( $image_url ) {
-					    echo '<img src="' . esc_url( $image_url ) . '" style="border-radius: 50%; width: 150px ">';
-					} else {
-					    echo 'Profile image not found.';
-					}
-				   echo '</div>';
+				    echo '</div>';
 									    
 				    
 				    echo $get_user_by_username->user_nicename;
@@ -105,7 +106,7 @@ function employee_dashboard() {
 					} ?>
 				 
 					 <div class="avis-message-employer-wrapper" style="padding-bottom: 15px;">
-						<?php if(is_user_logged_in() && $allready_avis == 0){ ?>
+						<?php if(is_user_logged_in() && $allready_avis == 0 && get_current_user_id() != $userid){ ?>
 							
 							<div style="padding-bottom: 15px;">
 							
@@ -173,15 +174,11 @@ function employee_dashboard() {
 												<?php $userid = $get_user->ID; ?>
 												<?php $user_meta = get_userdata($userid); ?>
 												<?php $user_role = $user_meta->roles[0]; ?>
-												<?php um_fetch_user( $userid ); ?>
 												<?php if($user_role == 'employeur'){ ?>
-													<a href="<?php get_site_url(); ?>/employeur/?user=<?php echo $user_meta->user_login ?>"><?php echo $get_user->display_name; ?></a> - <?php echo um_user('name_org'); ?>
-													<?php um_reset_user(); ?>
+													<a href="<?php get_site_url(); ?>/employeur/?user=<?php echo $user_meta->user_login ?>"><?php echo $get_user->display_name; ?></a> - <?php echo get_user_meta($user_meta->ID, 'company_key', true); ?>
 												<?php } elseif($user_role == 'employer'){ ?>
-													<a href="<?php get_site_url(); ?>/employee/?user=<?php echo $user_meta->user_login ?>"><?php echo $get_user->display_name; ?></a> - <?php echo um_user('name_org'); ?>
-													<?php um_reset_user(); ?>
+													<a href="<?php get_site_url(); ?>/employee/?user=<?php echo $user_meta->user_login ?>"><?php echo $get_user->display_name; ?></a> - <?php echo get_user_meta($user_meta->ID, 'company_key', true); ?>
 												<?php } ?>
-
 													</h3>
 													<?php if (intval($avis->post_author) == intval(get_current_user_id())){ ?>
 													<div class="delete-avis-employer" style="width: 25px; padding-top: 25px;" data-object-id="<?php echo $avis->ID; ?>" data-object-string="<?php echo $ramdonstring; ?>" data-object-userid="<?php echo $userid; ?>">												<i class="material-icons">
@@ -200,21 +197,12 @@ function employee_dashboard() {
 											echo '<br>';
 											echo 'Ponctualité:';			
 											echo get_user_meta( $avis->ID, 'ponctualite_key', true);
-											for ($x = 1; $x <= get_user_meta( $avis->ID, 'ponctualite_key', true); $x++) {
-												echo '<span class="fa fa-star checked"></span>';
-											}
 											echo ' - ';
 											echo 'Connaisance:';
 											echo get_user_meta( $avis->ID, 'connaisance_key', true);
-											for ($x = 1; $x <= get_user_meta( $avis->ID, 'connaisance_key', true); $x++) {
-												echo '<span class="fa fa-star checked"></span>';
-											}
 											echo ' - ';
 											echo 'Attitude:';
 											echo get_user_meta( $avis->ID, 'attitude_key', true);
-											for ($x = 1; $x <= get_user_meta( $avis->ID, 'attitude_key', true); $x++) {
-												echo '<span class="fa fa-star checked"></span>';
-											}
 										echo '</div>';
 										
 									echo '</div>';
@@ -238,22 +226,16 @@ function employee_dashboard() {
 						echo '<span>Moyenne</span>';
 						echo '<div class="moyenne-score-wrapper" style="padding-bottom: 25px;">';	
 							echo 'Poctualité:';						
-							echo round($ponctualite_moyenne/$i, 2);
-							for ($x = 1; $x <= round($ponctualite_moyenne/$i, 2); $x++) {
-								echo '<span class="fa fa-star checked"></span>';
-							}
+							$ponctualite_moyenne_round =round($ponctualite_moyenne/$i, 2);
+	    					        echo $ponctualite_moyenne_round;
 							echo ' - ';
 							echo 'Connaisance:';
-							echo round($connaisance_moyenne/$i, 2);
-							for ($x = 1; $x <= round($connaisance_moyenne/$i, 2); $x++) {
-								echo '<span class="fa fa-star checked"></span>';
-							}
+							$connaisance_moyenne_round = round($connaisance_moyenne/$i, 2);
+							echo $connaisance_moyenne_round;
 							echo ' - ';
 							echo 'Attitude:';
-							echo round($attitude_moyenne/$i, 2);
-							for ($x = 1; $x <= round($attitude_moyenne/$i, 2); $x++) {
-								echo '<span class="fa fa-star checked"></span>';
-							}
+							$attitude_moyenne_round = round($attitude_moyenne/$i, 2);
+							echo $attitude_moyenne_round;						
 						echo '</div>';
 			
 		} else  {
@@ -282,16 +264,15 @@ function employee_dashboard() {
 			    $user_id = $user->ID; // Replace with the desired user ID
 			    $usermetadata = get_user_meta(get_current_user_id());
 			    $usermetadata_ = get_user_meta($user_id);
-			    um_fetch_user( $user_id );
 			    echo '<a href="'. get_site_url() .'/employee/?user='. $user->user_nicename .'">' . $user->user_nicename. '</a>';
 			    echo ' - ';
 			    echo '<a href="'. get_site_url() .'/profile/?user='. $user->user_nicename .'">Profile</a>';
 			    echo ' - ';
-			    echo um_user('name_org');
+			    echo get_user_meta($user_id, 'company_key', true);
 			    echo ' - ';
-		 	    echo um_user('first_name');
+		 	    echo $usermetadata_->user_firstname;
 		 	    echo ' ';
-			    echo um_user('last_name');
+			    echo $usermetadata_->user_lastname;
 			    $field_data = $usermetadata['Code_postal'];
 			    	$field_data_ = $usermetadata_['Code_postal'];
 			    	if($field_data && $field_data_){
@@ -301,7 +282,6 @@ function employee_dashboard() {
 						echo ' - <span class="distance_' . $i . '"></span>';
 					echo '</span>';
 				}
-			    um_reset_user();
 			
 			 ?></div><?php 
 			 
@@ -313,17 +293,17 @@ function employee_dashboard() {
     		  
     		 } else {
     		 
-    		 	echo '<h3>Vous navez pas les autorisation pour consulter cette page.</h3>';
+    		 	echo '<h3>Vous n&#8216;avez pas les autorisation pour consulter cette page.</h3>';
     		 	
-    		 		$current_user = wp_get_current_user();
-				$user_meta = get_userdata($current_user->ID);
-				$user_role = $user_meta->roles[0];
-				if($user_role == 'employer'){
+    		 	$current_user = wp_get_current_user();
+			$user_meta = get_userdata($current_user->ID);
+			$user_role = $user_meta->roles[0];
+			if($user_role == 'employer'){
 					
-					header("Location: get_site_url()/employee/?user=$user_meta->user_nicename");
-					die();
+				header("Location: " . get_site_url() . "/employee/?user=" . $user_meta->user_nicename . "");
+				die();
 				
-				}
+			}
     		 
     		 }
 	

@@ -20,25 +20,26 @@ function employeur_dashboard() {
 				   
 				    $user_id = intval($userid); // Replace with the desired user ID
 				    $userdata = get_userdata( $user_id );
-				    echo '<div style="display: block;">';
-					$cover_photo = get_user_meta($user_id, 'cover_photo', true);
-					$cover_url = wp_get_attachment_url($cover_photo);
-					if($cover_url){
-						echo '<img src="'. $cover_url .'" style="width: 100%; height: 300px; object-fit: cover; object-position: center;">';
-				    	} else {
-					    echo 'Cover image not found.';
-					}
-				    
-				    // Get the URL of the profile picture with a specific size (e.g., 150x150 pixels)
-				    	$user_avatar = get_user_meta($user_id, 'user_avatar', true);
+				    echo '<div class="container-image-cover">';
+    					$cover_photo = get_user_meta($user_id, 'cover_photo', true);
+    					$cover_url = wp_get_attachment_url($cover_photo);
+    					if($cover_url){
+    						echo '<img src="'. $cover_url .'" class="image-fond">';
+    				    	} else {
+    						//
+    					}
+    				    
+    				   	// Get the URL of the profile picture with a specific size (e.g., 150x150 pixels)
+					$user_avatar = get_user_meta($user_id, 'user_avatar', true);
 					$image_url = wp_get_attachment_url($user_avatar);
 					
 					if ( $image_url ) {
-					    echo '<img src="' . esc_url( $image_url ) . '" style="border-radius: 50%; width: 150px ">';
+						echo '<img src="' . esc_url( $image_url ) . '" class="image-dessus">';
 					} else {
-					    echo 'Profile image not found.';
+						//
 					}
-				   echo '</div>';
+					
+				    echo '</div>';
 									    
 				    
 				    echo $get_user_by_username->user_nicename;
@@ -69,7 +70,7 @@ function employeur_dashboard() {
 				    echo ' - ';
 				    echo $get_user_by_username->user_email;	    
 				    echo '<br>';
-				    
+				    echo '<br>';
 				   
 				$current_user = wp_get_current_user();
 				$user_meta = get_userdata($current_user->ID);
@@ -101,7 +102,7 @@ function employeur_dashboard() {
 				
 				$posts = get_posts( $args );
 				
-				echo 'Nombre de postes '. count($posts);
+				echo '<span style="font-weight: 500; font-size: 18px;">Nombre de postes: ' . count($posts) . '</span>';
 				
 				echo '<br>';
 				
@@ -204,7 +205,7 @@ function employeur_dashboard() {
 				} ?>
 				
 				<div class="avis-message-employeur-wrapper" style="padding-bottom: 15px;">
-					<?php if(is_user_logged_in() && $allready_avis == 0){ ?>
+					<?php if(is_user_logged_in() && $allready_avis == 0 && get_current_user_id() != $userid){ ?>
 						
 						<div style="padding-bottom: 15px;">
 						
@@ -272,13 +273,10 @@ function employeur_dashboard() {
 												<?php $userid = $get_user->ID; ?>
 												<?php $user_meta = get_userdata($userid); ?>
 												<?php $user_role = $user_meta->roles[0]; ?>
-												<?php um_fetch_user( $userid ); ?>
 												<?php if($user_role == 'employeur'){ ?>
-													<a href="<?php get_site_url(); ?>/employeur/?user=<?php echo $user_meta->user_login ?>"><?php echo $get_user->display_name; ?></a> - <?php echo um_user('name_org'); ?>
-													<?php um_reset_user(); ?>
+													<a href="<?php get_site_url(); ?>/employeur/?user=<?php echo $user_meta->user_login ?>"><?php echo $get_user->display_name; ?></a> - <?php echo get_user_meta($user_meta->ID, 'company_key', true); ?>
 												<?php } elseif($user_role == 'employer'){ ?>
-													<a href="<?php get_site_url(); ?>/employee/?user=<?php echo $user_meta->user_login ?>"><?php echo $get_user->display_name; ?></a> - <?php echo um_user('name_org'); ?>
-													<?php um_reset_user(); ?>
+													<a href="<?php get_site_url(); ?>/employee/?user=<?php echo $user_meta->user_login ?>"><?php echo $get_user->display_name; ?></a> - <?php echo get_user_meta($user_meta->ID, 'company_key', true); ?>
 												<?php } ?>
 
 												</h3>
@@ -299,21 +297,12 @@ function employeur_dashboard() {
 										echo '<br>';
 										echo 'Horaire:';			
 										echo get_user_meta( $avis->ID, 'horaire_key', true);
-										for ($x = 1; $x <= get_user_meta( $avis->ID, 'horaire_key', true); $x++) {
-											echo '<span class="fa fa-star checked"></span>';
-										}
 										echo ' - ';
 										echo 'Superieur:';
 										echo get_user_meta( $avis->ID, 'superieur_key', true);
-										for ($x = 1; $x <= get_user_meta( $avis->ID, 'superieur_key', true); $x++) {
-											echo '<span class="fa fa-star checked"></span>';
-										}
 										echo ' - ';
 										echo 'Paie:';
 										echo get_user_meta( $avis->ID, 'paie_key', true);
-										for ($x = 1; $x <= get_user_meta( $avis->ID, 'paie_key', true); $x++) {
-											echo '<span class="fa fa-star checked"></span>';
-										}
 									echo '</div>';
 									
 								echo '</div>';
@@ -338,21 +327,12 @@ function employeur_dashboard() {
 					echo '<div class="moyenne-score-wrapper" style="padding-bottom: 25px;">';	
 						echo 'Horaire:';						
 						echo round($horaire_moyenne/$i, 2);
-						for ($x = 1; $x <= round($horaire_moyenne/$i, 2); $x++) {
-							echo '<span class="fa fa-star checked"></span>';
-						}
 						echo ' - ';
 						echo 'Superieur:';
 						echo round($superieur_moyenne/$i, 2);
-						for ($x = 1; $x <= round($superieur_moyenne/$i, 2); $x++) {
-							echo '<span class="fa fa-star checked"></span>';
-						}
 						echo ' - ';
 						echo 'Paie:';
 						echo round($paie_moyenne/$i, 2);
-						for ($x = 1; $x <= round($paie_moyenne/$i, 2); $x++) {
-							echo '<span class="fa fa-star checked"></span>';
-						}
 					echo '</div>';
 			 
 			 }
@@ -368,27 +348,27 @@ function employeur_dashboard() {
 		    
 		   ?><div style="padding-bottom: 25px;"><?php 
 		   
-		   foreach ($users as $user) {
-		   
-		   	?><div><?php 
+			   foreach ($users as $user) {
 			   
-			    $user_id = $user->ID; // Replace with the desired user ID
-			    um_fetch_user( $user_id );
-			    echo '<a href="'. get_site_url() .'/employeur/?user='. $user->user_nicename .'">Profile</a>';
-			    echo ' - ';
-			    echo um_user('name_org');
-			    echo ' - ';
-		 	    echo um_user('first_name');
-		 	    echo ' ';
-			    echo um_user('last_name');
-			    um_reset_user();
-			
-			 ?></div><?php 
-	    		
-	    	  }
+			   	$get_user = get_user_by('id', $user->ID);
+			   
+			   	?><div><?php 
+				   
+				    $user_id = $user->ID; // Replace with the desired user ID
+				    echo '<a href="'. get_site_url() .'/employeur/?user='. $get_user->user_nicename .'">Profile</a>';
+				    echo ' - ';
+				    echo get_user_meta($user_id, 'company_key', true);
+				    echo ' - ';
+			 	    echo $get_user->user_firstname;
+			 	    echo ' ';
+				    echo $get_user->user_lastname;
+				
+				 ?></div><?php 
+		    		
+		    	  }
     		
     		  ?></div><?php 
-		}
+	}
 }
 add_shortcode('employeur-dashboard', 'employeur_dashboard');
 

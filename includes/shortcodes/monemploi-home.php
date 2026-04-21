@@ -5,6 +5,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 function monemploi_home() {
+    
+    
+    if ($_GET['delete_account'] == true) {
+        echo '<h2>Votre compte et tout c&#8216;est information on ete suprimer.</h2>';
+    }
 
 	echo '<h4>MonEmploi.net est un site québécois de recherche d&#39;emploi pour la province de Québec.</h4>';
 	

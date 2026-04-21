@@ -18,15 +18,25 @@ function monemploi_login() {
                     update_user_meta($user->ID, 'account_status', 'approved');
                     echo "<p>La confirmation du compte est fait, vous pouvez vous connectez.</p>";
                 } else if ($ifactivated == 'approved'){
-                    echo "<p>Votre lien est expirer, votre compte est deja activé.";
+                    echo "<p>Votre lien est expirer, votre compte est deja activé.</p>";
                 }
             }
         }
     }
     
 	if(!is_user_logged_in()) {
-	   
-		?><form action="" method="post">
+        $current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . strtok($_SERVER['REQUEST_URI'], '?');
+
+        if ($_GET['frogot_password_new'] == true) {
+            echo '<p>Votre mot de passe a ete mit a jour.</p>';
+        }
+        
+        if ($_GET['frogot_password_send'] == true) {
+            echo '<p>Un email de confirmation a ete envoiyer a votre couriel pour valider la demande du nouveaux mot de passe.</p>';
+        }
+        
+         if($_GET['frogot_password'] != true && !isset($_GET['frogot_password_key']) && $_GET['frogot_password_empty'] != true) {
+		?><form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post">
 			<div>
 				<input name="log" type="text" placeholder="Nom d'utilisateur ou E-Mail"/>
 			</div>
@@ -38,7 +48,54 @@ function monemploi_login() {
 				<input type="hidden" name="action" value="my_login_action" />
 			</div>
 		</form><?php
-	
+		
+		echo '<button><a href="' . $current_url . '?frogot_password=true">Mot de passe oublier</a></button>';
+		
+         }
+		
+        if ($_GET['frogot_password'] == true || $_GET['frogot_password_empty'] == true) {
+            if($_GET['frogot_password_empty'] == true){
+                echo '<p>Le champ est vide.</p>';
+            }
+            echo '<form action="' . $_SERVER['REQUEST_URI'] . '" method="post">';
+	        echo '<div>';
+				echo '<input name="login" type="text" placeholder="Nom dutilisateur ou E-Mail"/>';
+			echo '</div>';
+			echo '<div>';
+				echo '<input type="submit" value="Réinisialiser" />';
+				echo '<input type="hidden" name="action" value="my_frogot_password_action" />';
+			echo '</div>';
+            echo '</form>';
+        }
+        
+        if (isset($_GET['frogot_password_key'])) {
+            
+            $x = 0;
+            $user_ids = get_users( array( 'fields' => array( 'ID' ) ) );
+        
+            foreach ( $user_ids as $user ) {
+                $uniquestring = get_user_meta($user->ID, 'unique_string', true);
+                if($_GET['frogot_password_key'] == $uniquestring && $_GET['frogot_password_key'] != ''){
+                    echo '<form action="' . $_SERVER['REQUEST_URI'] . '" method="post">';
+        	        echo '<div>';
+        				echo '<input name="password" type="password" placeholder="Nouveaux mot de passe"/>';
+        			echo '</div>';
+                    echo '<div>';
+        				echo '<input name="retype_password" type="password" placeholder="Nouveaux mot de passe encore"/>';
+        			echo '</div>';
+        			echo '<div>';
+        				echo '<input type="submit" value="Mettre a jour le mot de passe" />';
+        				echo '<input type="hidden" name="action" value="my_frogot_password_new_action" />';
+                        echo '<input type="hidden" name="userid" value="'. $user->ID .'" />';
+        			echo '</div>';
+                    echo '</form>';
+                    $x = $uniquestring;
+                }
+            }
+            if($_GET['frogot_password_key'] != $x || $_GET['frogot_password_key'] == '' || $x == ''){
+                echo '<p>Votre lien est expiré.</p>';
+            }
+        }
 	} else {
 	
 		$current_user = wp_get_current_user();

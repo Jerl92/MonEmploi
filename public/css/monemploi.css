@@ -1,0 +1,53 @@
+@media (max-width: 720px) {
+    
+    .user-info {
+        width: 100% !important;
+        display: block !important;
+    }
+
+    .user-info-menu {
+        width: 100% !important;
+        display: block !important;
+    }
+    
+    .user-edit-info {
+        width: 100% !important;
+        display: block !important;
+    }
+
+    .password-change {
+        width: 100% !important;
+        display: block !important;
+    }
+    
+    .delete-account {
+        width: 100% !important;
+        display: block !important;
+    }
+    
+}
+
+.container-image-cover {
+    position: relative;
+    padding-bottom: 25px;
+}
+
+.image-fond {
+    width: 100%;
+    height: 300px;
+    object-fit: cover; 
+    object-position: center;
+}
+
+.image-dessus {
+    position: absolute;
+    top: 175px;
+    left: 25px;
+    z-index: 10; /* Au-dessus */
+    border: 2.5px solid black;
+    border-radius: 50%; 
+    width: 150px; 
+    height: 150px; 
+    object-fit: cover; 
+    object-position: center;
+}

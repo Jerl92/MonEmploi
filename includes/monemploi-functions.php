@@ -356,6 +356,8 @@ add_action('init', function(){
     
     $user_id = get_current_user_id();
     
+    $current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . strtok($_SERVER['REQUEST_URI'], '?');
+    
     $already_email = 0;
     $all_users = get_users();
     foreach ($all_users as $user) {
@@ -367,47 +369,51 @@ add_action('init', function(){
     
     $unique_key = generateRandomString();
     $current_user = wp_get_current_user();
-    $user_email_ = $current_user->user_email;
-    if($already_email === 0 && $user_email_ != $user_email) {
+    $user_email_already = $current_user->user_email;
+    if($already_email === 0 && $user_email_already != $user_email) {
         update_user_meta($user_id, 'unique_email_key', $unique_key);
         update_user_meta($user_id, 'new_email_key', $user_email);
         $subject = 'Votre compte ' . $username . ' vous devez confirmer votre compte.';
             $message = '
                 <p>Bonjour ' . $firstname . ' ' . $lastname . '</p>
                 <p>Votre compte a une nouvelle adresse couriel. il ne reste juste qu&#8216;à confirmer le tout.</p>
-                <p>Veuiller cliquer ici: <a href="https://monemploi.net/profile/?new_email=' . $unique_key . '">Lien d&#8216;activation</a></p>
+                <p>Veuiller cliquer ici: <a href="https://monemploi.net/profile/?new_email=' . $unique_key . '&refresh=0">Lien d&#8216;activation</a></p>
             ';
             $headers = array('Content-Type: text/html; charset=UTF-8');
     
             // Send the email
             wp_mail( $user_email, $subject, $message, $headers );
+            
+            header("Location: " . $current_url . "?edit_update_email=true");
        
     }
-	
-    	$user_data = array(
-    	    'ID'         => $user_id,
-    	    'first_name' => $user_firstname,
-    	    'last_name'  => $user_lastname
-    	);
-	
-	$updated_user_id = wp_update_user( $user_data );
-	
-	if ( is_wp_error( $updated_user_id ) ) {
-        foreach ($errors->get_error_messages() as $error) {
-        	echo $error;
-        }
-    } else {
-    	update_user_meta($updated_user_id, 'company_key', $company_key);
-    	update_user_meta($updated_user_id, 'adresse_key', $adresse_key);
-    	update_user_meta($updated_user_id, 'city_key', $city_key);
-    	update_user_meta($updated_user_id, 'province_key', $province_key);
-    	update_user_meta($updated_user_id, 'country_key', $country_key);
-    	update_user_meta($updated_user_id, 'postal_code_key', $postal_code_key);
-    	update_user_meta($updated_user_id, 'phone_key', $phone_key);
-    	update_user_meta($updated_user_id, 'poste_key', $poste_key);
-    	
-        header("Location: " . $_SERVER['REQUEST_URI'] . "?update=true");
-   
+	if($user_email_already == $user_email) {
+	    	$user_data = array(
+	    	    'ID'         => $user_id,
+	    	    'first_name' => $user_firstname,
+	    	    'last_name'  => $user_lastname
+	    	);
+		
+		$updated_user_id = wp_update_user( $user_data );
+		
+		if ( is_wp_error( $updated_user_id ) ) {
+		        foreach ($errors->get_error_messages() as $error) {
+		        	echo $error;
+		        }
+	   	} else {
+		    	update_user_meta($updated_user_id, 'company_key', $company_key);
+		    	update_user_meta($updated_user_id, 'adresse_key', $adresse_key);
+		    	update_user_meta($updated_user_id, 'city_key', $city_key);
+		    	update_user_meta($updated_user_id, 'province_key', $province_key);
+		    	update_user_meta($updated_user_id, 'country_key', $country_key);
+		    	update_user_meta($updated_user_id, 'postal_code_key', $postal_code_key);
+		    	update_user_meta($updated_user_id, 'phone_key', $phone_key);
+		    	update_user_meta($updated_user_id, 'poste_key', $poste_key);
+		    	
+		        header("Location: " . $current_url . "?edit_update=true");
+	   
+	    }
+    
     }
     
 });
@@ -649,7 +655,7 @@ add_action('init', function(){
 		$errors = 'Le commentaire est doit etre 3 caractère ou plus.';
 	}
 
-	if($errors === 0){
+	if($errors == 0){
 		$commentdata = array(
 			'comment_post_ID'       => absint($postid),
 			'comment_author'        => wp_strip_all_tags($current_user->display_name),
@@ -697,6 +703,167 @@ add_action('init', function(){
 		 wp_die($errors);
 	}
 	
+});
+
+add_action('init', function(){
+
+	// not the login request?
+	if(!isset($_POST['action']) || $_POST['action'] !== 'update_user_password_action')
+		return;
+
+	$old_password = sanitize_text_field($_POST['old_password']);
+	$new_password = sanitize_text_field($_POST['new_password']);
+	$retype_new_password = sanitize_text_field($_POST['retype_new_password']);
+	$user = wp_get_current_user();
+		
+	$errors = 0;
+	$good_password = 0;
+	
+	$current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . strtok($_SERVER['REQUEST_URI'], '?');
+	
+	if($new_password === $retype_new_password){
+		//
+	} else {
+		$errors = 'Le mot de passe n&#8216;est pas pareille pour les deux champs.';
+	} 
+	
+	if ( $user && wp_check_password( $old_password, $user->data->user_pass, $user->ID ) ) {
+		$good_password = 1;
+	} else {
+		$errors = 'Le mot de passe actuel n&#8216;est pas valide.';
+	}
+	
+	$userdata = array(
+	    'ID'        => $user->ID, // The user's ID
+	    'user_pass' => $retype_new_password // Plaintext password; WordPress hashes it automatically
+	);
+	
+	$user_id = wp_update_user( $userdata );
+	
+	if ( $user_id && $errors === 0 && $good_password === 1) {
+		header("Location: " . $current_url . "?password_change_successfully=true");
+	} else {
+		wp_die($errors);
+        }
+      
+});
+
+add_action('init', function(){
+
+	// not the login request?
+	if(!isset($_POST['action']) || $_POST['action'] !== 'delete_account_action')
+		return;
+		
+	$errors = 0;
+	$user = wp_get_current_user();
+	$password = sanitize_text_field($_POST['password']);
+	require_once( ABSPATH . 'wp-admin/includes/user.php' );
+	
+	if ( $user && wp_check_password( $password, $user->data->user_pass, $user->ID ) ) {
+		// everything is good.
+	} else {
+		$errors = 'Le mot de passe actuel n&#8216;est pas valide.';
+	}
+
+	if ( wp_delete_user( $user->ID, null ) && $errors == 0 ) {
+		$all_candidacys = get_posts(array(
+		    'post_type' => 'candidacy',
+		    'numberposts' => -1,
+		    'author'	=> $user->ID,
+		    'post_status' => 'any',
+		));
+		foreach ($all_candidacys as $post) {
+		    wp_delete_post($post->ID, false);
+		}	
+		$all_emplois = get_posts(array(
+		    'post_type' => 'emploi',
+		    'numberposts' => -1,
+		    'author'	=> $user->ID,
+		    'post_status' => 'any',
+		));
+		foreach ($all_emplois as $post) {
+		    wp_delete_post($post->ID, false);
+		}
+		wp_logout();
+		header("Location: " . trailingslashit( get_home_url() ) . "?delete_account=true");
+	} else {
+		wp_die($errors);
+	}
+
+});
+
+add_action('init', function(){
+
+	// not the login request?
+	if(!isset($_POST['action']) || $_POST['action'] !== 'my_frogot_password_action')
+		return;
+
+    $login = sanitize_text_field($_POST['login']);
+    
+    $current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . strtok($_SERVER['REQUEST_URI'], '?');
+
+    if($login == ''){
+        header("Location: " . $current_url . "?frogot_password_empty=true");
+        return;
+    } else {
+        if(filter_var($login, FILTER_VALIDATE_EMAIL)) {
+            $user = get_user_by( 'email', $login );
+        } else {
+            $user = get_user_by( 'login', $login );
+        }
+    }
+    
+    $unique_string = generateRandomString();
+    
+    update_user_meta($user->ID, 'unique_string', $unique_string);
+    
+            $subject = 'Votre mot de passe ' . $user->user_login . ' vous devez confirmer votre nouveaux mot de passe.';
+            $message = '
+                <p>Bonjour ' . $user->first_name . ' ' . $user->last_name . '</p>
+                <p>Vous avez demander un renisilisation du mot de passe de votre compte.</p>
+                <p>Veuiller cliquer ici: <a href="'. $current_url .'?frogot_password_key='. $unique_string .'">Lien de récuperation</a></p>
+            ';
+            $headers = array('Content-Type: text/html; charset=UTF-8');
+    
+            // Send the email
+            wp_mail( $user->user_email, $subject, $message, $headers );
+
+            header("Location: " . $current_url . "?frogot_password_send=true");
+            
+});
+
+add_action('init', function(){
+
+	// not the login request?
+	if(!isset($_POST['action']) || $_POST['action'] !== 'my_frogot_password_new_action')
+		return;
+    
+    $samepassword = 0;
+    $password = sanitize_text_field($_POST['password']);
+    $retype_password = sanitize_text_field($_POST['retype_password']);
+    $userid = $_POST['userid'];
+
+    $current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . strtok($_SERVER['REQUEST_URI'], '?');
+
+    if($password === $retype_password){
+        $samepassword = 1;
+    } else {
+        wp_die('Les deux mot de passe ne sont pas identique');
+    }
+    
+    if($samepassword === 1){
+        $userdata = [
+            'ID'        => $userid,
+            'user_pass' => $retype_password
+        ];
+        
+        $result = wp_update_user( $userdata );
+        
+        if ( ! is_wp_error( $result ) ) {
+            update_user_meta($userid, 'unique_string', null);
+            header("Location: " . $current_url . "?frogot_password_new=true");
+        }
+    }
 });
 
 ?>
