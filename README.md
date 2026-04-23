@@ -2,7 +2,7 @@
 
 MonEmploi is a job board.
 
-<img style="max-width: 100%;" src="https://i.ibb.co/TqM9R00c/monemploi19.png" /><br>
+<img style="max-width: 100%;" src="https://i.ibb.co/Fq0TBBTs/monemploi27.png" /><br>
 
 ## Description
 
@@ -65,6 +65,7 @@ The answer is no.<br>
 
 ## Changelog 
 
+0.5 - Add left menu to user-edit-info and add widget of new diploma and new experiance done.<br>
 0.4.5 - Remove Ultimate Member and use custom formulaire with short code.<br>
 0.4 - Add support for full-width display and add a custom login from.<br>
 0.3.6 - Fix sorting options for job listings.<br>

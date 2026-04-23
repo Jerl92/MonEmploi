@@ -1,20 +1,20 @@
 <?php
 
-function monemploi_new_job_widget() {
-	register_widget( 'monemploi_new_job_widgets');
+function monemploi_new_school_widget() {
+	register_widget( 'monemploi_new_school_widgets');
 }
-add_action( 'widgets_init', 'monemploi_new_job_widget' );
+add_action( 'widgets_init', 'monemploi_new_school_widget' );
 
-class monemploi_new_job_widgets extends WP_Widget {
+class monemploi_new_school_widgets extends WP_Widget {
 	public function __construct() {
 		// Instantiate the parent object
 		parent::__construct(
 
 			// Base ID of your widget
-			'monemploi_new_job_widgets', 
+			'monemploi_new_school_widgets', 
 
 			// Widget name will appear in UI
-			__('monemploi_new_job_widgets', 'monemploi'), 
+			__('monemploi_new_school_widgets', 'monemploi'), 
 
 			// Widget description
 			array( 'description' => __( 'Sample widget based on WPBeginner Tutorial', 'sidr_widget_domain' ), ) 
@@ -49,19 +49,19 @@ class monemploi_new_job_widgets extends WP_Widget {
 		   
 		     ?><div><?php 
 		                   
-                $unique_strings_job = get_user_meta( $user->ID, 'job_unique', true );
+                $unique_strings_school = get_user_meta( $user->ID, 'school_unique', true );
 	    	    
-	    	    $unique_strings_job_first = $unique_strings_job[array_key_first($unique_strings_job)];
+	    	    $unique_strings_school_first = $unique_strings_school[array_key_first($unique_strings_school)];
 	    	    
-	    	    $date_job_end_strtotime = strtotime(get_user_meta( $user->ID, 'date_job_end_'.$unique_strings_job_first, true));
+	    	    $date_school_end_strtotime = strtotime(get_user_meta( $user->ID, 'dateschoolend_'.$unique_strings_school_first, true));
 	    	    
-	    	    $job_title = get_user_meta( $user->ID, 'job_title_'.$unique_strings_job_first, true);
+	    	    $school_title = get_user_meta( $user->ID, 'school_title_'.$unique_strings_school_first, true);
 	    	    
-	    	    $job_name = get_user_meta( $user->ID, 'job_name_'.$unique_strings_job_first, true);
+	    	    $school_name = get_user_meta( $user->ID, 'school_name_'.$unique_strings_school_first, true);
 	    	    
-	    	    if($date_job_end_strtotime != '' && $job_title != '' && $job_name != ''){
+	    	    if($date_school_end_strtotime != '' && $school_title != '' && $school_name != ''){
 	    	    
-	    	        $job_array[$date_job_end_strtotime] = array($user->ID, $job_title, $job_name);
+	    	        $school_array[$date_school_end_strtotime] = array($user->ID, $school_title, $school_name);
 	    	    
 	    	    }
 	    	
@@ -69,20 +69,20 @@ class monemploi_new_job_widgets extends WP_Widget {
 		   }
 		   
 		   $i = 0;
-		   krsort($job_array);
+		   krsort($school_array);
 		   
-		   foreach ($job_array as $job_user) {
+		   foreach ($school_array as $school_user) {
 		       if($i <= 24) {
-    		       $get_user_by_id = get_user_by('ID', $job_user[0]);
+    		       $get_user_by_id = get_user_by('ID', $school_user[0]);
     		       echo '<a href="'. get_site_url() .'/employee/?user='. $get_user_by_id->user_nicename .'">' . $get_user_by_id->user_nicename. '</a>';
     		       echo ' - ';
     		       echo $get_user_by_id->user_firstname;
-			echo ' ';
-        		echo $get_user_by_id->user_lastname;
+        		   echo ' ';
+        		   echo $get_user_by_id->user_lastname;
     		       echo ' - ';
-    		       echo $job_user[1];
+    		       echo $school_user[1];
     		       echo ' - ';
-    		       echo $job_user[2];
+    		       echo $school_user[2];
     		       echo '</br>';
 		       }
 		       $i++;

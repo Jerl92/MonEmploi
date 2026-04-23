@@ -843,14 +843,14 @@ function monemploi_job_dashboard() {
 				if(get_current_user_id() == $get_jobs->post->post_author) {
 					if($user_role == 'employeur'){
 						echo '<div class="job-wrapper-box" id="job-wrapper-box-'.$i.'" style="display: block;">';
-					    			echo '<a href="' . get_permalink( get_the_ID() ) .'">' . get_the_ID() . ' - ' . $get_jobs->post->post_title . '</a> - ';
-								$author_id = $get_jobs->post->post_author;
-								echo the_author_meta( 'user_nicename' , $author_id );
-								$usermetadata = get_user_meta(get_current_user_id());
-								$get_user_by_username = get_user_by('ID', $author_id);
+				    			echo '<a href="' . get_permalink( get_the_ID() ) .'">' . get_the_ID() . ' - ' . $get_jobs->post->post_title . '</a> - ';
+							$author_id = $get_jobs->post->post_author;
+							$get_user_by_username = get_user_by('ID', $author_id);
+							echo '<a href="'. get_site_url() .'/employeur/?user='. $get_user_by_username->user_nicename .'">'. $get_user_by_username->user_nicename .'</a>';
+							$usermetadata = get_user_meta(get_current_user_id());
 								
 						    echo ' - ';
-						    echo get_user_meta($author_id, 'company_key', true);
+						    echo get_post_meta( get_the_ID(), 'company_key', true );					    
 						    echo ' - ';
 					 	    echo $get_user_by_username->user_firstname;
 					 	    echo ' ';
@@ -893,12 +893,12 @@ function monemploi_job_dashboard() {
 				echo '<div class="job-wrapper-box" id="job-wrapper-box-'.$i.'" style="display: block;">';
 			    		echo '<a href="' . get_permalink( get_the_ID() ) .'">' . get_the_ID() . ' - ' . $get_jobs->post->post_title . '</a> - ';
 						$author_id = $get_jobs->post->post_author;
-						echo the_author_meta( 'user_nicename' , $author_id );
-						$usermetadata = get_user_meta(get_current_user_id());
 						$get_user_by_username = get_user_by('ID', $author_id);
+						echo '<a href="'. get_site_url() .'/employeur/?user='. $get_user_by_username->user_nicename .'">'. $get_user_by_username->user_nicename .'</a>';
+						$usermetadata = get_user_meta(get_current_user_id());
 								
 					    echo ' - ';
-					    echo get_user_meta($author_id, 'company_key', true);
+					    echo get_post_meta( get_the_ID(), 'company_key', true );	
 					    echo ' - ';
 				 	    echo $get_user_by_username->user_firstname;
 				 	    echo ' ';

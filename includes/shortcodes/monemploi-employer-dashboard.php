@@ -158,7 +158,7 @@ function employeur_dashboard() {
 									echo ' - <span class="distance_' . $i . '"></span> - ';
 								echo '</span>';
 							}
-							echo get_post_meta( $post->ID, 'my_city_key', true );
+							echo ' - ' . get_post_meta( $post->ID, 'my_city_key', true );
 							$from = strtotime(get_the_date('Y-m-d H:i:s', $post->ID));
 							$today = current_time('timestamp');
 							$difference = $today - $from;
@@ -270,10 +270,11 @@ function employeur_dashboard() {
 												<?php $userid = $get_user->ID; ?>
 												<?php $user_meta = get_userdata($userid); ?>
 												<?php $user_role = $user_meta->roles[0]; ?>
+												<?php $nicename = get_user_meta( $avis->ID, 'nicename_key', true); ?>
 												<?php if($user_role == 'employeur'){ ?>
-													<a href="<?php get_site_url(); ?>/employeur/?user=<?php echo $user_meta->user_login ?>"><?php echo $get_user->display_name; ?></a> - <?php echo get_user_meta($user_meta->ID, 'company_key', true); ?>
+													<a href="<?php get_site_url(); ?>/employeur/?user=<?php echo $user_meta->user_login ?>"><?php echo $nicename; ?></a> - <?php echo get_user_meta($user_meta->ID, 'company_key', true); ?>
 												<?php } elseif($user_role == 'employer'){ ?>
-													<a href="<?php get_site_url(); ?>/employee/?user=<?php echo $user_meta->user_login ?>"><?php echo $get_user->display_name; ?></a> - <?php echo get_user_meta($user_meta->ID, 'company_key', true); ?>
+													<a href="<?php get_site_url(); ?>/employee/?user=<?php echo $user_meta->user_login ?>"><?php echo $nicename; ?></a> - <?php echo get_user_meta($user_meta->ID, 'company_key', true); ?>
 												<?php } ?>
 
 												</h3>

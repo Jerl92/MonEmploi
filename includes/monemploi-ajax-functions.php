@@ -938,8 +938,11 @@ function avis_employeur($post) {
 	$paie = $_POST['paie'];
 	$current_user_id = get_current_user_id();
 	
+	$get_user_by_id = get_user_by('id', $authorid);
+	$user_nicename = $get_user_by_id->user_firstname . ' ' . $get_user_by_id->user_lastname;
+	
 	$new_post = array(
-		'post_title' => 'Avis',
+		'post_title' => $user_nicename,
 		'post_content' => $avismessage,
 		'post_status' => 'publish',
 		'post_date_gmt' => date('Y-m-d H:i:s'),
@@ -954,6 +957,9 @@ function avis_employeur($post) {
 	add_user_meta( $post_id, 'authorid_key', $authorid);
 	add_user_meta( $post_id, 'role_key', 'um_employeur');
 	
+	add_user_meta( $post_id, 'nicename_key', $user_nicename);
+	$nicename = get_user_meta( $post_id, 'nicename_key', true);
+	
 	$post = get_post($post_id);
 	
 	$ramdonstring = generate_secure_string();
@@ -965,7 +971,7 @@ function avis_employeur($post) {
 			$html[] .= '<div class="ns-col-sm-9">';
 				$html[] .= '<div class="response-head" style="display: flex;">';
 					$html[] .= '<h3 class="ticket-head" id="response-0" style="width: calc(100% - 25px);">';
-						$html[] .= $get_user->display_name;
+						$html[] .= $nicename;
 					$html[] .= '</h3>';
 					if (intval($post->post_author) == intval($current_user_id)){
 						$html[] .= '<div class="delete-avis" style="width: 25px; padding-top: 25px;" data-object-id="' . $post->ID . '" data-object-string="' . $ramdonstring . '">';
@@ -1146,8 +1152,11 @@ function avis_employer($post) {
 	$attitude = $_POST['attitude'];
 	$current_user_id = get_current_user_id();
 	
+	$get_user = get_user_by('id', $authorid);
+	$user_nicename = $get_user->user_firstname . ' ' . $get_user->user_lastname;
+	
 	$new_post = array(
-		'post_title' => 'Avis',
+		'post_title' => $user_nicename,
 		'post_content' => $avismessage,
 		'post_status' => 'publish',
 		'post_date_gmt' => date('Y-m-d H:i:s'),
@@ -1162,18 +1171,19 @@ function avis_employer($post) {
 	add_user_meta( $post_id, 'authorid_key', $authorid);
 	add_user_meta( $post_id, 'role_key', 'employer');
 	
+	add_user_meta( $post_id, 'nicename_key', $user_nicename);
+	$nicename = get_user_meta( $post_id, 'nicename_key', true);
+	
 	$post = get_post($post_id);
 	
 	$ramdonstring = generate_secure_string();
-	
-	$get_user = get_user_by('id', $post->post_author);
 	
 	$html[] = '<div class="candidacy-response-cards-wrapper ' . $ramdonstring . '" style="padding-bottom: 25px;">';
 		$html[] .= '<div class="ns-row">';
 			$html[] .= '<div class="ns-col-sm-9">';
 				$html[] .= '<div class="response-head" style="display: flex;">';
 					$html[] .= '<h3 class="ticket-head" id="response-0" style="width: calc(100% - 25px);">';
-						$html[] .= $get_user->display_name;
+						$html[] .= $nicename;
 					$html[] .= '</h3>';
 					if (intval($post->post_author) == intval($current_user_id)){
 						$html[] .= '<div class="delete-avis-employer" style="width: 25px; padding-top: 25px;" data-object-id="' . $post->ID . '" data-object-string="' . $ramdonstring . '">';

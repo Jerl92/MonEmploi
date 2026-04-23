@@ -538,6 +538,9 @@ add_action('init', function(){
 		add_post_meta( $postid, 'my_permis_conduire_key', $permis_conduire );
 		add_post_meta( $postid, 'my_besoin_voiture_key', $besoin_voiture );
 		add_post_meta( $postid, 'my_activite_professionnelle_key', $activite_professionnelle );
+		$get_current_user_id = get_current_user_id();
+		$company_key = get_user_meta($get_current_user_id, 'company_key', true);
+		add_post_meta( $postid, 'company_key', $company_key );
 	}
 	
 	if($job_status == 'update' && $postid_update != 0){
@@ -617,22 +620,23 @@ add_action('init', function(){
 		update_post_meta( $postid_update, 'my_permis_conduire_key', $permis_conduire );
 		update_post_meta( $postid_update, 'my_besoin_voiture_key', $besoin_voiture );
 		update_post_meta( $postid_update, 'my_activite_professionnelle_key', $activite_professionnelle );
+		$get_current_user_id = get_current_user_id();
+		$company_key = get_user_meta($get_current_user_id, 'company_key', true);
+		add_post_meta( $postid_update, 'company_key', $company_key );
 	
 	}
 	
 	if($job_status === 'new' && $postid_update === 0){
 	
-		$url = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-		$clean_url = explode('?', $url)[0];			
-		header("Location: " . $clean_url . "?add_job=". $postid ."");
+		$current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . strtok($_SERVER['REQUEST_URI'], '?');	
+		header("Location: " . $current_url . "?add_job=". $postid ."");
 	
 	}	
 	
 	if($job_status === 'update' && $postid_update !== 0){
 	
-		$url = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-		$clean_url = explode('?', $url)[0];
-		header("Location: " . $clean_url . "?update_job=". $postid_update ."");
+		$current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . strtok($_SERVER['REQUEST_URI'], '?');
+		header("Location: " . $current_url . "?update_job=". $postid_update ."");
 	
 	}
 	

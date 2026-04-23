@@ -13,13 +13,35 @@ function monemploi_newjob_from() {
         $author_id = get_post_field( 'post_author', $postid );
 			?><div id="monemploi-new-form">
 			
-			<?php if (isset($_GET['new_job'])) { ?>
-				<?php echo header("Location: ". get_permalink($_GET['new_job']) ."?new_job=true"); ?>
-			<?php } ?>
+			<?php if (isset($_GET['new_job'])) {
+			    if(get_permalink($_GET['new_job'])) {
+			        $url = get_permalink($_GET['new_job']);
+                    $queryString = parse_url($url, PHP_URL_QUERY); 
+                    if ($queryString) {
+                        parse_str($queryString, $params);
+                        if (isset($params['p'])) {
+                            echo header("Location: ". get_permalink($_GET['new_job']) ."&new_job=true");
+                        }
+                    } else {
+                        echo header("Location: ". get_permalink($_GET['new_job']) ."?new_job=true");
+                    }
+			    }
+			}
 			
-			<?php if (isset($_GET['update_job'])) { ?>
-				<?php echo header("Location: ". get_permalink($_GET['update_job']) ."?update_job=true"); ?>
-			<?php } ?>
+			if (isset($_GET['update_job'])) {
+			    if(get_permalink($_GET['update_job'])) {
+			        $url = get_permalink($_GET['update_job']);
+                    $queryString = parse_url($url, PHP_URL_QUERY); 
+                    if ($queryString) {
+                        parse_str($queryString, $params);
+                        if (isset($params['p'])) {
+                            echo header("Location: ". get_permalink($_GET['update_job']) ."&update_job=true");
+                        }
+                    } else {
+                        echo header("Location: ". get_permalink($_GET['update_job']) ."?update_job=true");
+                    }
+			    }
+			} ?>
 			
 			    <p>Vous etre connecter en tant que <?php echo $current_user->user_login; ?><p>
 			        <form action="<?php echo $_SERVER['REQUEST_URI'] ?>" method="post">
