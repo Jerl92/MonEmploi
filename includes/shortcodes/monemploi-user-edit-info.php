@@ -376,7 +376,7 @@ function monemploi_user_edit_info() {
 				
 				    echo '<h2>Supprimer votre compte</h2>';
 				
-					echo '<form action="'. $_SERVER['REQUEST_URI'] .'" h="post">';
+					echo '<form action="'. $_SERVER['REQUEST_URI'] .'" method="post">';
 						echo '<span>Êtes-vous sûr de vouloir supprimer votre compte ?</span>';
 						echo '<br>';
 						echo '<span>Cette action effacera toutes les données de votre compte sur le site.</span>';
