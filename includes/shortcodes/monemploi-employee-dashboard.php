@@ -18,6 +18,14 @@ function employee_dashboard() {
 			$user_meta = get_userdata($userid);
 			$user_role = $user_meta->roles[0];
 			
+				if ($_GET['add_avis']) {
+				        echo "<h3>L&#8216;avis #". $_GET['add_avis'] ." à été ajouter.</h3>";
+				}
+				
+				if ($_GET['delete_avis']) {
+				        echo "<h3>L&#8216;avis #". $_GET['delete_avis'] ." à été supprimé.</h3>";
+				}
+			
 				echo '<h1>'. $get_user_by_username->user_firstname . ' ' . $get_user_by_username->user_lastname . ' - ' . get_user_meta($userid, 'company_key', true) . '</h1>';
 				
 				?><div><?php 
@@ -45,6 +53,8 @@ function employee_dashboard() {
 					
 				    echo '</div>';
 									    
+				    $hide_adresse = get_user_meta( $user_id, 'hide_adresse_key', true);
+				    $hide_contact = get_user_meta( $user_id, 'hide_contact_key', true);
 				    
 				    echo $get_user_by_username->user_nicename;
 				    echo ' - ';
@@ -56,25 +66,30 @@ function employee_dashboard() {
 					    echo get_user_meta($user_id, 'company_key', true);
 				    }	
 				    echo '<br>';
-				    echo get_user_meta($user_id, 'adresse_key', true);
-				    echo ' - ';
-				    echo get_user_meta($user_id, 'city_key', true);
-				    echo ' - ';
-				    echo get_user_meta($user_id, 'province_key', true);
-				    echo ' - ';
-				    echo get_user_meta($user_id, 'country_key', true);
-				    echo ' - ';
-				    echo get_user_meta($user_id, 'postal_code_key', true);
-				    echo '<br>';
-				    echo get_user_meta($user_id, 'phone_key', true);
-				    if(get_user_meta($user_id, 'poste_key', true) != ''){
-				    	echo ' - ';
-				    	echo get_user_meta($user_id, 'poste_key', true);
+				    if($hide_adresse == 0 || $hide_adresse == ''){
+					    echo get_user_meta($user_id, 'adresse_key', true);
+					    echo ' - ';
+					    echo get_user_meta($user_id, 'city_key', true);
+					    echo ' - ';
+					    echo get_user_meta($user_id, 'province_key', true);
+					    echo ' - ';
+					    echo get_user_meta($user_id, 'country_key', true);
+					    echo ' - ';
+					    echo get_user_meta($user_id, 'postal_code_key', true);
+					    echo '<br>';
 				    }
-				    echo ' - ';
-				    echo $userdata->user_email;	    
+				    if($hide_contact == 0 || $hide_contact == ''){
+					    echo get_user_meta($user_id, 'phone_key', true);
+					    if(get_user_meta($user_id, 'poste_key', true) != ''){
+					    	echo ' - ';
+					    	echo get_user_meta($user_id, 'poste_key', true);
+					    }
+					    echo ' - ';
+					    echo $get_user_by_username->user_email;	    
+					    echo '<br>';
+				    }
 				    echo '<br>';
-
+				    
 				 ?></div> 
 				 
 				 <?php do_shortcode( '[monemploi-user-dashboard]' ); ?>
@@ -105,38 +120,37 @@ function employee_dashboard() {
 						wp_reset_postdata();
 					} ?>
 				 
-					 <div class="avis-message-employer-wrapper" style="padding-bottom: 15px;">
-						<?php if(is_user_logged_in() && $allready_avis == 0 && get_current_user_id() != $userid){ ?>
-							
-							<div style="padding-bottom: 15px;">
-							
-								<div class="avis-error-employer"></div>
+				 	<?php if(is_user_logged_in() && $allready_avis == 0 && get_current_user_id() != $userid){ ?>
+				 	<form action="<?php $_SERVER['REQUEST_URI'] ?>" method="post">
+						<div class="avis-message-employer-wrapper" style="padding-bottom: 15px;">
 								
-								<label>Avis</label>
-								<textarea id="avis-message-employer" name="avis-message-employer" class="avis-message-employer" rows="5" cols="30"></textarea>
+							<div style="padding-bottom: 15px;">
+								
+								<textarea id="avis-message-employer" name="avis-message-employer" class="avis-message-employer" rows="5" cols="30" required></textarea>
 								<div class="number-of-char"></div>
 								
 								<label>Ponctualité</label>
-								<input type="number" id="ponctualite-employer" name="ponctualite-employer" class="ponctualite-employer" min="0" max="5" step=".01">
+								<input type="number" id="ponctualite-employer" name="ponctualite-employer" class="ponctualite-employer" min="0" max="5" step=".01" required>
 								
 								<label>Connaisance</label>
-								<input type="number" id="connaisance-employer" name="connaisance-employer" class="connaisance-employer" min="0" max="5" step=".01">
+								<input type="number" id="connaisance-employer" name="connaisance-employer" class="connaisance-employer" min="0" max="5" step=".01" required>
 								
 								<label>Attitude</label>
-								<input type="number" id="attitude-employer" name="attitude-employer" class="attitude-employer" min="0" max="5" step=".01">
+								<input type="number" id="attitude-employer" name="attitude-employer" class="attitude-employer" min="0" max="5" step=".01" required>
 								
 							</div>
 								
-							<button class="avis-employer-send" data-object-id="<?php echo $user_id; ?>">
+							<button class="avis-employer-send">
+								<input type="hidden" name="action" value="avis_employer_send" />
+								<input type="hidden" name="userid" value="<?php echo $user_id; ?>" />
 								<?php esc_html_e( 'Soumettre', 'monemploi' ); ?>
 							</button>
-						
-						<?php } ?>
-					</div>
+								
+						</div>
+					</form>
+					<?php } ?>
 					
-			                <button class="show-hide-avis-employer">Afficher les avis</button>
-			                <br>
-					<div class="avis-employer-wrapper" style="display: none; padding-bottom: 15px;">
+					<div class="avis-employer-wrapper">
 						<?php 
 						
 						$i = 0;
@@ -170,7 +184,7 @@ function employee_dashboard() {
 										<div class="avis-response-cards-wrapper <?php echo $ramdonstring; ?>">
 											<div class="ns-col-sm-9">
 												<div class="response-head" style="display: flex;">
-													<h3 class="ticket-head" id="response-<?php echo esc_attr($i); ?>" style="width: calc(100% - 25px);">
+													<h3 class="ticket-head" id="response-<?php echo esc_attr($i); ?>" style="width: calc(100% - 75px);">
 												<?php $userid = $get_user->ID; ?>
 												<?php $user_meta = get_userdata($userid); ?>
 												<?php $user_role = $user_meta->roles[0]; ?>
@@ -182,9 +196,16 @@ function employee_dashboard() {
 												<?php } ?>
 													</h3>
 													<?php if (intval($avis->post_author) == intval(get_current_user_id())){ ?>
-													<div class="delete-avis-employer" style="width: 25px; padding-top: 25px;" data-object-id="<?php echo $avis->ID; ?>" data-object-string="<?php echo $ramdonstring; ?>" data-object-userid="<?php echo $userid; ?>">												<i class="material-icons">
-															delete
-														</i>
+													<div class="delete-avis-employer" style="width: 75px; margin-left: auto; margin-right: auto;">																								
+														<form action="<?php $_SERVER['REQUEST_URI'] ?>" method="post">
+												                        <input type="hidden" name="avisid" value="<?php echo $avis->ID; ?>" />
+												                        <input type="hidden" name="action" value="delete_avis_employer" />
+												                        <button type="submit" name="submit" style="padding: 0; margin: 0;">
+												                        	<i class="material-icons">
+												            				delete
+												            			</i>
+												            		</button>
+											            		</form>
 													</div>
 													<?php } ?>
 												</div> <!-- /.response-head -->
@@ -194,8 +215,7 @@ function employee_dashboard() {
 											</div>
 											<?php
 														
-											echo $avis->post_content;
-											echo '<br>';
+											echo wpautop($avis->post_content);
 											echo 'Ponctualité:';			
 											echo get_user_meta( $avis->ID, 'ponctualite_key', true);
 											echo ' - ';
@@ -260,38 +280,39 @@ function employee_dashboard() {
 		   ?><div style="padding-bottom: 25px;"><?php 
 		   
 		   foreach ($users as $user) {
-    		   
-    		   	?><div><?php
-    			    $user_id = $user->ID; // Replace with the desired user ID
-    			    $usermetadata = get_user_meta(get_current_user_id());
-    			    $usermetadata_ = get_user_meta($user_id);
-    			    $get_user_by_username = get_user_by('ID', $user_id);
-    			    $company_key = get_user_meta($user_id, 'company_key', true);
-    			    echo '<a href="'. get_site_url() .'/employee/?user='. $user->user_nicename .'">' . $user->user_nicename. '</a>';
-    			    echo ' - ';
-    		 	    echo $get_user_by_username->user_firstname;
-    		 	    echo ' ';
-    			    echo $get_user_by_username->user_lastname;
-    			    if($company_key != ''){
-    			        echo ' - ';
-    			        echo $company_key;
-    			    }
-    			    echo ' - ';
-    			    echo get_user_meta($user_id, 'city_key', true);
-    			    $departure = get_user_meta(get_current_user_id(), 'adresse_key', true) . ' ' . get_user_meta(get_current_user_id(), 'postal_code_key', true);
-    		    	$arrival = get_user_meta($user_id, 'adresse_key', true) . ' ' . get_user_meta($user_id, 'postal_code_key', true);
-    		    	if($departure && $arrival){
-        				echo '<span class="autocompleteDeparture">';
-        					echo '<span class="autocompleteDeparture_'.  $i . '" style="display:none;">'. implode($departure) . '</span>';
-        					echo '<span class="autocompleteArrival_' . $i . '" style="display: none;">' . implode($arrival) . '</span>';
-        					echo ' - <span class="distance_' . $i . '"></span>';
-        				echo '</span>';
-    		        }
-    			
-    			 ?></div><?php 
-    			 
-    			 $i++;
-	    		
+    		   	$hide_dashboard = get_user_meta( $user->ID, 'hide_dashboard_key', true);
+    		   	if($hide_dashboard == 0 || $hide_dashboard == ''){
+	    		   	?><div><?php
+	    			    $user_id = $user->ID; // Replace with the desired user ID
+	    			    $usermetadata = get_user_meta(get_current_user_id());
+	    			    $usermetadata_ = get_user_meta($user_id);
+	    			    $get_user_by_username = get_user_by('ID', $user_id);
+	    			    $company_key = get_user_meta($user_id, 'company_key', true);
+	    			    echo '<a href="'. get_site_url() .'/employee/?user='. $user->user_nicename .'">' . $user->user_nicename. '</a>';
+	    			    echo ' - ';
+	    		 	    echo $get_user_by_username->user_firstname;
+	    		 	    echo ' ';
+	    			    echo $get_user_by_username->user_lastname;
+	    			    if($company_key != ''){
+	    			        echo ' - ';
+	    			        echo $company_key;
+	    			    }
+	    			    echo ' - ';
+	    			    echo get_user_meta($user_id, 'city_key', true);
+	    			    $departure = get_user_meta(get_current_user_id(), 'adresse_key', true) . ' ' . get_user_meta(get_current_user_id(), 'postal_code_key', true);
+	    		    	$arrival = get_user_meta($user_id, 'adresse_key', true) . ' ' . get_user_meta($user_id, 'postal_code_key', true);
+	    		    	if($departure && $arrival){
+	        				echo '<span class="autocompleteDeparture">';
+	        					echo '<span class="autocompleteDeparture_'.  $i . '" style="display:none;">'. implode($departure) . '</span>';
+	        					echo '<span class="autocompleteArrival_' . $i . '" style="display: none;">' . implode($arrival) . '</span>';
+	        					echo ' - <span class="distance_' . $i . '"></span>';
+	        				echo '</span>';
+	    		        }
+	    			
+	    			 ?></div><?php 
+	    			 
+	    			 $i++;
+	    		}
 	    	  }
     		
     		  ?></div><?php 

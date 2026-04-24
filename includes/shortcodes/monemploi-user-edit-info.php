@@ -60,7 +60,7 @@ function monemploi_user_edit_info() {
 	        echo '<div class="user-info" style="display: flex;">';
 		        echo '<div class="user-info-menu" style="padding-right: 15px; width: 25%;">';
 		        
-		        	$user = wp_get_current_user();
+		        $user = wp_get_current_user();
 				$user_avatar = get_user_meta($user->ID, 'user_avatar', true);
 				$image_url = wp_get_attachment_url($user_avatar);
 				
@@ -85,6 +85,9 @@ function monemploi_user_edit_info() {
 				echo '</br>';
 				echo '</br>';
 		        
+		        echo '<div class="main-user-edit-info-menu">';
+					echo '<a href="'. $current_url .'">Accueille</a>';
+				echo '</div>';
 				echo '<div class="user-edit-info-menu">';
 					echo '<a href="'. $current_url .'?edit=true">Editer les informations</a>';
 				echo '</div>';
@@ -98,6 +101,40 @@ function monemploi_user_edit_info() {
 					echo '<a href="'. $current_url .'?delete_account=true">Supprimer votre compte</a>';
 				echo '</div>';
 			echo '</div>';
+			
+			$url = $_SERVER['REQUEST_URI'];
+    		$queryString = parse_url($url, PHP_URL_QUERY);
+    		parse_str($queryString, $params);
+			
+			if (implode($params) == ''){
+			    
+			    echo '<div class="main-user-edit-info" style="width: 75%;">';
+			    
+			        echo '<h2>Accueille</h2>';
+			    
+			        echo '<p>C&#8216;est ici que la magie commence.</p>';
+			        
+			        $i = 1;
+			        
+			        $login_infos = get_user_meta($user->ID, 'login_info', true);
+			        
+			        foreach($login_infos as $login_info){
+			            if($i <= 25){
+			                echo $i;
+			                echo ' - ';
+                            echo date("Y-m-d H:i:s", $login_info[0]);
+                            echo ' - ';
+                            echo $login_info[1];
+                            echo ' - ';
+                            echo $login_info[2];
+                            echo '<br/>';
+			            }
+			            $i++;
+			        }
+			    
+			    echo '</div>';
+			    
+			}
 		
 			if ($_GET['edit'] == true || $_GET['edit_update'] == true || $_GET['edit_update_email'] == true || $_GET['new_email'] == true) {
 				echo '<div class="user-edit-info" style="width: 75%;">';
@@ -236,14 +273,110 @@ function monemploi_user_edit_info() {
 				echo '</div>';
 				
 			}
+			
+            if ($_GET['privacy'] == true) {
+			
+				echo '<div class="privacy" style="width: 75%;">';
 				
+				    echo '<h2>Confidentialité</h2>';
+				    
+					    if ($_GET['privacy_update'] == true) {
+						echo '<p>Les paramètres ont été sauvegardé avec succès.</p>';
+					    }
+									
+					echo '<form action="'. $_SERVER['REQUEST_URI'] .'" method="post">';
+					
+					$hide_search = get_user_meta( $userdata->ID, 'hide_search_key', true);
+					echo '<span>Masquer mon profile de la recherche.</span><br>';
+					
+					if($hide_search == 1){
+						echo '<input type="radio" id="hide-search" name="hide-search" value="1" checked>';
+					} else {
+			                	echo '<input type="radio" id="hide-search" name="hide-search" value="1">';
+			                } 
+			                echo '<label for="html">Oui</label>';
+								
+					if($hide_search == 0 || $hide_search == ''){
+						echo '<input type="radio" id="hide-search" name="hide-search" value="0" checked>';
+					} else {
+			                	echo '<input type="radio" id="hide-search" name="hide-search" value="0">';
+			                } 
+			                echo '<label for="html">Non</label>';
+			                    
+			                echo '<br>';
+			                $hide_dashboard = get_user_meta( $userdata->ID, 'hide_dashboard_key', true);
+			                echo '<span>Masquer mon profile du tableaux de bord.</span><br>';
+					
+					if($hide_dashboard == 1){
+			                	echo '<input type="radio" id="hide-dashboard" name="hide-dashboard" value="1" checked>';
+			                } else {
+			                	echo '<input type="radio" id="hide-dashboard" name="hide-dashboard" value="1">';
+			                }
+			                echo '<label for="html">Oui</label>';
+								
+					if($hide_dashboard == 0 || $hide_dashboard == ''){
+			                	echo '<input type="radio" id="hide-dashboard" name="hide-dashboard" value="0" checked>';
+			                } else {
+			                	echo '<input type="radio" id="hide-dashboard" name="hide-dashboard" value="0">';
+			                }
+			                echo '<label for="html">Non</label>';
+			                
+			                echo '<br>';
+			                $hide_adresse = get_user_meta( $userdata->ID, 'hide_adresse_key', true);
+			        	echo '<span>Masquer mon adresse dans mon profile.</span><br>';
+					
+					if($hide_adresse == 1){
+			                echo '<input type="radio" id="hide-adresse" name="hide-adresse" value="1" checked>';
+			                } else {
+			                echo '<input type="radio" id="hide-adresse" name="hide-adresse" value="1">';
+			                } 
+			                echo '<label for="html">Oui</label>';
+								
+					if($hide_adresse == 0 || $hide_adresse == ''){
+			                echo '<input type="radio" id="hide-adresse" name="hide-adresse" value="0" checked>';
+			                } else {
+			                echo '<input type="radio" id="hide-adresse" name="hide-adresse" value="0">';
+			                } 
+			                echo '<label for="html">Non</label>';
+			                
+			                echo '<br>';
+			                $hide_contact = get_user_meta( $userdata->ID, 'hide_contact_key', true);
+			              	echo '<span>Masquer les informations de contact dans mon profile.</span><br>';
+					
+					if($hide_contact == 1){
+			                	echo '<input type="radio" id="hide-contact" name="hide-contact" value="1" checked>';
+			                } else {
+			                	echo '<input type="radio" id="hide-contact" name="hide-contact" value="1">';
+			                }
+			                echo '<label for="html">Oui</label>';
+								
+					if($hide_contact == 0 || $hide_contact == ''){
+			                	echo '<input type="radio" id="hide-contact" name="hide-contact" value="0" checked>';
+			                } else {
+			                	echo '<input type="radio" id="hide-contact" name="hide-contact" value="0">';
+			                }
+			                echo '<label for="html">Non</label>';
+			                
+			                echo '<br>';
+								
+			                echo '<input type="hidden" name="userid" value="'. $userdata->ID .'" />';
+					echo '<input type="hidden" name="action" value="privacy_action" />';
+					echo '<input type="submit" value="Sauvegarder" />';
+					
+				    
+                    echo '</form>';
+			
+			    echo '</div>';
+			    
+            }
+			
 			if ($_GET['delete_account'] == true) {
 			
 				echo '<div class="delete-account" style="width: 75%;">';
 				
 				    echo '<h2>Supprimer votre compte</h2>';
 				
-					echo '<form action="'. $_SERVER['REQUEST_URI'] .'" method="post">';
+					echo '<form action="'. $_SERVER['REQUEST_URI'] .'" h="post">';
 						echo '<span>Êtes-vous sûr de vouloir supprimer votre compte ?</span>';
 						echo '<br>';
 						echo '<span>Cette action effacera toutes les données de votre compte sur le site.</span>';

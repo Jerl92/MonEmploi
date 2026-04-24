@@ -185,20 +185,88 @@ add_action('init', function(){
   if(!isset($_POST['action']) || $_POST['action'] !== 'my_login_action')
       return;
   
-      // see the codex for wp_signon()
-      $user = wp_signon();
-    
-        if(is_wp_error($user)){
-        	wp_die('Échec de la connexion. Mot de passe ou nom d&#8216;utilisateur incorrect?');
+        $username = sanitize_user($_POST['log']);
+  
+        // see the codex for wp_signon()
+        $user_ = wp_signon();
+        
+        $user = get_user_by('login', $username);
+        
+       	$date1 = current_time( 'timestamp' );
+	$login_attemp = get_user_meta($user->ID, 'login_attemp', true);
+	$login_lock = get_user_meta($user->ID, 'login_lock', true);
+	$lock_time = get_user_meta($user->ID, 'login_lock_time', true);
+        
+        if(is_wp_error($user_)){
+            $login_attemp_count = intval($login_attemp);
+            $login_attemp_count += 1;
+            update_user_meta($user->ID, 'login_attemp', $login_attemp_count);
+            if($login_attemp_count == 5){
+                $new_date = strtotime(date("Y-m-d H:i:s", $date1) . "+12hours");
+                update_user_meta($user->ID, 'login_lock', 1);
+                update_user_meta($user->ID, 'login_lock_time', $new_date);
+            }
+            if($date1 >= $lock_time && $lock_time != ''){
+                update_user_meta($user->ID, 'login_attemp', 0);
+                update_user_meta($user->ID, 'login_lock', 0);
+                update_user_meta($user->ID, 'login_lock_time', '');
+            }
+            $login_lock = get_user_meta($user->ID, 'login_lock', true);
+            if($login_lock == 1){
+            	$unlock = $lock_time - $date1;
+ 		$time_unlock = gmdate("H:i:s", $unlock);
+                wp_die($time_unlock . ' - Votre compte est barré pour 12 heures car vous avez echoué vos 5 tentative de connexion.');
+            }
+            wp_die('Nombre de tentative:' . $login_attemp_count . '/5 - Échec de la connexion. Mot de passe ou nom d&#8216;utilisateur incorrect?');
+        } else {
+            if($date1 >= $lock_time && $lock_time != ''){
+                update_user_meta($user->ID, 'login_attemp', 0);
+                update_user_meta($user->ID, 'login_lock', 0);
+                update_user_meta($user->ID, 'login_lock_time', '');
+            }
+            $login_lock = get_user_meta($user->ID, 'login_lock', true);
+	     if($login_lock == 1){
+            	$unlock = $lock_time - $date1;
+ 		$time_unlock = gmdate("H:i:s", $unlock);
+                wp_die($time_unlock . ' - Votre compte est barré pour 12 heures car vous avez echoué vos 5 tentative de connexion.');
+            }
         }
      
         $user_info = get_userdata($user->ID);
         $user_roles = $user_info->roles;
         if(implode($user_roles) != 'administrator'){
-            if(get_user_meta($user->ID, 'account_status', true) != 'approved'){
+            if(get_user_meta($user->ID, 'account_status', true) != 'approved' ){
                 wp_logout();
                 wp_die('Votre compte n&#8216;est pas encore confirmé, veuillez regarder vos emails.');
             }
+        }
+        
+        $login_info = get_user_meta($user->ID, 'login_info', true);
+        
+        $current_time_strtotime = current_time( 'timestamp' );
+        
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+    		$ip = $_SERVER['HTTP_CLIENT_IP'];
+    	} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+    		$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    	} elseif (!empty($_SERVER["HTTP_CF_CONNECTING_IP"])) {
+    		$ip = $_SERVER["HTTP_CF_CONNECTING_IP"];
+    	} else {
+    		$ip = $_SERVER['REMOTE_ADDR'];
+    	}
+    	
+    	$user_agent = $_SERVER['HTTP_USER_AGENT'];
+        
+        $new_login_info = array($current_time_strtotime, $ip, $user_agent);
+        
+        if($login_info == ''){
+            update_user_meta($user->ID, 'login_info', [$new_login_info]);
+        } else {
+        
+            array_unshift($login_info, $new_login_info);
+        
+            update_user_meta($user->ID, 'login_info', $login_info);
+        
         }
     
       // redirect back to the requested page if login was successful    
@@ -283,7 +351,7 @@ add_action('init', function(){
     
     $user_id = wp_insert_user( $userdata );
     
-    if (isset($user_id)){
+    if (!is_wp_error($user_id)) {
         $account_status = get_user_meta($user_id, 'account_status', true);
                        
 	    $unique_key = generateRandomString();
@@ -315,9 +383,7 @@ add_action('init', function(){
             // Send the email
             wp_mail( $email, $subject, $message, $headers );
         }
-    }
-    
-    if (!is_wp_error($user_id)) {
+        
         header("Location: " . $_SERVER['REQUEST_URI'] . "?new_user=true");
     } else {
         foreach ($errors->get_error_messages() as $error) {
@@ -937,5 +1003,201 @@ function disable_admin_bar()
     }
 }
 add_action('init', 'disable_admin_bar', 9);
+
+add_action('init', function(){
+
+	// not the login request?
+	if(!isset($_POST['action']) || $_POST['action'] !== 'avis_employer_send')
+		return;
+
+	$authorid = $_POST['userid'];
+	$avismessage = $_POST['avis-message-employer'];
+	$ponctualite = $_POST['ponctualite-employer'];
+	$connaisance = $_POST['connaisance-employer'];
+	$attitude = $_POST['attitude-employer'];
+	$current_user_id = get_current_user_id();
+	
+	$get_user = get_user_by('id', $authorid);
+	$user_nicename = $get_user->user_firstname . ' ' . $get_user->user_lastname;
+	
+	if($avismessage != '' && $ponctualite != '' && $connaisance != '' && $attitude != ''){
+	
+		$new_post = array(
+			'post_title' => $user_nicename,
+			'post_content' => $avismessage,
+			'post_status' => 'publish',
+			'post_date_gmt' => date('Y-m-d H:i:s'),
+			'post_author' => get_current_user_id(),
+			'post_type' => 'avis'
+		);
+		$post_id = wp_insert_post($new_post);
+		
+		add_user_meta( $post_id, 'ponctualite_key', $ponctualite);
+		add_user_meta( $post_id, 'connaisance_key', $connaisance);
+		add_user_meta( $post_id, 'attitude_key', $attitude);
+		add_user_meta( $post_id, 'authorid_key', $authorid);
+		add_user_meta( $post_id, 'role_key', 'employer');
+		add_user_meta( $post_id, 'nicename_key', $user_nicename);
+		
+		$current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . strtok($_SERVER['REQUEST_URI'], '?');
+		
+		$url = $_SERVER['REQUEST_URI'];
+
+		// Extract the query component (e.g., "name=John&age=30...")
+		$queryString = parse_url($url, PHP_URL_QUERY);
+		
+		// Parse the query string into a resulting array
+		parse_str($queryString, $params);
+		
+		header("Location:0;" . $current_url . "?user=" . $params[user] . "&add_avis=". $post_id ."");
+	
+	}
+	
+});
+
+add_action('init', function(){
+
+	// not the login request?
+	if(!isset($_POST['action']) || $_POST['action'] !== 'avis_employeur_send')
+		return;
+		
+	$authorid = $_POST['userid'];
+	$avismessage = $_POST['avis-message-employeur'];
+	$horaire = $_POST['horaire-employeur'];
+	$superieur = $_POST['superieur-employeur'];
+	$paie = $_POST['paie-employeur'];
+	$current_user_id = get_current_user_id();
+	
+	$get_user_by_id = get_user_by('id', $authorid);
+	$user_nicename = $get_user_by_id->user_firstname . ' ' . $get_user_by_id->user_lastname;
+	
+	if($avismessage != '' && $horaire != '' && $superieur != '' && $paie != ''){
+	
+		$new_post = array(
+			'post_title' => $user_nicename,
+			'post_content' => $avismessage,
+			'post_status' => 'publish',
+			'post_date_gmt' => date('Y-m-d H:i:s'),
+			'post_author' => get_current_user_id(),
+			'post_type' => 'avis'
+		);
+		$post_id = wp_insert_post($new_post);
+		
+		add_user_meta( $post_id, 'horaire_key', $horaire);
+		add_user_meta( $post_id, 'superieur_key', $superieur);
+		add_user_meta( $post_id, 'paie_key', $paie);
+		add_user_meta( $post_id, 'authorid_key', $authorid);
+		add_user_meta( $post_id, 'role_key', 'um_employeur');
+		add_user_meta( $post_id, 'nicename_key', $user_nicename);
+		
+		$current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . strtok($_SERVER['REQUEST_URI'], '?');
+		
+		$url = $_SERVER['REQUEST_URI'];
+
+		// Extract the query component (e.g., "name=John&age=30...")
+		$queryString = parse_url($url, PHP_URL_QUERY);
+		
+		// Parse the query string into a resulting array
+		parse_str($queryString, $params);
+		
+		header("Location:0;" . $current_url . "?user=" . $params[user] . "&add_avis=". $post_id ."");
+		
+	}
+	
+});
+
+add_action('init', function(){
+
+	// not the login request?
+	if(!isset($_POST['action']) || $_POST['action'] !== 'delete_avis_employer')
+		return;
+
+	$postid = $_POST['avisid'];
+	
+	wp_delete_post( $postid, false );
+	
+	$current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . strtok($_SERVER['REQUEST_URI'], '?');
+		
+	$url = $_SERVER['REQUEST_URI'];
+
+	// Extract the query component (e.g., "name=John&age=30...")
+	$queryString = parse_url($url, PHP_URL_QUERY);
+		
+	// Parse the query string into a resulting array
+	parse_str($queryString, $params);
+		
+	header("Location:0;" . $current_url . "?user=" . $params[user] . "&delete_avis=". $postid ."");
+	
+});
+
+add_action('init', function(){
+
+	// not the login request?
+	if(!isset($_POST['action']) || $_POST['action'] !== 'delete_avis_employeur')
+		return;
+
+	$postid = $_POST['avisid'];
+	
+	wp_delete_post( $postid, false );
+	
+	$current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . strtok($_SERVER['REQUEST_URI'], '?');
+		
+	$url = $_SERVER['REQUEST_URI'];
+
+	// Extract the query component (e.g., "name=John&age=30...")
+	$queryString = parse_url($url, PHP_URL_QUERY);
+		
+	// Parse the query string into a resulting array
+	parse_str($queryString, $params);
+		
+	header("Location:0;" . $current_url . "?user=" . $params[user] . "&delete_avis=". $postid ."");
+	
+});
+
+add_action('init', function(){
+
+	// not the login request?
+	if(!isset($_POST['action']) || $_POST['action'] !== 'delete_comment_candidacy')
+		return;
+
+	$commentid = $_POST['commentid'];
+	
+	wp_delete_comment( $commentid, false );
+	
+    	$current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . strtok($_SERVER['REQUEST_URI'], '?');
+	
+	header("Location:0;" . $current_url . "?delete_comment=". $commentid ."");
+
+});
+
+add_action('init', function(){
+
+	// not the login request?
+	if(!isset($_POST['action']) || $_POST['action'] !== 'privacy_action')
+		return;
+		
+	$userid = $_POST['userid'];
+	$hide_search = $_POST['hide-search'];
+	$hide_dashboard = $_POST['hide-dashboard'];
+	$hide_adresse = $_POST['hide-adresse'];
+	$hide_contact = $_POST['hide-contact'];
+	
+	update_user_meta( $userid, 'hide_search_key', $hide_search);
+	update_user_meta( $userid, 'hide_dashboard_key', $hide_dashboard);
+	update_user_meta( $userid, 'hide_adresse_key', $hide_adresse);
+	update_user_meta( $userid, 'hide_contact_key', $hide_contact);
+
+	$current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . strtok($_SERVER['REQUEST_URI'], '?');
+	
+	$url = $_SERVER['REQUEST_URI'];
+
+	// Extract the query component (e.g., "name=John&age=30...")
+	$queryString = parse_url($url, PHP_URL_QUERY);
+	
+	// Parse the query string into a resulting array
+	parse_str($queryString, $params);
+	
+	header("Location:0;" . $current_url . "?privacy=" . $params[privacy] . "&privacy_update=true");
+});
 
 ?>

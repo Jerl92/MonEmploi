@@ -150,7 +150,7 @@ class Monemploi {
         	      		
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/shortcodes/monemploi-user-dashboard.php';
 		
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/shortcodes/monemploi-employer-dashboard.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/shortcodes/monemploi-employeur-dashboard.php';
 		
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/shortcodes/monemploi-employee-dashboard.php';
 		
