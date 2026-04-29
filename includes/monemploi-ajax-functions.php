@@ -25,6 +25,10 @@ function monemploi_ajax_scripts() {
 	wp_localize_script( 'monemploi-ajax-maps-scripts', 'maps_monemploi_ajax_url', admin_url( 'admin-ajax.php', 'relative' ) );
 	wp_enqueue_script( 'monemploi-ajax-maps-scripts' ); 
 	
+	wp_register_script( 'monemploi-ajax-job-question-scripts', $url . "js/ajax.monemploi.job.question.js", array( 'jquery' ), '1.0.0', true );
+	wp_localize_script( 'monemploi-ajax-job-question-scripts', 'job_question_monemploi_ajax_url', admin_url( 'admin-ajax.php', 'relative' ) );
+	wp_enqueue_script( 'monemploi-ajax-job-question-scripts' );
+	
 	wp_register_script( 'monemploi-ajax-job-experiance-scripts', $url . "js/ajax.monemploi.job.experiance.js", array( 'jquery' ), '1.0.0', true );
 	wp_localize_script( 'monemploi-ajax-job-experiance-scripts', 'job_experiance_monemploi_ajax_url', admin_url( 'admin-ajax.php', 'relative' ) );
 	wp_enqueue_script( 'monemploi-ajax-job-experiance-scripts' );
@@ -104,24 +108,48 @@ function get_user_ip() {
 }
 
 /* AJAX action callback */
+add_action( 'wp_ajax_monemploi_question_job', 'monemploi_question_job' );
+add_action( 'wp_ajax_nopriv_monemploi_question_job', 'monemploi_question_job' );
+function monemploi_question_job($post) {
+
+	$userid = $_POST['object_id'];
+	$age_legal = $_POST['age_legal'];
+	$situation_canada = $_POST['situation_canada'];
+	$permis_travail = $_POST['permis_travail'];
+	$dossier_criminel = $_POST['dossier_criminel'];
+	$dossier_criminel_info = $_POST['dossier_criminel_info'];
+	$sexe = $_POST['sexe'];
+	$origine_ethnique = $_POST['origine_ethnique'];
+	$autochtone = $_POST['autochtone'];
+	$handicap = $_POST['handicap'];
+	$handicap_info = $_POST['handicap_info'];
+	
+	update_user_meta( $userid, 'my_age_legal_key', $age_legal );
+	update_user_meta( $userid, 'my_situation_canada_key', $situation_canada );
+	update_user_meta( $userid, 'my_permis_travail_key', $permis_travail );	
+	update_user_meta( $userid, 'my_dossier_criminel_key', $dossier_criminel );
+	update_user_meta( $userid, 'my_dossier_criminel_info_key', $dossier_criminel_info );       	
+	update_user_meta( $userid, 'my_sexe_key', $sexe );
+	update_user_meta( $userid, 'my_origine_ethnique_key', $origine_ethnique );
+	update_user_meta( $userid, 'my_autochtone_key', $autochtone );
+	update_user_meta( $userid, 'my_handicap_key', $handicap );
+	update_user_meta( $userid, 'my_handicap_info_key', $handicap_info );
+	
+	wp_send_json ( 'Tout les informations on ete sauvegarder.' );
+
+}
+
+/* AJAX action callback */
 add_action( 'wp_ajax_monemploi_send_cv_job', 'monemploi_send_cv_job' );
 add_action( 'wp_ajax_nopriv_monemploi_send_cv_job', 'monemploi_send_cv_job' );
 function monemploi_send_cv_job($post) {
 
 	$postid = $_POST['object_id'];
-	$age_legal = $_POST['age_legal'];
-	$situation_canada = $_POST['situation_canada'];
-	$permis_travail = $_POST['permis_travail'];
 	$deja_travaille = $_POST['deja_travaille'];
 	$superieur_nom = $_POST['superieur_nom'];
 	$superieur_email = $_POST['superieur_email'];
 	$superieur_numero = $_POST['superieur_numero'];
 	$superieur_poste = $_POST['superieur_poste'];
-	$sexe = $_POST['sexe'];
-	$origine_ethnique = $_POST['origine_ethnique'];
-	$autochtone = $_POST['autochtone'];
-	$handicap = $_POST['handicap'];
-	$handicap_ = $_POST['handicap_'];
 	$cv = $_POST['selectedValues'];
 	$lettre_presentation = $_POST['lettre_presentation'];
 	$confidentialite = $_POST['confidentialite'];

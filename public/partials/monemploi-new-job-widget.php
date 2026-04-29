@@ -49,7 +49,7 @@ class monemploi_new_job_widgets extends WP_Widget {
 		   
 		     ?><div><?php 
 		                   
-                $unique_strings_job = get_user_meta( $user->ID, 'job_unique', true );
+                    $unique_strings_job = get_user_meta( $user->ID, 'job_unique', true );
 	    	    
 	    	    $unique_strings_job_first = $unique_strings_job[array_key_first($unique_strings_job)];
 	    	    
@@ -72,20 +72,23 @@ class monemploi_new_job_widgets extends WP_Widget {
 		   krsort($job_array);
 		   
 		   foreach ($job_array as $job_user) {
-		       if($i <= 24) {
-    		       $get_user_by_id = get_user_by('ID', $job_user[0]);
-    		       echo '<a href="'. get_site_url() .'/employee/?user='. $get_user_by_id->user_nicename .'">' . $get_user_by_id->user_nicename. '</a>';
-    		       echo ' - ';
-    		       echo $get_user_by_id->user_firstname;
-			echo ' ';
-        		echo $get_user_by_id->user_lastname;
-    		       echo ' - ';
-    		       echo $job_user[1];
-    		       echo ' - ';
-    		       echo $job_user[2];
-    		       echo '</br>';
-		       }
-		       $i++;
+		   $hide_widget = get_user_meta( $job_user[0], 'hide_widget_key', true);
+		   if($hide_widget == 0 || $hide_widget == '') {
+			       if($i <= 24) {
+	    		       $get_user_by_id = get_user_by('ID', $job_user[0]);
+	    		       echo '<a href="'. get_site_url() .'/employee/?user='. $get_user_by_id->user_nicename .'">' . $get_user_by_id->user_nicename. '</a>';
+	    		       echo ' - ';
+	    		       echo $get_user_by_id->user_firstname;
+				echo ' ';
+	        		echo $get_user_by_id->user_lastname;
+	    		       echo ' - ';
+	    		       echo $job_user[1];
+	    		       echo ' - ';
+	    		       echo $job_user[2];
+	    		       echo '</br>';
+			       }
+			       $i++;
+			   }
 		   }
 	}
     		

@@ -46,8 +46,6 @@ class monemploi_new_school_widgets extends WP_Widget {
 		    $users = get_users( $args );
 		   
 		   foreach ($users as $user) {
-		   
-		     ?><div><?php 
 		                   
                 $unique_strings_school = get_user_meta( $user->ID, 'school_unique', true );
 	    	    
@@ -65,27 +63,29 @@ class monemploi_new_school_widgets extends WP_Widget {
 	    	    
 	    	    }
 	    	
-	    	  ?></div><?php 
 		   }
 		   
 		   $i = 0;
 		   krsort($school_array);
 		   
 		   foreach ($school_array as $school_user) {
-		       if($i <= 24) {
-    		       $get_user_by_id = get_user_by('ID', $school_user[0]);
-    		       echo '<a href="'. get_site_url() .'/employee/?user='. $get_user_by_id->user_nicename .'">' . $get_user_by_id->user_nicename. '</a>';
-    		       echo ' - ';
-    		       echo $get_user_by_id->user_firstname;
-        		   echo ' ';
-        		   echo $get_user_by_id->user_lastname;
-    		       echo ' - ';
-    		       echo $school_user[1];
-    		       echo ' - ';
-    		       echo $school_user[2];
-    		       echo '</br>';
-		       }
-		       $i++;
+			   $hide_widget = get_user_meta( $school_user[0], 'hide_widget_key', true);
+			   if($hide_widget == 0 || $hide_widget == '') {
+			       if($i <= 24) {
+	    		       $get_user_by_id = get_user_by('ID', $school_user[0]);
+	    		       echo '<a href="'. get_site_url() .'/employee/?user='. $get_user_by_id->user_nicename .'">' . $get_user_by_id->user_nicename. '</a>';
+	    		       echo ' - ';
+	    		       echo $get_user_by_id->user_firstname;
+	        		   echo ' ';
+	        		   echo $get_user_by_id->user_lastname;
+	    		       echo ' - ';
+	    		       echo $school_user[1];
+	    		       echo ' - ';
+	    		       echo $school_user[2];
+	    		       echo '</br>';
+			       }
+			       $i++;
+			   }
 		   }
 	}
     		

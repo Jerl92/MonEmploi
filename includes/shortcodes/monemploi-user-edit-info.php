@@ -358,6 +358,105 @@ function monemploi_user_edit_info() {
 			                echo '<label for="html">Non</label>';
 			                
 			                echo '<br>';
+			            	$hide_widget = get_user_meta( $userdata->ID, 'hide_widget_key', true);
+			              	echo '<span>Masquer le compte des widgets.</span><br>';
+					
+					if($hide_widget == 1){
+			                	echo '<input type="radio" id="hide-widget" name="hide-widget" value="1" checked>';
+			                } else {
+			                	echo '<input type="radio" id="hide-widget" name="hide-widget" value="1">';
+			                }
+			                echo '<label for="html">Oui</label>';
+								
+					if($hide_widget == 0 || $hide_widget == ''){
+			                	echo '<input type="radio" id="hide-widget" name="hide-widget" value="0" checked>';
+			                } else {
+			                	echo '<input type="radio" id="hide-widget" name="hide-widget" value="0">';
+			                }
+			                echo '<label for="html">Non</label>';
+			                
+					$userid = $userdata->ID;
+					$user_meta = get_userdata($userid);
+					$user_role = $user_meta->roles[0];
+					if($user_role == 'employeur'){
+			                
+			                	echo '<p>Employeur</p>';
+			                
+				                $hide_adresse_job = get_user_meta( $userdata->ID, 'hide_adresse_job_key', true);
+				        	echo '<span>Masquer mon adresse dans les annonces.</span><br>';
+						
+						if($hide_adresse_job == 1){
+				                echo '<input type="radio" id="hide-adresse-job" name="hide-adresse-job" value="1" checked>';
+				                } else {
+				                echo '<input type="radio" id="hide-adresse-job" name="hide-adresse-job" value="1">';
+				                } 
+				                echo '<label for="html">Oui</label>';
+									
+						if($hide_adresse_job == 0 || $hide_adresse_job == ''){
+				                echo '<input type="radio" id="hide-adresse-job" name="hide-adresse-job" value="0" checked>';
+				                } else {
+				                echo '<input type="radio" id="hide-adresse-job" name="hide-adresse-job" value="0">';
+				                } 
+				                echo '<label for="html">Non</label>';
+				                
+				                echo '<br>';
+				                $hide_contact_job = get_user_meta( $userdata->ID, 'hide_contact_job_key', true);
+				              	echo '<span>Masquer les informations de contact dans les annonces.</span><br>';
+						
+						if($hide_contact_job == 1){
+				                	echo '<input type="radio" id="hide-contact-job" name="hide-contact-job" value="1" checked>';
+				                } else {
+				                	echo '<input type="radio" id="hide-contact-job" name="hide-contact-job" value="1">';
+				                }
+				                echo '<label for="html">Oui</label>';
+				                
+				                if($hide_contact_job == 0 || $hide_contact_job == ''){
+				                	echo '<input type="radio" id="hide-contact-job" name="hide-contact-job" value="0" checked>';
+				                } else {
+				                	echo '<input type="radio" id="hide-contact-job" name="hide-contact-job" value="0">';
+				                }
+				                echo '<label for="html">Non</label>';
+				                
+				                echo '<br>';
+				                
+				          	$hide_adresse_candidacy = get_user_meta( $userdata->ID, 'hide_adresse_candidacy_key', true);
+				        	echo '<span>Masquer mon adresse dans les pages de candidature.</span><br>';
+						
+						if($hide_adresse_candidacy == 1){
+				                echo '<input type="radio" id="hide-adresse-candidacy" name="hide-adresse-candidacy" value="1" checked>';
+				                } else {
+				                echo '<input type="radio" id="hide-adresse-candidacy" name="hide-adresse-candidacy" value="1">';
+				                } 
+				                echo '<label for="html">Oui</label>';
+									
+						if($hide_adresse_candidacy == 0 || $hide_adresse_candidacy == ''){
+				                echo '<input type="radio" id="hide-adresse-candidacy" name="hide-adresse-candidacy" value="0" checked>';
+				                } else {
+				                echo '<input type="radio" id="hide-adresse-candidacy" name="hide-adresse-candidacy" value="0">';
+				                } 
+				                echo '<label for="html">Non</label>';
+				                
+				                echo '<br>';
+				                $hide_contact_candidacy = get_user_meta( $userdata->ID, 'hide_contact_candidacy_key', true);
+				              	echo '<span>Masquer les informations de contact dans les pages de candidature.</span><br>';
+						
+						if($hide_contact_candidacy == 1){
+				                	echo '<input type="radio" id="hide-contact-candidacy" name="hide-contact-candidacy" value="1" checked>';
+				                } else {
+				                	echo '<input type="radio" id="hide-contact-candidacy" name="hide-contact-candidacy" value="1">';
+				                }
+				                echo '<label for="html">Oui</label>';
+				                
+				                if($hide_contact_candidacy == 0 || $hide_contact_candidacy == ''){
+				                	echo '<input type="radio" id="hide-contact-candidacy" name="hide-contact-candidacy" value="0" checked>';
+				                } else {
+				                	echo '<input type="radio" id="hide-contact-candidacy" name="hide-contact-candidacy" value="0">';
+				                }
+				                echo '<label for="html">Non</label>';
+			                
+			                }
+			                
+			                echo '<br>';
 								
 			                echo '<input type="hidden" name="userid" value="'. $userdata->ID .'" />';
 					echo '<input type="hidden" name="action" value="privacy_action" />';

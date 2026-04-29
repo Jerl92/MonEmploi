@@ -43,6 +43,9 @@ class monemploi_new_employers_widgets extends WP_Widget {
 		   
 		   foreach ($users as $user) {
 		   
+		   $hide_widget = get_user_meta( $user->ID, 'hide_widget_key', true);
+		   if($hide_widget == 0 || $hide_widget == '') {
+		   
 		   echo '<div>'; 
 	
 			    $user_id = $user->ID; // Replace with the desired user ID
@@ -57,6 +60,8 @@ class monemploi_new_employers_widgets extends WP_Widget {
 			    echo get_user_meta($user_id, 'city_key', true);
 			
 		   echo '</div>'; 
+		   
+		   }
 	    		
 	    }
 	    

@@ -86,6 +86,13 @@ jQuery(document).ready(function($) {
             jQuery('.permis_travail_wrapper').css('display', 'none');
         }
     });
+    jQuery('.dossier-criminel').change(function() {
+        if($(this).val() == 2) {
+            jQuery('.dossier_criminel_wrapper').css('display', 'block');
+        } else  {
+            jQuery('.dossier_criminel_wrapper').css('display', 'none');
+        }
+    });
     jQuery('.deja_travaille').change(function() {
         if($(this).val() == 1) {
             jQuery('.superieur-info').css('display', 'block');
@@ -93,6 +100,33 @@ jQuery(document).ready(function($) {
             jQuery('.superieur-info').css('display', 'none');
         }
     });
+    var handicap = jQuery('.handicap').val();
+    var handicap_class = jQuery('.handicap-class').html();
+	if(handicap == 2) {
+	    jQuery('.handicap_wrapper').css('display', 'block');
+	} elseif(handicap_class == 2) {
+	    jQuery('.handicap_wrapper').css('display', 'block');
+	} else  {
+	    jQuery('.handicap_wrapper').css('display', 'none');
+	}
+    var situation_canada = jQuery('.situation_canada').val();
+    var situation_canada_class = jQuery('.situation-canada-class').html();
+        if(situation_canada == 3) {
+            jQuery('.permis_travail_wrapper').css('display', 'block');
+        } elseif(situation_canada_class == 3)  {
+            jQuery('.permis_travail_wrapper').css('display', 'block');
+        } else  {
+            jQuery('.permis_travail_wrapper').css('display', 'none');
+        }
+    var dossier_criminel = jQuery('.dossier-criminel').val();
+    var dossier_criminel_class = jQuery('.dossier-criminel-class').html();
+	if(dossier_criminel == 2) {
+	    jQuery('.dossier_criminel_wrapper').css('display', 'block');
+	} elseif(dossier_criminel_class == 2) {
+	    jQuery('.dossier_criminel_wrapper').css('display', 'block');
+	} else  {
+	    jQuery('.dossier_criminel_wrapper').css('display', 'none');
+	}
     jQuery(".superieur_numero").keyup(function() {
 	    jQuery(this).val(jQuery(this).val().replace(/^(\d{3})(\d{3})(\d+)$/, "($1)$2-$3"));
     });

@@ -134,7 +134,7 @@ function employeur_dashboard() {
 								echo '<span class="autocompleteDeparture">';
 									echo '<span class="autocompleteDeparture_'.  $i . '" style="display:none;">'. $field_data_adresse . ' ' .implode($field_data) . '</span>';
 									echo '<span class="autocompleteArrival_' . $i . '" style="display: none;">' . get_post_meta( $post->ID, 'my_code_postal_key', true ) . '</span>';
-									echo ' - <span class="distance_' . $i . '"></span> - ';
+									echo ' - <span class="distance_' . $i . '"></span>';
 								echo '</span>';
 							}
 							echo get_post_meta( $post->ID, 'my_city_key', true );
@@ -169,7 +169,7 @@ function employeur_dashboard() {
 								echo '<span class="autocompleteDeparture">';
 									echo '<span class="autocompleteDeparture_'.  $i . '" style="display:none;">'. $field_data_adresse . ' ' .implode($field_data) . '</span>';
 									echo '<span class="autocompleteArrival_' . $i . '" style="display: none;">' . get_post_meta( $post->ID, 'my_code_postal_key', true ) . '</span>';
-									echo ' - <span class="distance_' . $i . '"></span> - ';
+									echo ' - <span class="distance_' . $i . '"></span>';
 								echo '</span>';
 							}
 							echo ' - ' . get_post_meta( $post->ID, 'my_city_key', true );

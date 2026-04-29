@@ -404,6 +404,22 @@ function monemploi_newjob_from() {
 							<option value="2">Oui</option>
 						<?php } ?>
 					</select>
+					
+					<p>E-mail de l&#8216;employeur</p>
+					<?php $email_employeur = get_post_meta( $postid, 'my_email_employeur_key', true); ?>
+					<?php if(isset($postid) && $author_id = get_current_user_id()){ ?>
+						<input type="text" class="email_employeur" name="email_employeur" id="email_employeur" value="<?php echo $email_employeur; ?>" style="width: 100%;">
+					<?php } else { ?>
+	                    			<input type="text" class="email_employeur" name="email_employeur" id="email_employeur" style="width: 100%;">
+					<?php } ?>
+					
+					<p>Lien de l&#8216;employeur</p>
+					<?php $email_employeur = get_post_meta( $postid, 'my_lien_employeur_key', true); ?>
+					<?php if(isset($postid) && $author_id = get_current_user_id()){ ?>
+						<input type="text" class="lien_employeur" name="lien_employeur" id="lien_employeur" value="<?php echo $lien_employeur; ?>" style="width: 100%;">
+					<?php } else { ?>
+	                    			<input type="text" class="lien_employeur" name="lien_employeur" id="lien_employeur" style="width: 100%;">
+					<?php } ?>
 				
 					<br><br>
 																		

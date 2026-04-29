@@ -62,80 +62,11 @@ function handle_frontend_media_upload() {
 add_action( 'admin_post_frontend_media_upload', 'handle_frontend_media_upload' );
 add_action( 'admin_post_nopriv_frontend_media_upload', 'handle_frontend_media_upload' ); // For logged out users
 
-function remove_um_profile_navbar() {
-    remove_action('um_profile_navbar', 'um_profile_navbar', 9 );
+function search_distinct() {
+    return "DISTINCT";
 }
-add_action('init','remove_um_profile_navbar');
+add_filter('posts_distinct', 'search_distinct');
 
-function cf_search_join( $join ) {
-    global $wpdb;
-
-        if ( is_search() && !is_admin() ) {    
-            $join .=' LEFT JOIN '.$wpdb->postmeta. ' ON '. $wpdb->posts . '.ID = ' . $wpdb->postmeta . '.post_id ';
-        }
-
-    return $join;
-}
-add_filter('posts_join', 'cf_search_join' );
-
-/**
- * Modify the search query with posts_where
- *
- * http://codex.wordpress.org/Plugin_API/Filter_Reference/posts_where
- */
-function cf_search_where( $where ) {
-    global $wpdb;
-
-        if ( is_search() ) {
-            $where = preg_replace(
-                "/\(\s*".$wpdb->posts.".post_title\s+LIKE\s*(\'[^\']+\')\s*\)/",
-                "(".$wpdb->posts.".post_title LIKE $1) OR (".$wpdb->postmeta.".meta_value LIKE $1)", $where );
-        }
-
-    return $where;
-}
-add_filter( 'posts_where', 'cf_search_where' );
-
-function show_draft_posts_on_front( $query ) {
-    // Check if we are in the admin area, and if so, return the original query
-    if ( is_admin() ) {
-        return $query;
-    }
-
-    // Check if a user is logged in and has permission to view drafts
-    if ( is_user_logged_in() && current_user_can( 'employeur' ) ) {
-        // Ensure the main loop is targeted and no suppress_filters argument is present
-        if ( $query->is_main_query() && !isset($query->query_vars['suppress_filters']) ) {
-            $query->set( 'post_status', [ 'publish', 'draft', 'future' ] );
-        }
-    }
-    
-    return $query;
-}
-add_filter( 'pre_get_posts', 'show_draft_posts_on_front' );
-
-function my_custom_after_registration_action( $user_id, $args ) {
-	if ( empty( $user_id ) || is_wp_error( $user_id ) ) {
-		return;
-	}    
-	$user = new WP_User( $user_id );
-	$meta_for_user = get_user_meta( $user_id, 'status', true ); 
-	$meta_user_status = $meta_for_user[0];
-	if($meta_user_status == 'Employeur'){    
-		$user->set_role( 'employeur' );
-	}
-	if($meta_user_status == 'Employer'){ 
-		$user->set_role( 'employer' );
-	}
-}
-add_action( 'um_registration_set_extra_data', 'my_custom_after_registration_action', 10, 2 );
-
-add_filter( 'login_url', 'um_custom_login_url', 10, 3 );
-function um_custom_login_url( $login_url, $redirect, $force_reauth ) {
-	if(function_exists('um_get_core_page')) {
-    		return um_get_core_page( 'login' );
-    	}
-}
 
 function auto_approve_all_comments( $approved, $commentdata ) {
     return 1;
@@ -424,11 +355,15 @@ add_action('init', function(){
     
     $current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . strtok($_SERVER['REQUEST_URI'], '?');
     
+    if($user_email == ''){
+        wp_die('Le email est vide.');
+    }
+    
     $already_email = 0;
     $all_users = get_users();
     foreach ($all_users as $user) {
         if($user_email == $user->user_email && $user_id != $user->ID) {
-            $errors->add('already_email', 'Le email existe deja sur un autre compte.');
+            wp_die('Le email existe deja sur un autre compte.');
             $alreadyemail = 1;
         }
     }
@@ -439,7 +374,7 @@ add_action('init', function(){
     if($already_email === 0 && $user_email_already != $user_email) {
         update_user_meta($user_id, 'unique_email_key', $unique_key);
         update_user_meta($user_id, 'new_email_key', $user_email);
-        $subject = 'Votre compte ' . $username . ' vous devez confirmer votre compte.';
+        $subject = 'Votre compte ' . $username . ' vous devez confirmer votre couriel.';
             $message = '
                 <p>Bonjour ' . $firstname . ' ' . $lastname . '</p>
                 <p>Votre compte a une nouvelle adresse couriel. il ne reste juste qu&#8216;à confirmer le tout.</p>
@@ -527,6 +462,8 @@ add_action('init', function(){
         $permis_conduire = $_POST['permis_conduire'];
         $besoin_voiture = $_POST['besoin_voiture'];
         $activite_professionnelle = $_POST['activite_professionnelle'];
+        $email_employeur =  $_POST['email_employeur'];
+        $lien_employeur =  $_POST['lien_employeur'];
         $job_status =  $_POST['job_status'];
         $postid_update =  $_POST['postid'];
         
@@ -607,6 +544,8 @@ add_action('init', function(){
 		$get_current_user_id = get_current_user_id();
 		$company_key = get_user_meta($get_current_user_id, 'company_key', true);
 		add_post_meta( $postid, 'company_key', $company_key );
+		add_post_meta( $postid, 'my_email_employeur_key', $email_employeur );
+		add_post_meta( $postid, 'my_lien_employeur_key', $lien_employeur );
 	}
 	
 	if($job_status == 'update' && $postid_update != 0){
@@ -688,7 +627,9 @@ add_action('init', function(){
 		update_post_meta( $postid_update, 'my_activite_professionnelle_key', $activite_professionnelle );
 		$get_current_user_id = get_current_user_id();
 		$company_key = get_user_meta($get_current_user_id, 'company_key', true);
-		add_post_meta( $postid_update, 'company_key', $company_key );
+		update_post_meta( $postid_update, 'company_key', $company_key );
+		update_post_meta( $postid_update, 'my_email_employeur_key', $email_employeur );
+		update_post_meta( $postid_update, 'my_lien_employeur_key', $lien_employeur );
 	
 	}
 	
@@ -1181,11 +1122,21 @@ add_action('init', function(){
 	$hide_dashboard = $_POST['hide-dashboard'];
 	$hide_adresse = $_POST['hide-adresse'];
 	$hide_contact = $_POST['hide-contact'];
+	$hide_widget = $_POST['hide-widget'];
+	$hide_adresse_job = $_POST['hide-adresse-job'];
+	$hide_contact_job = $_POST['hide-contact-job'];
+	$hide_adresse_candidacy = $_POST['hide-adresse-candidacy'];
+	$hide_contact_candidacy = $_POST['hide-contact-candidacy'];
 	
 	update_user_meta( $userid, 'hide_search_key', $hide_search);
 	update_user_meta( $userid, 'hide_dashboard_key', $hide_dashboard);
 	update_user_meta( $userid, 'hide_adresse_key', $hide_adresse);
 	update_user_meta( $userid, 'hide_contact_key', $hide_contact);
+	update_user_meta( $userid, 'hide_widget_key', $hide_widget);
+	update_user_meta( $userid, 'hide_adresse_job_key', $hide_adresse_job);
+	update_user_meta( $userid, 'hide_contact_job_key', $hide_contact_job);
+	update_user_meta( $userid, 'hide_adresse_candidacy_key', $hide_adresse_candidacy);
+	update_user_meta( $userid, 'hide_contact_candidacy_key', $hide_contact_candidacy);
 
 	$current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . strtok($_SERVER['REQUEST_URI'], '?');
 	
