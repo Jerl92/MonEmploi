@@ -60,11 +60,12 @@ The answer is no.<br>
 
 <img style="max-width: 100%;" src="https://i.ibb.co/yFGpt8k1/monemploi13.png" /><br>
 <img style="max-width: 100%;" src="https://i.ibb.co/pvB26nTr/monemploi14.png" /><br>
-<img style="max-width: 100%;" src="https://i.ibb.co/Jwpz3P7v/monemploi10.png" /><br>
+<img style="max-width: 100%;" src="https://i.ibb.co/DgSWHY2H/monemploi34.png" /><br>
 <img style="max-width: 100%;" src="https://i.ibb.co/fYJD4BCW/monemploi12.png" /><br>
 
 ## Changelog 
 
+0.5.5 - Add user profile widget and move job apply question to profile.<br>
 0.5 - Add left menu to user-edit-info and add widget of new diploma and new experiance done.<br>
 0.4.5 - Remove Ultimate Member and use custom formulaire with short code.<br>
 0.4 - Add support for full-width display and add a custom login from.<br>

@@ -70,7 +70,7 @@ class Monemploi {
 		if ( defined( 'MONEMPLOI_VERSION' ) ) {
 			$this->version = MONEMPLOI_VERSION;
 		} else {
-			$this->version = '0.5';
+			$this->version = '0.5.5';
 		}
 		$this->plugin_name = 'monemploi';
 
@@ -131,6 +131,8 @@ class Monemploi {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/monemploi-new-school-widget.php';
 		
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/monemploi-new-job-widget.php';
+		
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/monemploi-profile-widget.php';
 		
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/monemploi-functions.php';
         
