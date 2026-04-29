@@ -150,7 +150,7 @@ function monemploie_question_job() {
     			error: function(error) {
     				console.log(error);
     			}
-            })
+            });
         }
 	});
 }
