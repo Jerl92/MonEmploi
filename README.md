@@ -51,6 +51,9 @@ Is to set a registration from.<br>
 [monemploi-user-edit-info]<br>
 Is to set a page so you can edit basic info on the user.<br>
 
+[monemploi-chat]<br>
+To display the chat dashboard<br>
+
 ## Frequently Asked Questions 
 
 Do you make money with this plugin.<br>
