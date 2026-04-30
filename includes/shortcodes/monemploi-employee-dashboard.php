@@ -30,65 +30,87 @@ function employee_dashboard() {
 				
 				?><div><?php 
 				   
-				    $user_id = intval($userid); // Replace with the desired user ID
-				    $userdata = get_userdata( $user_id );
-				    echo '<div class="container-image-cover">';
-    					$cover_photo = get_user_meta($user_id, 'cover_photo', true);
-    					$cover_url = wp_get_attachment_url($cover_photo);
-    					if($cover_url){
-    						echo '<img src="'. $cover_url .'" class="image-fond">';
-    				    	} else {
-    						//
-    					}
-    				    
-    				    // Get the URL of the profile picture with a specific size (e.g., 150x150 pixels)
-    				    $user_avatar = get_user_meta($user_id, 'user_avatar', true);
-    					$image_url = wp_get_attachment_url($user_avatar);
-    					
-    					if ( $image_url ) {
-    					   	echo '<img src="' . esc_url( $image_url ) . '" class="image-dessus">';
-    					} else {
-    						//
-    					}
-					
-				    echo '</div>';
-									    
-				    $hide_adresse = get_user_meta( $user_id, 'hide_adresse_key', true);
-				    $hide_contact = get_user_meta( $user_id, 'hide_contact_key', true);
-				    
-				    echo $get_user_by_username->user_nicename;
-				    echo ' - ';
-				    echo $get_user_by_username->user_firstname;
-				    echo ' ';
-				    echo $get_user_by_username->user_lastname;
-				    if(get_user_meta($user_id, 'company_key', true) != ''){
+				    echo '<div class="" style="position: relative;">';
+					    $user_id = intval($userid); // Replace with the desired user ID
+					    $userdata = get_userdata( $user_id );
+					    echo '<div class="container-image-cover">';
+	    					$cover_photo = get_user_meta($user_id, 'cover_photo', true);
+	    					$cover_url = wp_get_attachment_url($cover_photo);
+	    					if($cover_url){
+	    						echo '<img src="'. $cover_url .'" class="image-fond">';
+	    				    	} else {
+	    						//
+	    					}
+	    				    
+	    				    // Get the URL of the profile picture with a specific size (e.g., 150x150 pixels)
+	    				    $user_avatar = get_user_meta($user_id, 'user_avatar', true);
+	    					$image_url = wp_get_attachment_url($user_avatar);
+	    					
+	    					if ( $image_url ) {
+	    					   	echo '<img src="' . esc_url( $image_url ) . '" class="image-dessus">';
+	    					} else {
+	    						//
+	    					}
+						
+					    echo '</div>';
+										    
+					    $hide_adresse = get_user_meta( $user_id, 'hide_adresse_key', true);
+					    $hide_contact = get_user_meta( $user_id, 'hide_contact_key', true);
+					    
+					    echo $get_user_by_username->user_nicename;
 					    echo ' - ';
-					    echo get_user_meta($user_id, 'company_key', true);
-				    }	
-				    echo '<br>';
-				    if($hide_adresse == 0 || $hide_adresse == ''){
-					    echo get_user_meta($user_id, 'adresse_key', true);
-					    echo ' - ';
-					    echo get_user_meta($user_id, 'city_key', true);
-					    echo ' - ';
-					    echo get_user_meta($user_id, 'province_key', true);
-					    echo ' - ';
-					    echo get_user_meta($user_id, 'country_key', true);
-					    echo ' - ';
-					    echo get_user_meta($user_id, 'postal_code_key', true);
+					    echo $get_user_by_username->user_firstname;
+					    echo ' ';
+					    echo $get_user_by_username->user_lastname;
+					    if(get_user_meta($user_id, 'company_key', true) != ''){
+						    echo ' - ';
+						    echo get_user_meta($user_id, 'company_key', true);
+					    }	
 					    echo '<br>';
-				    }
-				    if($hide_contact == 0 || $hide_contact == ''){
-					    echo get_user_meta($user_id, 'phone_key', true);
-					    if(get_user_meta($user_id, 'poste_key', true) != ''){
-					    	echo ' - ';
-					    	echo get_user_meta($user_id, 'poste_key', true);
+					    if($hide_adresse == 0 || $hide_adresse == ''){
+						    echo get_user_meta($user_id, 'adresse_key', true);
+						    echo ' - ';
+						    echo get_user_meta($user_id, 'city_key', true);
+						    echo ' - ';
+						    echo get_user_meta($user_id, 'province_key', true);
+						    echo ' - ';
+						    echo get_user_meta($user_id, 'country_key', true);
+						    echo ' - ';
+						    echo get_user_meta($user_id, 'postal_code_key', true);
+						    echo '<br>';
 					    }
-					    echo ' - ';
-					    echo $get_user_by_username->user_email;	    
+					    if($hide_contact == 0 || $hide_contact == ''){
+						    echo get_user_meta($user_id, 'phone_key', true);
+						    if(get_user_meta($user_id, 'poste_key', true) != ''){
+						    	echo ' - ';
+						    	echo get_user_meta($user_id, 'poste_key', true);
+						    }
+						    echo ' - ';
+						    echo $get_user_by_username->user_email;	    
+						    echo '<br>';
+					    }
 					    echo '<br>';
-				    }
-				    echo '<br>';
+					    
+					    if(!$cover_url && !$image_url){
+					    	echo '<div class="" style="position: absolute; right: 0; top: 25px; display: flex; width: auto;">';
+					    }
+					    if($cover_url && !$image_url){
+					    	echo '<div class="" style="position: absolute; right: 0; top: 300px; display: flex; width: auto;">';
+					    }
+					    if(!$cover_url && $image_url){
+					    	echo '<div class="" style="position: absolute; right: 0; top: 125px; display: flex; width: auto;">';
+					    }
+					    if($cover_url && $image_url){
+					    	echo '<div class="" style="position: absolute; right: 0; top: 325px; display: flex; width: auto;">';
+					    }
+	    					if($get_user_by_username->ID != get_current_user_id()){
+	                           			 echo '<div class="chat-icons">';
+	                                			echo '<a href="' . get_site_url() .'/chat/?username=' . $get_user_by_username->user_nicename . '"><span class="material-icons">mail</span></a>';
+							 echo '</div>';
+						}
+					     echo '</div>';
+					    
+				    echo '</div>';
 				    
 				 ?></div> 
 				 

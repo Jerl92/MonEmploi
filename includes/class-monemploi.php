@@ -166,6 +166,8 @@ class Monemploi {
 		
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/shortcodes/monemploi-user-edit-info.php';
 		
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/shortcodes/monemploi-chat.php';
+		
 		$this->loader = new Monemploi_Loader();
 
 	}

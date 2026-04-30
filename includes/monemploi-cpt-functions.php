@@ -118,6 +118,44 @@ function cpt_avis() {
 
 add_action('init', 'cpt_avis');
 
+function cpt_chats() {
+
+    $labels = array(
+        'name'                  => 'chats',
+        'singular_name'         => 'chat',
+        'menu_name'             => 'chats',
+        'name_admin_bar'        => 'chat',
+        'add_new'               => 'Ajouter',
+        'add_new_item'          => 'Ajouter un chat',
+        'new_item'              => 'Nouveau chat',
+        'edit_item'             => 'Modifier le chat',
+        'view_item'             => 'Voir le chat',
+        'all_items'             => 'Tous les chats',
+        'search_items'          => 'Rechercher des chats',
+        'not_found'             => 'Aucun chat trouvé',
+    );
+
+    $args = array(
+        'labels'             => $labels,
+        'public'             => true,
+        'has_archive'        => true,
+        'rewrite'            => array('slug' => 'chats'),
+        'menu_icon'          => 'dashicons-portfolio',
+        'supports'           => array(
+            'title',
+            'editor',
+            'thumbnail',
+            'excerpt'
+        ),
+        'show_in_rest'       => false, // IMPORTANT pour Gutenberg
+        'exclude_from_search' => true,
+    );
+
+    register_post_type('chat', $args);
+}
+
+add_action('init', 'cpt_chats');
+
 function education_register_genre_taxonomy() {
     $labels = array(
         'name'              => _x( 'Educations', 'taxonomy general name', 'textdomain' ),

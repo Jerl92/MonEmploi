@@ -1151,4 +1151,46 @@ add_action('init', function(){
 	header("Location:0;" . $current_url . "?privacy=" . $params[privacy] . "&privacy_update=true");
 });
 
+add_action('init', function(){
+
+	// not the login request?
+	if(!isset($_POST['action']) || $_POST['action'] !== 'my_chat_send_action')
+		return;
+		
+		$message_chat = $_POST['message-chat'];
+		$send_userid = $_POST['send_userid'];
+		$recive_userid = $_POST['recive_userid'];
+		$chatid = $_POST['chatid'];
+		
+		$current_time = current_time('timestamp');
+		
+		$chat_array = array($current_time, $send_userid, $message_chat);
+		
+		$author_array = array($send_userid, $recive_userid);
+		
+		if($chatid == 0){
+			$my_post = array(
+			  'post_title'    => 'Chat',
+			  'post_type'    =>  'chat',
+			  'post_status'   => 'publish',
+			  'post_author'   => $recive_userid,
+			);
+			
+			$chatid = wp_insert_post( $my_post );
+		}
+		
+		$chat_history = get_post_meta($chatid, 'my_chat_history_key', true);
+		
+		update_post_meta($chatid, 'my_author_id_key', $author_array);
+		
+		if($chat_history == ''){
+			update_post_meta($chatid, 'my_chat_history_key', [$chat_array]);
+		} else {
+			array_push($chat_history, $chat_array);
+			update_post_meta($chatid, 'my_chat_history_key', $chat_history);
+		}
+		
+		header("Location: " . $_SERVER['REQUEST_URI'] . "");
+});
+
 ?>

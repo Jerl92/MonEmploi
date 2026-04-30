@@ -26,6 +26,7 @@ function employeur_dashboard() {
 				
 				?><div><?php 
 				   
+				echo '<div class="" style="position: relative;">';
 				    $user_id = intval($userid); // Replace with the desired user ID
 				    $userdata = get_userdata( $user_id );
 				    echo '<div class="container-image-cover">';
@@ -85,6 +86,27 @@ function employeur_dashboard() {
 					    echo '<br>';
 				    }
 				    echo '<br>';
+				    
+			    	    if(!$cover_url && !$image_url){
+				    	echo '<div class="" style="position: absolute; right: 0; top: 25px; display: flex; width: auto;">';
+				    }
+				    if($cover_url && !$image_url){
+				    	echo '<div class="" style="position: absolute; right: 0; top: 300px; display: flex; width: auto;">';
+				    }
+				    if(!$cover_url && $image_url){
+				    	echo '<div class="" style="position: absolute; right: 0; top: 125px; display: flex; width: auto;">';
+				    }
+				    if($cover_url && $image_url){
+				    	echo '<div class="" style="position: absolute; right: 0; top: 325px; display: flex; width: auto;">';
+				    }
+				    	if($get_user_by_username->ID != get_current_user_id()){
+                           			 echo '<div class="chat-icons">';
+                                			echo '<a href="' . get_site_url() .'/chat/?username=' . $get_user_by_username->user_nicename . '"><span class="material-icons">mail</span></a>';
+						 echo '</div>';
+					}
+				     echo '</div>';
+				     
+				echo '</div>';
 				   
 				$current_user = wp_get_current_user();
 				$user_meta = get_userdata($current_user->ID);
