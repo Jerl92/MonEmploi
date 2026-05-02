@@ -34,7 +34,7 @@ function monemploi_chat() {
 					'post_type' => 'chat',
 					'posts_per_page' => -1,
 					'orderby' => 'date',
-					'order' => 'ASC',
+					'order' => 'DESC',
 				); 
 				
 				$get_chats_ = get_posts( $get_args );
@@ -92,7 +92,7 @@ function monemploi_chat() {
 						'post_type' => 'chat',
 						'posts_per_page' => -1,
 						'orderby' => 'date',
-						'order' => 'ASC',
+						'order' => 'DESC',
 					); 
 					
 					$get_chats = get_posts( $get_args );
