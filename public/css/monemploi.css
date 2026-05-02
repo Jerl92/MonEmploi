@@ -51,10 +51,8 @@
     .user-chat-history-wrapper {
         width: 100% !important;
         display: block !important;
-        max-height: 500px !important;
+        height: 500px !important;
         overflow-y: scroll;
-        display: flex;
-        flex-direction: column-reverse;
         -ms-overflow-style: none;
         scrollbar-width: none; 
     }
@@ -130,10 +128,8 @@
 .user-chat-history-wrapper {
     width: 100% !important;
     display: block !important;
-    max-height: 500px !important;
+    height: 500px !important;
     overflow-y: scroll;
-    display: flex;
-    flex-direction: column-reverse;
     -ms-overflow-style: none;
     scrollbar-width: none; 
 }

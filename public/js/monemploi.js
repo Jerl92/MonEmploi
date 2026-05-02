@@ -153,17 +153,19 @@ jQuery(document).ready(function($) {
         }
     });
 	var scrolled = false;
+	jQuery('.user-chat-history-wrapper').resize(function() {
+	    scrolled = false;
+	    updateScroll();	
+	});
+	
 	function updateScroll(){
-		var element = jQuery('.user-chat-history-wrapper');
-		element.on( "resize", function() {
-			element.scrollTop(element.prop('scrollHeight'));
-		} );
-		if(!scrolled){
-			element.scrollTop(element.prop('scrollHeight'));
-		} 	
+		var element = jQuery('.user-chat-history-wrapper');	
 		if(element.prop('scrollHeight') - element.scrollTop() == element.outerHeight()) {
 		    	scrolled = false;
 		}
+		if(!scrolled){
+			element.scrollTop(element.prop('scrollHeight'));
+		} 
 	}
 	
 	if(jQuery('.user-chat-history-wrapper')){
@@ -174,4 +176,12 @@ jQuery(document).ready(function($) {
 	jQuery('.user-chat-history-wrapper').on('scroll', function(){
 	    	scrolled = true;
 	});
+	jQuery('.message-chat').keypress(function (e) {
+	 var key = e.which;
+	 if(key == 13)  // the enter key code
+	  {
+	    jQuery('.chat-message-send').click();
+	    return false;  
+	  }
+	});  
 });

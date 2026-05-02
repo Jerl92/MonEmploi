@@ -1153,57 +1153,13 @@ add_action('init', function(){
 
 add_action('init', function(){
 
-	// not the login request?
-	if(!isset($_POST['action']) || $_POST['action'] !== 'my_chat_send_action')
-		return;
-		
-		$message_chat = $_POST['message-chat'];
-		$send_userid = $_POST['send_userid'];
-		$recive_userid = $_POST['recive_userid'];
-		$chatid = $_POST['chatid'];
-		
-		if($chatid == 0){
-			$my_post = array(
-			  'post_title'    => 'Chat',
-			  'post_type'    =>  'chat',
-			  'post_status'   => 'publish',
-			  'post_author'   => $recive_userid,
-			);
-			
-			$chatid = wp_insert_post( $my_post );
-		}
-		
-		$chat_history = get_post_meta($chatid, 'my_chat_history_key', true);
-		
-		$cont_chat = count($chat_history);
-		
-		$current_time = current_time('timestamp');
-		
-		$chat_array = array($cont_chat, '0', $current_time, $send_userid, $message_chat);
-		
-		$author_array = array($send_userid, $recive_userid);
-		
-		update_post_meta($chatid, 'my_author_id_key', $author_array);
-		
-		if($chat_history == ''){
-			update_post_meta($chatid, 'my_chat_history_key', [$chat_array]);
-		} else {
-			array_push($chat_history, $chat_array);
-			update_post_meta($chatid, 'my_chat_history_key', $chat_history);
-		}
-		
-		$my_post = array(
-			'ID' => $chatid
-		);
-		
-		wp_update_post( $my_post );
-		
-		header("Location: " . $_SERVER['REQUEST_URI'] . "");
-});
-
-add_action('init', function(){
-
-	update_user_meta(get_current_user_id(), 'online_status_', true);
+    if(is_user_logged_in()){
+    	$timestamp = wp_next_scheduled( 'online_status_cron_hook' );
+	wp_unschedule_event( $timestamp, 'online_status_cron_hook' );
+    	wp_schedule_event( time(), 'every_fifteen_minute', 'online_status_cron_hook' );
+    	update_user_meta(get_current_user_id(), 'online_status_', true);
+    	update_user_meta(get_current_user_id(), 'offline_time_', 0);
+    }
 	
 });
 

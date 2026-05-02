@@ -89,6 +89,21 @@ function monemploi_ajax_scripts() {
 	wp_localize_script( 'monemploi-ajax-chat-see-scripts', 'chat_see_monemploi_ajax_url', admin_url( 'admin-ajax.php', 'relative' ) );
 	wp_enqueue_script( 'monemploi-ajax-chat-see-scripts' );
 	
+    	wp_register_script( 'monemploi-ajax-chat-send-scripts', $url . "js/ajax.monemploi.chat.send.js", array( 'jquery' ), '1.0.0', true );
+	wp_localize_script( 'monemploi-ajax-chat-send-scripts', 'chat_send_monemploi_ajax_url', admin_url( 'admin-ajax.php', 'relative' ) );
+	wp_enqueue_script( 'monemploi-ajax-chat-send-scripts' );
+	
+	wp_register_script( 'monemploi-ajax-chat-offline-time-scripts', $url . "js/ajax.monemploi.chat.offline.time.js", array( 'jquery' ), '1.0.0', true );
+	wp_localize_script( 'monemploi-ajax-chat-offline-time-scripts', 'chat_offline_time_monemploi_ajax_url', admin_url( 'admin-ajax.php', 'relative' ) );
+	wp_enqueue_script( 'monemploi-ajax-chat-offline-time-scripts' );
+	
+	wp_register_script( 'monemploi-ajax-chat-menu-scripts', $url . "js/ajax.monemploi.chat.menu.js", array( 'jquery' ), '1.0.0', true );
+	wp_localize_script( 'monemploi-ajax-chat-menu-scripts', 'chat_menu_monemploi_ajax_url', admin_url( 'admin-ajax.php', 'relative' ) );
+	wp_enqueue_script( 'monemploi-ajax-chat-menu-scripts' );
+	
+	wp_register_script( 'monemploi-ajax-chat-online-status-scripts', $url . "js/ajax.monemploi.chat.online.status.js", array( 'jquery' ), '1.0.0', true );
+	wp_localize_script( 'monemploi-ajax-chat-online-status-scripts', 'chat_online_status_monemploi_ajax_url', admin_url( 'admin-ajax.php', 'relative' ) );
+	wp_enqueue_script( 'monemploi-ajax-chat-online-status-scripts' );
 }
 
 function get_user_ip() {
@@ -1167,6 +1182,228 @@ function chat_see($post) {
 	update_post_meta($chat->ID, 'my_chat_history_key', $chat_history_new);
 		
 	wp_send_json( null );
+	
+}
+
+/* AJAX action callback */
+add_action( 'wp_ajax_chat_send', 'chat_send' );
+add_action( 'wp_ajax_nopriv_chat_send', 'chat_send' );
+function chat_send($post) {
+    
+    $chatid = $_POST['chatid'];
+    $recive_userid = $_POST['userid'];
+    $message_chat = $_POST['message'];
+    $send_userid = get_current_user_id();
+    	
+    if($message_chat != null) {
+    	
+		if($chatid == 0){
+			$my_post = array(
+			  'post_title'    => 'Chat',
+			  'post_type'    =>  'chat',
+			  'post_status'   => 'publish',
+			  'post_author'   => $recive_userid,
+			);
+			
+			$chatid = wp_insert_post( $my_post );
+		}
+		
+		$chat_history = get_post_meta($chatid, 'my_chat_history_key', true);
+		
+		$cont_chat = count($chat_history);
+		
+		$current_time = current_time('timestamp');
+		
+		$chat_array = array($cont_chat, '0', $current_time, $send_userid, $message_chat);
+		
+		$author_array = array($send_userid, $recive_userid);
+		
+		update_post_meta($chatid, 'my_author_id_key', $author_array);
+		
+		if($chat_history == null){
+			update_post_meta($chatid, 'my_chat_history_key', [$chat_array]);
+		} else {
+			array_push($chat_history, $chat_array);
+			update_post_meta($chatid, 'my_chat_history_key', $chat_history);
+		}
+		
+		$my_post = array(
+			'ID' => $chatid
+		);
+		
+		wp_update_post( $my_post );
+		
+		    	$timestamp = wp_next_scheduled( 'online_status_cron_hook' );
+			wp_unschedule_event( $timestamp, 'online_status_cron_hook' );
+		    	wp_schedule_event( time(), 'every_fifteen_minute', 'online_status_cron_hook' );
+		
+		    if(is_user_logged_in()){
+		    	update_user_meta(get_current_user_id(), 'online_status_', true);
+		    	update_user_meta(get_current_user_id(), 'offline_time_', 0);
+		    }
+	
+	}
+	
+	$get_chat_history = get_post_meta($chatid, 'my_chat_history_key', true);
+	
+	foreach($get_chat_history as $chat_history){
+	$userid_chat = $chat_history[3];
+	$get_user_by_id_chat = get_user_by('ID', $userid_chat);
+	$html[] .= '<div class="message-id" style="display: none;">' . $chat_history[0] . '</div>';
+	if($recive_userid == $userid_chat){
+		$html[] .= '<div style="width: 100%;">';
+	}
+	if(get_current_user_id() == $userid_chat){
+		$html[] .= '<div style="display: inline-block; text-align: right; width: 100%">';
+	}
+	$html[] .= '<span style="font-weight: bold;">';
+		if($chat_history[1] == 0){
+    		$html[] .= 'Non vue';
+    	}
+    	if($chat_history[1] == 1){
+    		$html[] .= 'Vue';
+    	}
+    	$html[] .= ' - ';
+		$html[] .= date('Y-m-d H:i:s', $chat_history[2]);
+		$html[] .= ' - ';
+		$html[] .= $get_user_by_id_chat->user_firstname . ' ' . $get_user_by_id_chat->user_lastname;
+	$html[] .= '</span>';
+	$html[] .= '<br>';
+	$html[] .= $chat_history[4];
+	$html[] .= '</div>';
+    }
+		
+	wp_send_json( implode($html) );
+	
+}
+
+function secondsToTime_ajax($seconds) {
+  // Create DateTime objects representing the start and end timestamps
+  $dt1 = new DateTime("@0");
+  $dt2 = new DateTime("@$seconds");
+  
+  // Calculate the difference between the two timestamps
+  $diff = $dt1->diff($dt2);
+  
+  if($seconds > 0) {
+ 	return ' - ' . $diff->format('%a jours, %h:%i:%s');
+  } else {
+  	return '';
+  }
+}
+
+/* AJAX action callback */
+add_action( 'wp_ajax_chat_offline_time', 'chat_offline_time' );
+add_action( 'wp_ajax_nopriv_chat_offline_time', 'chat_offline_time' );
+function chat_offline_time($post) {
+    
+    $recive_userid = $_POST['userid'];
+    $current_time = current_time('timestamp');
+	$offline_time = get_user_meta($recive_userid, 'offline_time_', true);
+	if($offline_time > 0) {
+		$offline_calc = $current_time - $offline_time;
+	} else {
+		$offline_calc = 0;
+	}
+		
+	wp_send_json( secondsToTime_ajax($offline_calc) );
+	
+}
+
+/* AJAX action callback */
+add_action( 'wp_ajax_chat_menu', 'chat_menu' );
+add_action( 'wp_ajax_nopriv_chat_menu', 'chat_menu' );
+function chat_menu($post) {
+    
+    $i = 0;
+    $users = get_users( array( 'fields' => array( 'ID' ) ) );
+    foreach($users as $user){
+        $userids[$i] = $user->ID;
+        $i++;
+    }
+    
+    $get_args = array( 
+        'post_type' => 'chat',
+        'posts_per_page' => -1,
+        'orderby' => 'modified',
+        'order' => 'DESC'
+    ); 
+    
+    $get_chats_ = get_posts( $get_args );
+    
+    $user_send_menu = null;
+    $user_recive_menu = null;
+    
+    foreach($get_chats_ as $chat_menu){
+        
+        foreach ($userids as $userid_menu){
+            
+            $get_chat_author_menu = get_post_meta($chat_menu->ID, 'my_author_id_key', true);
+            
+            if(get_current_user_id() != $userid_menu){
+                $html[] .= '<div>';                           		
+                $user_array_menu = [$userid_menu, get_current_user_id()];
+	            if (count(array_intersect($user_array_menu, $get_chat_author_menu)) === count($user_array_menu)) {
+                
+                    $get_chat_menu = get_post_meta($chat_menu->ID, 'my_chat_history_key', true);
+                	$user_by_id = get_user_by('ID', $userid_menu);
+                    if($get_chat_menu != null){
+	                    $html[] .= '<div style="border-bottom: 0.25px solid black">';
+	                    	$html[] .= '<div style="display: flex;">';
+	                    	$html[] .= '<a href="' . get_site_url() .'/chat/?username=' . $user_by_id->user_nicename . '">' . $user_by_id->user_firstname . ' ' . $user_by_id->user_lastname . '</a> - ' . is_user_online($userid_menu);
+	                    	$html[] .= '<a href="' . get_site_url() .'/chat/?delete=' . $chat_menu->ID . '" style="margin-left: auto;">Supprimer</a>';
+	                    	$html[] .= '</div>';
+	                    	$end_chat_menu = end($get_chat_menu);
+	                    	$html[] .= '<div style="display: flex;">';
+	                    		$html[] .= '<div style="width: 50%">';
+	                    		if($end_chat_menu[1] == 0){
+	                    			$html[] .= '<span style="font-weight: bold;">' . substr($end_chat_menu[4], 0, 55). '</span>';
+	                    		}
+	                    		if($end_chat_menu[1] == 1){
+	                    			$html[] .= '<span>' . substr($end_chat_menu[4], 0, 55). '</span>';
+	                    		}
+	                    		$html[] .= '</div>';
+	                    		$html[] .= '<div style="width: 50%">';
+	                    		if($end_chat_menu[2] != null) {
+	                    			$html[] .= date('Y-m-d H:i:s', $end_chat_menu[2]);
+	                    		}
+	                    		$html[] .= '</div>';
+	                    	$html[] .= '</div>';
+	                	$html[] .= '</div>';
+                	
+                	}
+            	
+	            }
+	            
+	            $html[] .= '</div>';
+        	
+            }
+        
+        }
+    
+    }
+		
+	wp_send_json( implode($html) );
+	
+}
+
+
+/* AJAX action callback */
+add_action( 'wp_ajax_chat_online_status', 'chat_online_status' );
+add_action( 'wp_ajax_nopriv_chat_online_status', 'chat_online_status' );
+function chat_online_status($post) {
+
+	$userid = $_POST['userid'];
+
+	    $online_users = get_user_meta($userid, 'online_status_', true);
+    
+	    if($online_users == true){
+	        $html = 'En ligne';
+	    } else {
+	        $html = 'Hors ligne';
+	    }
+			
+	wp_send_json( $html );
 	
 }
 
