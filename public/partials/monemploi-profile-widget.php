@@ -79,6 +79,13 @@ class monemploi_profile_widgets extends WP_Widget {
 		    			    }
 		    			    echo ' - ';
 		    			    echo get_user_meta($user_id, 'city_key', true);
+		    			    echo '<br>';
+		    			    if(implode($user_roles) == 'employer'){
+		    			    	echo 'Employer';
+		    			    }
+		    			    if(implode($user_roles) == 'employeur'){
+		    			    	echo 'Employeur';
+		    			    }
 	    			    echo '</div>';
 	    			    
 	    			    echo '<div class="candidacy-info-widget">';

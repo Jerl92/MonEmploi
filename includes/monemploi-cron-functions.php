@@ -13,6 +13,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	}
 	add_filter( 'cron_schedules', 'myprefix_custom_cron_schedule' );
 	
+	function fifteen_custom_cron_schedule( $schedules ) {
+	    $schedules['every_fifteen_minute'] = array(
+	        'interval' => 900,
+	        'display'  => __( 'Every fifteen minute' ),
+	    );
+	    return $schedules;
+	}
+	add_filter( 'cron_schedules', 'fifteen_custom_cron_schedule' );
+	
 	add_action( 'init', function () {
 	
 	    ///Hook into that action that'll fire every six hours
@@ -135,6 +144,33 @@ if ( ! defined( 'ABSPATH' ) ) {
 			}
 		
 		}
+		
+	}
+	
+		add_action( 'init', function () {
+	
+	    ///Hook into that action that'll fire every six hours
+	    add_action( 'online_status_cron_hook', 'online_status_cron_function' );
+	
+	    //Schedule an action if it's not already scheduled
+	    if ( ! wp_next_scheduled( 'online_status_cron_hook' ) ) {
+	        wp_schedule_event( time(), 'every_fifteen_minute', 'online_status_cron_hook' );
+	    }
+	});
+	
+	//create your function, that runs on cron
+	function online_status_cron_function() {
+	
+		    $args = array(
+		        'orderby' => 'date',
+		        'order'   => 'DESC'
+		    );
+		
+		    $users = get_users( $args );
+	
+	        foreach ($users as $user) {
+                update_user_meta($user->ID, 'online_status_', false);
+	        }
 		
 	}
 	

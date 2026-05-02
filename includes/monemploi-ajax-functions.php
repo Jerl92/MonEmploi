@@ -85,6 +85,10 @@ function monemploi_ajax_scripts() {
 	wp_localize_script( 'monemploi-ajax-comment-reply-scripts', 'comment_candidacy_reply_monemploi_ajax_url', admin_url( 'admin-ajax.php', 'relative' ) );
 	wp_enqueue_script( 'monemploi-ajax-comment-reply-scripts' );
 	
+	wp_register_script( 'monemploi-ajax-chat-see-scripts', $url . "js/ajax.monemploi.chat.see.js", array( 'jquery' ), '1.0.0', true );
+	wp_localize_script( 'monemploi-ajax-chat-see-scripts', 'chat_see_monemploi_ajax_url', admin_url( 'admin-ajax.php', 'relative' ) );
+	wp_enqueue_script( 'monemploi-ajax-chat-see-scripts' );
+	
 }
 
 function get_user_ip() {
@@ -1131,6 +1135,38 @@ function comment_candidacy_reply($post) {
 	}
 		
 	wp_send_json( implode($html) );
+	
+}
+
+/* AJAX action callback */
+add_action( 'wp_ajax_chat_see', 'chat_see' );
+add_action( 'wp_ajax_nopriv_chat_see', 'chat_see' );
+function chat_see($post) {
+    
+    $i = 0;
+
+    $chat_id = $_POST['chatid'];
+    $user_id = $_POST['userid'];
+    
+    $chat = get_post($chat_id);
+    
+    $chat_history_new = array();
+    
+    $chat_history = get_post_meta($chat->ID, 'my_chat_history_key', true);
+    
+    if($chat_history){
+        foreach($chat_history as $chat_message){
+            if($user_id == $chat_message[3]){
+                $chat_message[1] = 1;
+            }
+            $chat_history_new[$i] = $chat_message;
+            $i++;
+        }
+    }
+    
+	update_post_meta($chat->ID, 'my_chat_history_key', $chat_history_new);
+		
+	wp_send_json( null );
 	
 }
 

@@ -1162,12 +1162,6 @@ add_action('init', function(){
 		$recive_userid = $_POST['recive_userid'];
 		$chatid = $_POST['chatid'];
 		
-		$current_time = current_time('timestamp');
-		
-		$chat_array = array($current_time, $send_userid, $message_chat);
-		
-		$author_array = array($send_userid, $recive_userid);
-		
 		if($chatid == 0){
 			$my_post = array(
 			  'post_title'    => 'Chat',
@@ -1181,6 +1175,14 @@ add_action('init', function(){
 		
 		$chat_history = get_post_meta($chatid, 'my_chat_history_key', true);
 		
+		$cont_chat = count($chat_history);
+		
+		$current_time = current_time('timestamp');
+		
+		$chat_array = array($cont_chat, '0', $current_time, $send_userid, $message_chat);
+		
+		$author_array = array($send_userid, $recive_userid);
+		
 		update_post_meta($chatid, 'my_author_id_key', $author_array);
 		
 		if($chat_history == ''){
@@ -1190,7 +1192,37 @@ add_action('init', function(){
 			update_post_meta($chatid, 'my_chat_history_key', $chat_history);
 		}
 		
+		$my_post = array(
+			'ID' => $chatid
+		);
+		
+		wp_update_post( $my_post );
+		
 		header("Location: " . $_SERVER['REQUEST_URI'] . "");
 });
+
+add_action('init', function(){
+
+	update_user_meta(get_current_user_id(), 'online_status_', true);
+	
+});
+
+function show_draft_posts_on_front( $query ) {
+    // Check if we are in the admin area, and if so, return the original query
+    if ( is_admin() ) {
+        return $query;
+    }
+
+    // Check if a user is logged in and has permission to view drafts
+    if ( is_user_logged_in() && current_user_can( 'employeur' ) ) {
+        // Ensure the main loop is targeted and no suppress_filters argument is present
+        if ( $query->is_main_query() && !isset($query->query_vars['suppress_filters']) ) {
+            $query->set( 'post_status', [ 'publish', 'draft', 'future' ] );
+        }
+    }
+    
+    return $query;
+}
+add_filter( 'pre_get_posts', 'show_draft_posts_on_front' );
 
 ?>

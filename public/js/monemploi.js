@@ -152,4 +152,26 @@ jQuery(document).ready(function($) {
             jQuery('.dossier_criminel_wrapper').css('display', 'none');
         }
     });
+	var scrolled = false;
+	function updateScroll(){
+		var element = jQuery('.user-chat-history-wrapper');
+		element.on( "resize", function() {
+			element.scrollTop(element.prop('scrollHeight'));
+		} );
+		if(!scrolled){
+			element.scrollTop(element.prop('scrollHeight'));
+		} 	
+		if(element.prop('scrollHeight') - element.scrollTop() == element.outerHeight()) {
+		    	scrolled = false;
+		}
+	}
+	
+	if(jQuery('.user-chat-history-wrapper')){
+		updateScroll();
+		setInterval(updateScroll, 1000);
+	}
+	
+	jQuery('.user-chat-history-wrapper').on('scroll', function(){
+	    	scrolled = true;
+	});
 });

@@ -37,6 +37,27 @@
         display: block !important;
     }
     
+    .user-chat {
+        width: 100% !important;
+        display: block !important;
+    }
+    
+    .user-chat-menu {
+        width: 100% !important;
+        display: block !important;
+        text-align: center;
+    }
+    
+    .user-chat-history-wrapper {
+        width: 100% !important;
+        display: block !important;
+        max-height: 500px !important;
+        overflow-y: scroll;
+        display: flex;
+        flex-direction: column-reverse;
+        -ms-overflow-style: none;
+        scrollbar-width: none; 
+    }
 }
 
 .container-image-cover {
@@ -104,4 +125,15 @@
 .jobs-info-widget {
 	text-align: center;
 	padding-bottom: 5px;
+}
+
+.user-chat-history-wrapper {
+    width: 100% !important;
+    display: block !important;
+    max-height: 500px !important;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column-reverse;
+    -ms-overflow-style: none;
+    scrollbar-width: none; 
 }
