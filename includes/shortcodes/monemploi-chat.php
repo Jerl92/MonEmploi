@@ -33,8 +33,8 @@ function monemploi_chat() {
 		        	$get_args = array( 
 					'post_type' => 'chat',
 					'posts_per_page' => -1,
-					'orderby' => 'date',
-					'order' => 'DESC',
+					'orderby' => 'modified',
+					'order' => 'DESC'
 				); 
 				
 				$get_chats_ = get_posts( $get_args );
@@ -91,8 +91,8 @@ function monemploi_chat() {
 					$get_args = array( 
 						'post_type' => 'chat',
 						'posts_per_page' => -1,
-						'orderby' => 'date',
-						'order' => 'DESC',
+						'orderby' => 'modified',
+						'order' => 'DESC'
 					); 
 					
 					$get_chats = get_posts( $get_args );
@@ -123,7 +123,6 @@ function monemploi_chat() {
 							echo '<div class="chat-id" style="display: none;">' . $chatid . '</div>';
 							echo '<div class="user-id" style="display: none;">' . $user_id_by_username . '</div>';
                             				$get_chat_history = get_post_meta($chatid, 'my_chat_history_key', true);
-                            				echo '<div class="" style="">';
 				    			    echo '<div id="user-chat-history-wrapper"  class="user-chat-history-wrapper">';
 								foreach($get_chat_history as $chat_history){
 									$userid_chat = $chat_history[3];
@@ -151,7 +150,6 @@ function monemploi_chat() {
 									echo $chat_history[4];
 									echo '</div>';
 						        }
-						        echo '</div>';
 						        echo '</div>';
                        				 }
 						
