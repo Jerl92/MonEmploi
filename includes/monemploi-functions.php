@@ -1154,10 +1154,7 @@ add_action('init', function(){
 add_action('init', function(){
 
     if(is_user_logged_in()){
-    	$timestamp = wp_next_scheduled( 'online_status_cron_hook' );
-	wp_unschedule_event( $timestamp, 'online_status_cron_hook' );
-    	wp_schedule_event( time(), 'every_fifteen_minute', 'online_status_cron_hook' );
-    	update_user_meta(get_current_user_id(), 'online_status_', true);
+    	update_user_meta(get_current_user_id(), 'online_status_', 1);
     	update_user_meta(get_current_user_id(), 'offline_time_', 0);
     }
 	

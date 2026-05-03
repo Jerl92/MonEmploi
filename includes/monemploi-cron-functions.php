@@ -170,9 +170,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	
 	        foreach ($users as $user) {
 		        $current_time = current_time('timestamp');
-	                update_user_meta($user->ID, 'online_status_', false);
 	                $offline_time = get_user_meta($user->ID, 'offline_time_', true);
 	                if($offline_time == 0) {
+	                	update_user_meta($user->ID, 'online_status_', 0);
 	                	update_user_meta($user->ID, 'offline_time_', $current_time);
 	                }
 	        }

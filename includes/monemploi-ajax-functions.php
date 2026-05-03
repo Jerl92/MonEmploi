@@ -1233,10 +1233,6 @@ function chat_send($post) {
 		
 		wp_update_post( $my_post );
 		
-		    	$timestamp = wp_next_scheduled( 'online_status_cron_hook' );
-			wp_unschedule_event( $timestamp, 'online_status_cron_hook' );
-		    	wp_schedule_event( time(), 'every_fifteen_minute', 'online_status_cron_hook' );
-		
 		    if(is_user_logged_in()){
 		    	update_user_meta(get_current_user_id(), 'online_status_', true);
 		    	update_user_meta(get_current_user_id(), 'offline_time_', 0);
@@ -1397,7 +1393,7 @@ function chat_online_status($post) {
 
 	    $online_users = get_user_meta($userid, 'online_status_', true);
     
-	    if($online_users == true){
+	    if($online_users == 1){
 	        $html = 'En ligne';
 	    } else {
 	        $html = 'Hors ligne';
