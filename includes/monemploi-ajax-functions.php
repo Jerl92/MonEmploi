@@ -1502,7 +1502,6 @@ add_action( 'wp_ajax_nopriv_chat_nodification', 'chat_nodification' );
 function chat_nodification($post) {
 
 	$i = 0;
-	$if_chat = 0;
         $users = get_users( array( 'fields' => array( 'ID' ) ) );
 	foreach($users as $user){
 		$userids[$i] = $user->ID;
@@ -1529,26 +1528,21 @@ function chat_nodification($post) {
             		if (count(array_intersect($user_array_menu, $get_chat_author_menu)) === count($user_array_menu)) {
        				$get_chat_menu = get_post_meta($chat_menu->ID, 'my_chat_history_key', true);
 				$user_by_id = get_user_by('ID', $userid_menu);
-				if($get_chat_menu != null){
-				$i = 0;
-				$x = 0;
-				foreach($get_chat_menu as $get_chat){
-				if($get_chat[3] != get_current_user_id() && $get_chat[5] == 0) {
-				                    	$html[$x]['name'] = $user_by_id->user_firstname . ' ' . $user_by_id->user_lastname;
+				if($get_chat_menu){
+					$x = 0;
+					$y = 0;
+					$chat_history_new = array();
+					foreach($get_chat_menu as $get_chat){
+						if($get_chat[3] == $userid_menu && $get_chat[5] == 0) {
+				            $html[$x]['name'] = $user_by_id->user_firstname . ' ' . $user_by_id->user_lastname;
 							$html[$x]['text'] = substr($get_chat[4], 0, 55);
+							$get_chat[5] = 1;
 							$x++;
-							}
-							
-								if($userid_menu == $get_chat[3] && $get_chat[5] == 0){
-							                $get_chat[5] = 1;
-							            }
-							            $chat_history_new[$i] = $get_chat;
-							            $i++;
-							       
-							    update_post_meta($chat_menu->ID, 'my_chat_history_key', $chat_history_new);
-							    
+						}
+					        $chat_history_new[$y] = $get_chat;
+					        $y++;					    
 					}
-					
+					update_post_meta($chat_menu->ID, 'my_chat_history_key', $chat_history_new);
 				}
 
     			}
