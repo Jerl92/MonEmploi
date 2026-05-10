@@ -37,7 +37,61 @@ function monemploi_chat() {
     
 	        echo '<div class="user-chat" style="display: flex;">';
 		        echo '<div class="user-chat-menu" style="padding-right: 15px; width: 25%;">';
-				echo '<div class="chat-menu-wrapper"></div>';	
+				echo '<div class="chat-menu-wrapper">';
+				$i = 0;
+			        $users = get_users( array( 'fields' => array( 'ID' ) ) );
+				foreach($users as $user){
+					$userids[$i] = $user->ID;
+					$i++;
+				}
+		        	
+		        	$get_args = array( 
+					'post_type' => 'chat',
+					'posts_per_page' => -1,
+					'orderby' => 'modified',
+					'order' => 'DESC',
+				); 
+				
+				$get_chats_ = get_posts( $get_args );
+				
+				$user_send_menu = null;
+				$user_recive_menu = null;
+				
+				foreach($get_chats_ as $chat_menu){
+                    		$get_chat_author_menu = get_post_meta($chat_menu->ID, 'my_author_id_key', true);
+				    foreach ($userids as $userid_menu){
+                        		if(get_current_user_id() != $userid_menu){
+	                            		$user_array_menu = [$userid_menu, get_current_user_id()];
+	                            		if (count(array_intersect($user_array_menu, $get_chat_author_menu)) === count($user_array_menu)) {
+	                       				$get_chat_menu = get_post_meta($chat_menu->ID, 'my_chat_history_key', true);
+							$user_by_id = get_user_by('ID', $userid_menu);
+							if($get_chat_menu != null){
+								echo '<div style="border-bottom: 0.25px solid black">';
+						                    	echo '<div style="display: flex;">';
+						                    	echo '<a href="' . get_site_url() .'/chat/?username=' . $user_by_id->user_nicename . '">' . $user_by_id->user_firstname . ' ' . $user_by_id->user_lastname . '</a> - ' . is_user_online($userid_menu);
+						                    	echo '<a href="' . get_site_url() .'/chat/?delete=' . $chat_menu->ID . '" style="margin-left: auto;">Supprimer</a>';
+						                    	echo '</div>';
+						                    	$end_chat_menu = end($get_chat_menu);
+									echo '<div style="display: flex;">';
+										echo '<div style="width: 50%; text-align: left;">';
+										if($end_chat_menu[1] == 0 && $end_chat_menu[3] != get_current_user_id()){
+											echo '<span style="font-weight: bold;">' . substr($end_chat_menu[4], 0, 55). '</span>';
+										} else {
+											echo '<span>' . substr($end_chat_menu[4], 0, 55). '</span>';
+										}
+										echo '</div>';
+										echo '<div style="margin-left: auto;">';
+										echo date('Y-m-d H:i:s', $end_chat_menu[2]);
+										echo '</div>';
+									echo '</div>';
+								echo '</div>';
+							}
+                            			}
+				        }
+				    }
+				
+				}
+				echo '</div>';	
 			echo '</div>';
 			
 			$url = $_SERVER['REQUEST_URI'];

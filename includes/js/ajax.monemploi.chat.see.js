@@ -16,11 +16,11 @@ function comment_chat_see($){
 				success: function(data) {
                     var myTimer = setTimeout(function() {
                         comment_chat_see($);
-                    }, 10000);
+                    }, 2500);
                     $(window).focus(function(e) {
                         var myTimer = setTimeout(function() {
                             comment_chat_see($);
-                        }, 10000);
+                        }, 2500);
                     });
                     jQuery(window).blur(function(e) {
                 	    clearTimeout(myTimer);

@@ -13,7 +13,7 @@ function chat_offline_time($){
 	            dataType: 'JSON',
 				success: function(data) {
 				    jQuery('.offline-time').html(data);
-				    var myofflineTimer = setTimeout(function() {
+				    setTimeout(function() {
                         chat_offline_time($);
 				    }, 2500);
 				},

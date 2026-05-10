@@ -134,6 +134,8 @@ class Monemploi {
 		
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/monemploi-profile-widget.php';
 		
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/monemploi-chat-widget.php';
+		
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/monemploi-functions.php';
         
         	require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/monemploi-cpt-functions.php';

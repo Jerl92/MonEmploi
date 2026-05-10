@@ -1,18 +1,18 @@
-function chat_menu($){          
-	if(jQuery('.user-chat-menu')) {
+function chat_widget($){          
+	if(jQuery('.chat-menu-widget')) {
 
 			jQuery.ajax({
 				type: 'post',
-				url: chat_menu_monemploi_ajax_url,
+				url: chat_widget_monemploi_ajax_url,
 				data: {
-					'action': 'chat_menu'
+					'action': 'chat_widget'
 	            },
 	            dataType: 'JSON',
 				success: function(data) {
-				    jQuery('.chat-menu-wrapper').html('');
-				    jQuery('.chat-menu-wrapper').html(data);
+				    jQuery('.chat-menu-widget').html('');
+				    jQuery('.chat-menu-widget').html(data);
 				    setTimeout(function() {
-                        chat_menu($);
+                        chat_widget($);
 				    }, 2500);
 				},
 				error: function(error) {
@@ -23,5 +23,5 @@ function chat_menu($){
 }
 
 jQuery(document).ready(function($) {
-	chat_menu($);
+	chat_widget($);
 });

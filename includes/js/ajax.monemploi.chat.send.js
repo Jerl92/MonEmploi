@@ -18,9 +18,9 @@ function monemploi_chat_send_($) {
 			success: function(data) {
 			    jQuery(".user-chat-history-wrapper").html('');
 	            jQuery(".user-chat-history-wrapper").html(data);
-	            var timersend = setTimeout(function() {
+	            setTimeout(function() {
                     monemploi_chat_send_($);
-                }, 10000);
+                }, 5000);
 			},
 			error: function(error) {
 				console.log(error);

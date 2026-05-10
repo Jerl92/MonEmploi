@@ -9,8 +9,7 @@
         width: 100% !important;
         display: block !important;
         text-align: center;
-    }
-    
+    }    
     
     .main-user-edit-info {
         width: 100% !important;
@@ -45,9 +44,13 @@
     .user-chat-menu {
         width: 100% !important;
         display: block !important;
-        text-align: center;
     }
     
+    .user-chat-history {
+        width: 100% !important;
+        display: block !important;
+    }
+        
     .user-chat-history-wrapper {
         width: 100% !important;
         display: block !important;

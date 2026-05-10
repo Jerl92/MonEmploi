@@ -6,7 +6,7 @@ MonEmploi is a job board.
 
 ## Description
 
-MonEmploi is a job board to make a job searching web site with user dashboard and candidacy private page.<br>
+MonEmploi is a job board to make a job searching web site with user dashboard and candidacy private page and a private chat.<br>
 
 ## Installation
 
@@ -65,10 +65,11 @@ The answer is no.<br>
 <img style="max-width: 100%;" src="https://i.ibb.co/pvB26nTr/monemploi14.png" /><br>
 <img style="max-width: 100%;" src="https://i.ibb.co/DgSWHY2H/monemploi34.png" /><br>
 <img style="max-width: 100%;" src="https://i.ibb.co/fYJD4BCW/monemploi12.png" /><br>
-<img style="max-width: 100%;" src="https://i.ibb.co/whsxs5DY/monemploi38.png" /><br>
+<img style="max-width: 100%;" src="https://i.ibb.co/b5fkzHBC/monemploi39.png" /><br>
 
 ## Changelog 
 
+0.6 - Add a chat and all the ajax function and a widget for new chat message.<br>
 0.5.5 - Add user profile widget and move job apply question to profile.<br>
 0.5 - Add left menu to user-edit-info and add widget of new diploma and new experiance done.<br>
 0.4.5 - Remove Ultimate Member and use custom formulaire with short code.<br>

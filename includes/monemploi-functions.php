@@ -1154,11 +1154,21 @@ add_action('init', function(){
 add_action('init', function(){
 
     if(is_user_logged_in()){
-    	update_user_meta(get_current_user_id(), 'online_status_', 1);
+    	update_user_meta(get_current_user_id(), 'online_status_', true);
     	update_user_meta(get_current_user_id(), 'offline_time_', 0);
     }
 	
 });
+
+function custom_logout() {
+    $current_time = current_time('timestamp');
+    $offline_time = get_user_meta(get_current_user_id(), 'offline_time_', true);
+    if($offline_time == 0) {
+    	update_user_meta(get_current_user_id(), 'online_status_', false);
+    	update_user_meta(get_current_user_id(), 'offline_time_', $current_time);
+    }
+}
+add_action('wp_logout', 'custom_logout');
 
 function show_draft_posts_on_front( $query ) {
     // Check if we are in the admin area, and if so, return the original query

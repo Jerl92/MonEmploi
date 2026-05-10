@@ -14,9 +14,9 @@ function chat_online_status($){
 				success: function(data) {
 				    jQuery('.online-status').html('');
 				    jQuery('.online-status').html(data);
-				    var myOnlineTimer = setTimeout(function() {
+				    setTimeout(function() {
                         chat_online_status($);
-				    }, 1000);
+				    }, 5000);
 				},
 				error: function(error) {
 					console.log(error);
