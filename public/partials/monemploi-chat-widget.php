@@ -45,8 +45,7 @@ class monemploi_chat_widgets extends WP_Widget {
 			echo $args['before_widget'];
 			if ( ! empty( $title ) )
 			echo $args['before_title'] . $title . $args['after_title'];
-			
-			
+					
 			echo '<div class="chat-menu-widget">';
 				$i = 0;
 				$if_chat = 0;
@@ -79,13 +78,11 @@ class monemploi_chat_widgets extends WP_Widget {
 							if($get_chat_menu != null){
 							$end_chat_menu = end($get_chat_menu);
 								if($end_chat_menu[1] == 0 && $end_chat_menu[3] != get_current_user_id()) {
-									echo '<div style="border-bottom: 0.25px solid black">';
+									echo '<div style="border-bottom: 0.05px solid rgba(0,0,0,0.25);">';
 							                    	echo '<a href="' . get_site_url() .'/chat/?username=' . $user_by_id->user_nicename . '">' . $user_by_id->user_firstname . ' ' . $user_by_id->user_lastname . '</a> - ' . is_user_online_widget($userid_menu);
 										echo '<div style="display: flex;">';
 											echo '<div style="width: 50%; text-align: left;">';
-											if($end_chat_menu[1] == 0){
-												echo '<span style="font-weight: bold;">' . substr($end_chat_menu[4], 0, 55). '</span>';
-											}
+											echo '<span style="font-weight: bold;">' . substr($end_chat_menu[4], 0, 55). '</span>';
 											echo '</div>';
 											echo '<div style="margin-left: auto;">';
 											echo date('Y-m-d H:i:s', $end_chat_menu[2]);

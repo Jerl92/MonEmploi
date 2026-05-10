@@ -181,8 +181,9 @@ function monemploi_chat() {
 										echo ' - ';
 										echo $get_user_by_id_chat->user_firstname . ' ' . $get_user_by_id_chat->user_lastname;
 									echo '</span>';
-									echo '<br>';
-									echo $chat_history[4];
+									echo '<div id="chat-history-message-'.$chat_history[0].'" class="chat-history-message">';
+										echo $chat_history[4];
+									echo '</div>';
 									echo '</div>';
 						        }
 						        echo '</div>';

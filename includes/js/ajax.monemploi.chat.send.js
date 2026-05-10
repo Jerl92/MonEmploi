@@ -4,6 +4,7 @@ function monemploi_chat_send_($) {
 		var userid = jQuery(".user-id").html();
 		var chatid = jQuery(".chat-id").html();
 		var message = null;
+		var scrolled = false;	
 
 		jQuery.ajax({
 			type: 'post',
@@ -18,9 +19,24 @@ function monemploi_chat_send_($) {
 			success: function(data) {
 			    jQuery(".user-chat-history-wrapper").html('');
 	            jQuery(".user-chat-history-wrapper").html(data);
+	            
+	            var element = jQuery('.user-chat-history-wrapper');
+
+	            if(element.prop('scrollHeight') - element.scrollTop() > element.outerHeight()) {
+	                scrolled = true;
+	            }
+	            
+	            if(element.prop('scrollHeight') - element.scrollTop() == element.outerHeight()) {
+		    	    scrolled = false;
+		        }
+	            
+	            if(!scrolled) {
+		            element.scrollTop(element.prop('scrollHeight'));
+	            }
+	            
 	            setTimeout(function() {
                     monemploi_chat_send_($);
-                }, 5000);
+                }, 2500);
 			},
 			error: function(error) {
 				console.log(error);
@@ -69,6 +85,8 @@ function monemploi_chat_send($) {
     	            monemploi_chat_send($);
     	            jQuery('.chat-message-send').text('Envoyer');
 		            jQuery('.chat-message-send').prop('disabled', false);
+		            var element = jQuery('.user-chat-history-wrapper');
+		            element.scrollTop(element.prop('scrollHeight'));
     			},
     			error: function(error) {
     				console.log(error);

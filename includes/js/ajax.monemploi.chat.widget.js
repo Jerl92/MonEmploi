@@ -11,7 +11,7 @@ function chat_widget($){
 				success: function(data) {
 				    jQuery('.chat-menu-widget').html('');
 				    jQuery('.chat-menu-widget').html(data);
-				    setTimeout(function() {
+				    var myWidget = setTimeout(function() {
                         chat_widget($);
 				    }, 2500);
 				},

@@ -28,7 +28,7 @@ function monemploi_user_edit_info() {
         	$all_users = get_users();
         	foreach ($all_users as $user) {
         		$uniquekey = get_user_meta($user->ID, 'unique_email_key', true);
-			if($_GET['new_email'] == $uniquekey){
+			if($_GET['new_email'] === $uniquekey){
 				$newemail = get_user_meta($user->ID, 'new_email_key', true);
 				$user_data = array(
 					'ID'         => $user->ID,
@@ -49,8 +49,11 @@ function monemploi_user_edit_info() {
 						$array[1] = '&refresh=1';
 						implode($array);
 						header("Refresh:0;url=" . $current_url . "?" . implode($array) . "");
+					} else {
+                        update_user_meta($user->ID, 'unique_email_key', null);
+                        update_user_meta($user->ID, 'new_email_key', null);
 					}
-				}
+            	}
 			}
 		}
         }
@@ -141,7 +144,7 @@ function monemploi_user_edit_info() {
 				
 				    echo '<h2>Editer les informations</h2>';
 				
-				     	if ($_GET['edit_update'] == true) {
+				     if ($_GET['edit_update'] == true) {
 						echo "<p>Tout les informations du compte on ete sauvegarder.</p>";
 					}
 					
@@ -150,8 +153,13 @@ function monemploi_user_edit_info() {
 					}
 					
 					if(isset($_GET['new_email'])) {
-						echo "<p>La confirmation du nouveau couriel est fait.</p>";
+					    echo "<p>La confirmation du nouveau couriel est fait.</p>";
 					}
+				
+	                if(isset($_GET['delete_attachment'])) {
+					    echo '<p>La suppression de l&#8216;attachment #'. $_GET['delete_attachment'] . ' est confirmé.</p>';
+					}
+				
 				
 					?><form id="cover-photo-upload" method="POST" enctype="multipart/form-data">
 					    <?php wp_nonce_field('cover_photo_media_upload', 'cover_photo_media_nonce'); ?>
@@ -181,6 +189,8 @@ function monemploi_user_edit_info() {
 						    if (is_wp_error($attachment_id)) {
 						        echo "Error uploading: " . $attachment_id->get_error_message();
 						    } else {
+                                $get_cover = get_user_meta($userdata->ID, 'cover_photo', true);
+                                wp_delete_attachment($get_cover);
 						       update_user_meta($userdata->ID, 'cover_photo', $attachment_id);
 						       header("Refresh:0");
 						    }
@@ -189,6 +199,18 @@ function monemploi_user_edit_info() {
 						echo 'Photo de couverture:';
 						echo '</br>';
 						echo wp_get_attachment_image( $cover_photo, 'thumbnail' );
+						if(wp_get_attachment_image( $cover_photo, 'thumbnail' )){
+						echo '</br>';
+                            echo '<form action="'. $_SERVER['REQUEST_URI'] .'" method="post">';
+		                        echo '<input type="hidden" name="attachmentid" value="' . $cover_photo . '" />';
+		                        echo '<input type="hidden" name="action" value="delete_image_attachment" />';
+		                        echo '<button type="submit" name="submit" style="padding: 0; margin: 0;">';
+		                        	echo '<i class="material-icons">';
+		            				echo 'delete';
+		            			echo '</i>';
+		            		echo '</button>';
+	                        echo '</form>';
+						}
 						echo '</div>';
 						
 						if (isset($_POST['submit_upload_user_avatar'])) {
@@ -206,6 +228,8 @@ function monemploi_user_edit_info() {
 						    if (is_wp_error($attachment_id)) {
 						        echo "Error uploading: " . $attachment_id->get_error_message();
 						    } else {
+                                $get_avatar = get_user_meta($userdata->ID, 'user_avatar', true);
+                                wp_delete_attachment($get_avatar);
 						       update_user_meta($userdata->ID, 'user_avatar', $attachment_id);
 						       header("Refresh:0");
 						    }
@@ -214,6 +238,18 @@ function monemploi_user_edit_info() {
 						echo 'Photo d&#8216;avatar:';
 						echo '</br>';
 						echo wp_get_attachment_image( $user_avatar, 'thumbnail' );
+						if(wp_get_attachment_image( $user_avatar, 'thumbnail' )){
+						echo '</br>';
+                            echo '<form action="'. $_SERVER['REQUEST_URI'] .'" method="post">';
+    		                        echo '<input type="hidden" name="attachmentid" value="' . $user_avatar . '" />';
+		                        echo '<input type="hidden" name="action" value="delete_image_attachment" />';
+		                        echo '<button type="submit" name="submit" style="padding: 0; margin: 0;">';
+		                        	echo '<i class="material-icons">';
+		            				echo 'delete';
+		            			echo '</i>';
+		            		echo '</button>';
+	                        echo '</form>';
+						}
 						echo '</div>';
 					echo '</div>';
 					

@@ -82,6 +82,7 @@ class Monemploi_Public {
         	wp_enqueue_style( 'jquery-ui', plugin_dir_url( __FILE__ ) . 'css/jquery-ui.css', array(), $this->version, 'all' );
         	
         	wp_enqueue_style( 'passwordStrength', plugin_dir_url( __FILE__ ) . 'css/passwordStrength.css', array(), $this->version, 'all' );
+        	
 
 	}
 
@@ -117,6 +118,10 @@ class Monemploi_Public {
 	        wp_enqueue_script( 'jQuery-ui-touch-punch', plugin_dir_url( __FILE__ ) . 'js/jQuery-ui-touch-punch.js', array( 'jquery' ), $this->version, false );
 	        
 	        wp_enqueue_script( 'media-uploader', plugin_dir_url( __FILE__ ) . 'js/media-uploader.js', array( 'jquery' ), $this->version, false );
+	        
+	        wp_enqueue_script('notification', plugin_dir_url( __FILE__ ) . '/js/notification.js', array('jquery'), null, true);
+    
+		wp_localize_script('notification', 'wpNotification', array('PluginDirUrl' => plugin_dir_url( __FILE__ )));
 
 	}
 

@@ -4,7 +4,7 @@ function comment_chat_see($){
 	        var chatid = jQuery('.chat-id').html();
 	        var userid = jQuery('.user-id').html();
 
-			jQuery.ajax({
+            jQuery.ajax({
 				type: 'post',
 				url: chat_see_monemploi_ajax_url,
 				data: {
@@ -14,17 +14,7 @@ function comment_chat_see($){
 	            },
 	            dataType: 'JSON',
 				success: function(data) {
-                    var myTimer = setTimeout(function() {
-                        comment_chat_see($);
-                    }, 2500);
-                    $(window).focus(function(e) {
-                        var myTimer = setTimeout(function() {
-                            comment_chat_see($);
-                        }, 2500);
-                    });
-                    jQuery(window).blur(function(e) {
-                	    clearTimeout(myTimer);
-                	});
+				    //
 				},
 				error: function(error) {
 					console.log(error);
@@ -35,4 +25,15 @@ function comment_chat_see($){
 
 jQuery(document).ready(function($) {
 	comment_chat_see($);
+    var myTimer = setTimeout(function() {
+        comment_chat_see($);
+    }, 2500);
+    jQuery(window).focus(function(e) {
+        var myTimer = setTimeout(function() {
+            comment_chat_see($);
+        }, 2500);
+    });
+    jQuery(window).blur(function(e) {
+	    clearTimeout(myTimer);
+	});
 });

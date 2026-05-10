@@ -152,12 +152,7 @@ jQuery(document).ready(function($) {
             jQuery('.dossier_criminel_wrapper').css('display', 'none');
         }
     });
-	var scrolled = false;
-	jQuery('.user-chat-history-wrapper').resize(function() {
-	    scrolled = false;
-	    updateScroll();	
-	});
-	
+	var scrolled = false;	
 	function updateScroll(){
 		var element = jQuery('.user-chat-history-wrapper');	
 		if(element.prop('scrollHeight') - element.scrollTop() == element.outerHeight()) {
@@ -168,6 +163,11 @@ jQuery(document).ready(function($) {
 		} 
 	}
 	
+	jQuery('.user-chat-history-wrapper').resize(function() {
+	    scrolled = false;
+	    updateScroll();	
+	});
+	
 	if(jQuery('.user-chat-history-wrapper')){
 		updateScroll();
 		setInterval(updateScroll, 1000);
@@ -176,12 +176,12 @@ jQuery(document).ready(function($) {
 	jQuery('.user-chat-history-wrapper').on('scroll', function(){
 	    	scrolled = true;
 	});
+	
 	jQuery('.message-chat').keypress(function (e) {
-	 var key = e.which;
-	 if(key == 13)  // the enter key code
-	  {
+	var key = e.which;
+	 if(key == 13) {
 	    jQuery('.chat-message-send').click();
 	    return false;  
 	  }
-	});  
+	});  	
 });

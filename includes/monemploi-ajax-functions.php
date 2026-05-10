@@ -108,6 +108,10 @@ function monemploi_ajax_scripts() {
 	wp_register_script( 'monemploi-ajax-chat-widget-scripts', $url . "js/ajax.monemploi.chat.widget.js", array( 'jquery' ), '1.0.0', true );
 	wp_localize_script( 'monemploi-ajax-chat-widget-scripts', 'chat_widget_monemploi_ajax_url', admin_url( 'admin-ajax.php', 'relative' ) );
 	wp_enqueue_script( 'monemploi-ajax-chat-widget-scripts' );
+	
+	wp_register_script( 'monemploi-ajax-chat-nodification-scripts', $url . "js/ajax.monemploi.chat.nodification.js", array( 'jquery' ), '1.0.0', true );
+	wp_localize_script( 'monemploi-ajax-chat-nodification-scripts', 'chat_nodification_monemploi_ajax_url', admin_url( 'admin-ajax.php', 'relative' ) );
+	wp_enqueue_script( 'monemploi-ajax-chat-nodification-scripts' );
 
 }
 
@@ -1194,7 +1198,7 @@ function chat_see($post) {
 add_action( 'wp_ajax_chat_send', 'chat_send' );
 add_action( 'wp_ajax_nopriv_chat_send', 'chat_send' );
 function chat_send($post) {
-    
+
     $chatid = $_POST['chatid'];
     $recive_userid = $_POST['userid'];
     $message_chat = $_POST['message'];
@@ -1202,7 +1206,9 @@ function chat_send($post) {
     	
     if($message_chat != null) {
     	
-		if($chatid == 0){
+    	$post = get_post($chatid);
+    	
+		if($chatid == 0 || !$post->ID){
 			$my_post = array(
 			  'post_title'    => 'Chat',
 			  'post_type'    =>  'chat',
@@ -1219,7 +1225,7 @@ function chat_send($post) {
 		
 		$current_time = current_time('timestamp');
 		
-		$chat_array = array($cont_chat, '0', $current_time, $send_userid, $message_chat);
+		$chat_array = array($cont_chat, '0', $current_time, $send_userid, $message_chat, '0');
 		
 		$author_array = array($send_userid, $recive_userid);
 		
@@ -1232,11 +1238,11 @@ function chat_send($post) {
 			update_post_meta($chatid, 'my_chat_history_key', $chat_history);
 		}
 		
-		$my_post = array(
+		$my_post_update = array(
 			'ID' => $chatid
 		);
 		
-		wp_update_post( $my_post );
+		wp_update_post( $my_post_update );
 		
 		    if(is_user_logged_in()){
 		    	update_user_meta(get_current_user_id(), 'online_status_', true);
@@ -1245,6 +1251,7 @@ function chat_send($post) {
 	
 	}
 	
+	$i = 0;
 	$get_chat_history = get_post_meta($chatid, 'my_chat_history_key', true);
 	
 	foreach($get_chat_history as $chat_history){
@@ -1258,7 +1265,7 @@ function chat_send($post) {
 		$html[] .= '<div style="display: inline-block; text-align: right; width: 100%">';
 	}
 	$html[] .= '<span style="font-weight: bold;">';
-		if($chat_history[1] == 0){
+	if($chat_history[1] == 0){
     		$html[] .= 'Non vue';
     	}
     	if($chat_history[1] == 1){
@@ -1269,11 +1276,13 @@ function chat_send($post) {
 		$html[] .= ' - ';
 		$html[] .= $get_user_by_id_chat->user_firstname . ' ' . $get_user_by_id_chat->user_lastname;
 	$html[] .= '</span>';
-	$html[] .= '<br>';
-	$html[] .= $chat_history[4];
+	$html[] .= '<div id="chat-history-message-'.$chat_history[0].'" class="chat-history-message">';
+		$html[] .= $chat_history[4];
 	$html[] .= '</div>';
+	$html[] .= '</div>';
+	
     }
-		
+    		
 	wp_send_json( implode($html) );
 	
 }
@@ -1456,7 +1465,7 @@ function chat_widget($post) {
 				if($get_chat_menu != null){
 				$end_chat_menu = end($get_chat_menu);
 					if($end_chat_menu[1] == 0 && $end_chat_menu[3] != get_current_user_id()) {
-						$html[] .= '<div style="border-bottom: 0.25px solid black">';
+						$html[] .= '<div style="border-bottom: 0.05px solid rgba(0,0,0,0.25);">';
 				                    	$html[] .= '<a href="' . get_site_url() .'/chat/?username=' . $user_by_id->user_nicename . '">' . $user_by_id->user_firstname . ' ' . $user_by_id->user_lastname . '</a> - ' . is_user_online_ajax($userid_menu);
 							$html[] .= '<div style="display: flex;">';
 								$html[] .= '<div style="width: 50%; text-align: left;">';
@@ -1484,6 +1493,71 @@ function chat_widget($post) {
 	}
 		
 	wp_send_json( implode($html) );
+	
+}
+
+/* AJAX action callback */
+add_action( 'wp_ajax_chat_nodification', 'chat_nodification' );
+add_action( 'wp_ajax_nopriv_chat_nodification', 'chat_nodification' );
+function chat_nodification($post) {
+
+	$i = 0;
+	$if_chat = 0;
+        $users = get_users( array( 'fields' => array( 'ID' ) ) );
+	foreach($users as $user){
+		$userids[$i] = $user->ID;
+		$i++;
+	}
+	
+	$get_args = array( 
+		'post_type' => 'chat',
+		'posts_per_page' => -1,
+		'orderby' => 'modified',
+		'order' => 'DESC',
+	); 
+	
+	$get_chats_ = get_posts( $get_args );
+	
+	$user_send_menu = null;
+	$user_recive_menu = null;
+	
+	foreach($get_chats_ as $chat_menu){
+	$get_chat_author_menu = get_post_meta($chat_menu->ID, 'my_author_id_key', true);
+	    foreach ($userids as $userid_menu){
+		if(get_current_user_id() != $userid_menu){
+            		$user_array_menu = [$userid_menu, get_current_user_id()];
+            		if (count(array_intersect($user_array_menu, $get_chat_author_menu)) === count($user_array_menu)) {
+       				$get_chat_menu = get_post_meta($chat_menu->ID, 'my_chat_history_key', true);
+				$user_by_id = get_user_by('ID', $userid_menu);
+				if($get_chat_menu != null){
+				$i = 0;
+				$x = 0;
+				foreach($get_chat_menu as $get_chat){
+				if($get_chat[3] != get_current_user_id() && $get_chat[5] == 0) {
+				                    	$html[$x]['name'] = $user_by_id->user_firstname . ' ' . $user_by_id->user_lastname;
+							$html[$x]['text'] = substr($get_chat[4], 0, 55);
+							$x++;
+							}
+							
+								if($userid_menu == $get_chat[3] && $get_chat[5] == 0){
+							                $get_chat[5] = 1;
+							            }
+							            $chat_history_new[$i] = $get_chat;
+							            $i++;
+							       
+							    update_post_meta($chat_menu->ID, 'my_chat_history_key', $chat_history_new);
+							    
+					}
+					
+				}
+
+    			}
+	        }
+	    }
+	
+	}
+	
+	wp_send_json( $html );
 	
 }
 

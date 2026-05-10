@@ -117,17 +117,32 @@ add_action('init', function(){
       return;
   
         $username = sanitize_user($_POST['log']);
+        $password = sanitize_text_field($_POST['pwd']);
   
-        // see the codex for wp_signon()
-        $user_ = wp_signon();
+	$creds = array(
+		'user_login'    => $username,
+		'user_password' => $password,
+		'remember'      => false
+	);
+
+	$user_ = wp_signon( $creds, true );
+                
+	if(filter_var($username, FILTER_VALIDATE_EMAIL)) {
+            $user = get_user_by( 'email', $username );
+        } else {
+            $user = get_user_by( 'login', $username );
+        }
         
-        $user = get_user_by('login', $username);
+        if(!$user->ID) {
+        	wp_die('Le nom d&#8216;utulisateur ou le couriel n&#8216;a pas été trouvé.');
+        	return 0;
+        }
         
        	$date1 = current_time( 'timestamp' );
 	$login_attemp = get_user_meta($user->ID, 'login_attemp', true);
 	$login_lock = get_user_meta($user->ID, 'login_lock', true);
 	$lock_time = get_user_meta($user->ID, 'login_lock_time', true);
-        
+      
         if(is_wp_error($user_)){
             $login_attemp_count = intval($login_attemp);
             $login_attemp_count += 1;
@@ -148,7 +163,7 @@ add_action('init', function(){
  		$time_unlock = gmdate("H:i:s", $unlock);
                 wp_die($time_unlock . ' - Votre compte est barré pour 12 heures car vous avez echoué vos 5 tentative de connexion.');
             }
-            wp_die('Nombre de tentative:' . $login_attemp_count . '/5 - Échec de la connexion. Mot de passe ou nom d&#8216;utilisateur incorrect?');
+            wp_die('Nombre de tentative:' . $login_attemp_count . '/5 - Échec de la connexion. Mot de passe incorrect?');
         } else {
             if($date1 >= $lock_time && $lock_time != ''){
                 update_user_meta($user->ID, 'login_attemp', 0);
@@ -201,8 +216,7 @@ add_action('init', function(){
         }
     
       // redirect back to the requested page if login was successful    
-      header('Location: ' . $_SERVER['REQUEST_URI']);
-      exit;
+      header('Refresh:0;' . $_SERVER['REQUEST_URI']);
 });
 
 function generateRandomString($length = 10) {
@@ -371,6 +385,7 @@ add_action('init', function(){
     $unique_key = generateRandomString();
     $current_user = wp_get_current_user();
     $user_email_already = $current_user->user_email;
+    $edit_update_email = false;
     if($already_email === 0 && $user_email_already != $user_email) {
         update_user_meta($user_id, 'unique_email_key', $unique_key);
         update_user_meta($user_id, 'new_email_key', $user_email);
@@ -385,38 +400,40 @@ add_action('init', function(){
             // Send the email
             wp_mail( $user_email, $subject, $message, $headers );
             
-            header("Location: " . $current_url . "?edit_update_email=true");
-       
-    }
-	if($user_email_already == $user_email) {
-	    	$user_data = array(
-	    	    'ID'         => $user_id,
-	    	    'first_name' => $user_firstname,
-	    	    'last_name'  => $user_lastname
-	    	);
-		
-		$updated_user_id = wp_update_user( $user_data );
-		
-		if ( is_wp_error( $updated_user_id ) ) {
-		        foreach ($errors->get_error_messages() as $error) {
-		        	echo $error;
-		        }
-	   	} else {
-		    	update_user_meta($updated_user_id, 'company_key', $company_key);
-		    	update_user_meta($updated_user_id, 'adresse_key', $adresse_key);
-		    	update_user_meta($updated_user_id, 'city_key', $city_key);
-		    	update_user_meta($updated_user_id, 'province_key', $province_key);
-		    	update_user_meta($updated_user_id, 'country_key', $country_key);
-		    	update_user_meta($updated_user_id, 'postal_code_key', $postal_code_key);
-		    	update_user_meta($updated_user_id, 'phone_key', $phone_key);
-		    	update_user_meta($updated_user_id, 'poste_key', $poste_key);
-		    	
-		        header("Location: " . $current_url . "?edit_update=true");
-	   
-	    }
-    
+            $edit_update_email = true;
+                   
     }
     
+    	$user_data = array(
+    	    'ID'         => $user_id,
+    	    'first_name' => $user_firstname,
+    	    'last_name'  => $user_lastname
+    	);
+	
+	$updated_user_id = wp_update_user( $user_data );
+	
+	if ( is_wp_error( $updated_user_id ) ) {
+	        foreach ($errors->get_error_messages() as $error) {
+	        	echo $error;
+	        }
+   	} else {
+	    	update_user_meta($updated_user_id, 'company_key', $company_key);
+	    	update_user_meta($updated_user_id, 'adresse_key', $adresse_key);
+	    	update_user_meta($updated_user_id, 'city_key', $city_key);
+	    	update_user_meta($updated_user_id, 'province_key', $province_key);
+	    	update_user_meta($updated_user_id, 'country_key', $country_key);
+	    	update_user_meta($updated_user_id, 'postal_code_key', $postal_code_key);
+	    	update_user_meta($updated_user_id, 'phone_key', $phone_key);
+	    	update_user_meta($updated_user_id, 'poste_key', $poste_key);
+	    	
+	    	if($edit_update_email == false){
+	        	header("Location: " . $current_url . "?edit_update=true");
+	        } else {
+	        	header("Location: " . $current_url . "?edit_update=true&edit_update_email=true");
+	        }
+   
+    }
+
 });
 
 
@@ -432,6 +449,27 @@ add_action('init', function(){
 	
 	if ( $deleted_attachment ) {
 		header("Location: " . $_SERVER['REQUEST_URI'] . "?delete_attachment=". $object_id ."");
+	}
+	
+});
+
+add_action('init', function(){
+
+  // not the login request?
+  if(!isset($_POST['action']) || $_POST['action'] !== 'delete_image_attachment')
+      return;
+      
+      	$object_id = $_POST['attachmentid'];
+	
+	$deleted_attachment = wp_delete_attachment( $object_id, true);
+	
+	if ( $deleted_attachment ) {
+		$current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . strtok($_SERVER['REQUEST_URI'], '?');
+		$pathInfo = parse_url($_SERVER['REQUEST_URI']);
+		$queryString = $pathInfo['query'];
+		$array = explode("&", $queryString);
+		$array[1] = '&delete_attachment='. $object_id;
+		header("Refresh:0;url=" . $current_url . "?" . implode($array) . "");
 	}
 	
 });
