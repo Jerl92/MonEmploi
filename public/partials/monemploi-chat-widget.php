@@ -46,6 +46,8 @@ class monemploi_chat_widgets extends WP_Widget {
 			if ( ! empty( $title ) )
 			echo $args['before_title'] . $title . $args['after_title'];
 					
+			$disable_chat = get_user_meta( get_current_user_id(), 'disable_chat_key', true);
+			if($disable_chat == 0 || $disable_chat == ''){		
 			echo '<div class="chat-menu-widget">';
 				$i = 0;
 				$if_chat = 0;
@@ -106,6 +108,11 @@ class monemploi_chat_widgets extends WP_Widget {
 				}
 			echo '</div>';	
 			
+			} else {
+			
+				echo '<h4 style="text-align: center;">Le chat est désactivé.</h4>';
+				
+			}
 			
 		?></div><?php 
 	   

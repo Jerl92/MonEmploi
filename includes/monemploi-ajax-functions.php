@@ -1265,13 +1265,16 @@ function chat_send($post) {
 		$html[] .= '<div style="display: inline-block; text-align: right; width: 100%">';
 	}
 	$html[] .= '<span style="font-weight: bold;">';
-	if($chat_history[1] == 0){
-    		$html[] .= 'Non vue';
-    	}
-    	if($chat_history[1] == 1){
-    		$html[] .= 'Vue';
-    	}
-    	$html[] .= ' - ';
+		$hide_seen = get_user_meta( $recive_userid, 'hide_seen_key', true);
+		if($hide_seen == 0 || $hide_seen == ''){
+			if($chat_history[1] == 0){
+		    		$html[] .= 'Non vue';
+		    	}
+		    	if($chat_history[1] == 1){
+		    		$html[] .= 'Vue';
+		    	}
+		    	$html[] .= ' - ';
+	    	}
 		$html[] .= date('Y-m-d H:i:s', $chat_history[2]);
 		$html[] .= ' - ';
 		$html[] .= $get_user_by_id_chat->user_firstname . ' ' . $get_user_by_id_chat->user_lastname;
@@ -1310,13 +1313,21 @@ function chat_offline_time($post) {
     $recive_userid = $_POST['userid'];
     $current_time = current_time('timestamp');
 	$offline_time = get_user_meta($recive_userid, 'offline_time_', true);
-	if($offline_time > 0) {
-		$offline_calc = $current_time - $offline_time;
+	$hide_online = get_user_meta($recive_userid, 'hide_online_key', true);
+	
+	if($hide_online == 0 || $hide_online == '') {
+		if($offline_time > 0) {
+			$offline_calc = $current_time - $offline_time;
+			$html = secondsToTime_ajax($offline_calc);
+		} else {
+			$offline_calc = 0;
+			$html = secondsToTime_ajax($offline_calc);
+		}
 	} else {
-		$offline_calc = 0;
+		$html = '';
 	}
 		
-	wp_send_json( secondsToTime_ajax($offline_calc) );
+	wp_send_json( $html );
 	
 }
 
@@ -1360,7 +1371,7 @@ function chat_menu($post) {
                     if($get_chat_menu != null){
 	                    $html[] .= '<div style="border-bottom: 0.25px solid black">';
 	                    	$html[] .= '<div style="display: flex;">';
-	                    	$html[] .= '<a href="' . get_site_url() .'/chat/?username=' . $user_by_id->user_nicename . '">' . $user_by_id->user_firstname . ' ' . $user_by_id->user_lastname . '</a> - ' . is_user_online($userid_menu);
+	                    	$html[] .= '<a href="' . get_site_url() .'/chat/?username=' . $user_by_id->user_nicename . '">' . $user_by_id->user_firstname . ' ' . $user_by_id->user_lastname . '</a>' . is_user_online_ajax($userid_menu);
 	                    	$html[] .= '<a href="' . get_site_url() .'/chat/?delete=' . $chat_menu->ID . '" style="margin-left: auto;">Supprimer</a>';
 	                    	$html[] .= '</div>';
 	                    	$end_chat_menu = end($get_chat_menu);
@@ -1405,25 +1416,35 @@ function chat_online_status($post) {
 	$userid = $_POST['userid'];
 
 	    $online_users = get_user_meta($userid, 'online_status_', true);
+	    $hide_online = get_user_meta($userid, 'hide_online_key', true);
     
+    if($hide_online == 0 || $hide_online == '') {    
 	    if($online_users == true){
-	        $html = 'En ligne';
+	        $html = ' - En ligne';
 	    } else {
-	        $html = 'Hors ligne';
+	        $html = ' - Hors ligne';
 	    }
-			
+	} else {
+		$html = '';
+	} 
+	    			
 	wp_send_json( $html );
 	
 }
 
 function is_user_online_ajax( $user_id ) {
     $online_users = get_user_meta($user_id, 'online_status_', true);
+    $hide_online = get_user_meta($user_id, 'hide_online_key', true);
     
-    if($online_users == true){
-        return 'En ligne';
-    } else {
-        return 'Hors ligne';
-    }
+    if($hide_online == 0 || $hide_online == '') {
+	    if($online_users == true){
+	        return ' - En ligne';
+	    } else {
+	        return ' - Hors ligne';
+	    }
+    } else  {
+    	return null;
+    } 
     
     
 }
@@ -1466,7 +1487,7 @@ function chat_widget($post) {
 				$end_chat_menu = end($get_chat_menu);
 					if($end_chat_menu[1] == 0 && $end_chat_menu[3] != get_current_user_id()) {
 						$html[] .= '<div style="border-bottom: 0.05px solid rgba(0,0,0,0.25);">';
-				                    	$html[] .= '<a href="' . get_site_url() .'/chat/?username=' . $user_by_id->user_nicename . '">' . $user_by_id->user_firstname . ' ' . $user_by_id->user_lastname . '</a> - ' . is_user_online_ajax($userid_menu);
+				                    	$html[] .= '<a href="' . get_site_url() .'/chat/?username=' . $user_by_id->user_nicename . '">' . $user_by_id->user_firstname . ' ' . $user_by_id->user_lastname . '</a>' . is_user_online_ajax($userid_menu);
 							$html[] .= '<div style="display: flex;">';
 								$html[] .= '<div style="width: 50%; text-align: left;">';
 								$html[] .= '<span style="font-weight: bold;">' . substr($end_chat_menu[4], 0, 55). '</span>';
@@ -1534,7 +1555,7 @@ function chat_nodification($post) {
 					$chat_history_new = array();
 					foreach($get_chat_menu as $get_chat){
 						if($get_chat[3] == $userid_menu && $get_chat[5] == 0) {
-				            $html[$x]['name'] = $user_by_id->user_firstname . ' ' . $user_by_id->user_lastname;
+				                    	$html[$x]['name'] = $user_by_id->user_firstname . ' ' . $user_by_id->user_lastname;
 							$html[$x]['text'] = substr($get_chat[4], 0, 55);
 							$get_chat[5] = 1;
 							$x++;

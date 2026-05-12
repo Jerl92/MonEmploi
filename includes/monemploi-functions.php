@@ -1161,20 +1161,32 @@ add_action('init', function(){
 	$hide_adresse = $_POST['hide-adresse'];
 	$hide_contact = $_POST['hide-contact'];
 	$hide_widget = $_POST['hide-widget'];
+	
+	$disable_chat = $_POST['disable-chat'];
+	$hide_online = $_POST['hide-online'];
+	$hide_seen = $_POST['hide-seen'];
+	
 	$hide_adresse_job = $_POST['hide-adresse-job'];
 	$hide_contact_job = $_POST['hide-contact-job'];
 	$hide_adresse_candidacy = $_POST['hide-adresse-candidacy'];
 	$hide_contact_candidacy = $_POST['hide-contact-candidacy'];
+	$hide_jobs_search = $_POST['hide-jobs-search'];
 	
 	update_user_meta( $userid, 'hide_search_key', $hide_search);
 	update_user_meta( $userid, 'hide_dashboard_key', $hide_dashboard);
 	update_user_meta( $userid, 'hide_adresse_key', $hide_adresse);
 	update_user_meta( $userid, 'hide_contact_key', $hide_contact);
 	update_user_meta( $userid, 'hide_widget_key', $hide_widget);
+	
+	update_user_meta( $userid, 'disable_chat_key', $disable_chat);
+	update_user_meta( $userid, 'hide_online_key', $hide_online);
+	update_user_meta( $userid, 'hide_seen_key', $hide_seen);
+	
 	update_user_meta( $userid, 'hide_adresse_job_key', $hide_adresse_job);
 	update_user_meta( $userid, 'hide_contact_job_key', $hide_contact_job);
 	update_user_meta( $userid, 'hide_adresse_candidacy_key', $hide_adresse_candidacy);
 	update_user_meta( $userid, 'hide_contact_candidacy_key', $hide_contact_candidacy);
+	update_user_meta( $userid, 'hide_jobs_search_key', $hide_jobs_search);
 
 	$current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . strtok($_SERVER['REQUEST_URI'], '?');
 	

@@ -322,6 +322,8 @@ function monemploi_user_edit_info() {
 									
 					echo '<form action="'. $_SERVER['REQUEST_URI'] .'" method="post">';
 					
+					echo '<p>General</p>';
+					
 					$hide_search = get_user_meta( $userdata->ID, 'hide_search_key', true);
 					echo '<span>Masquer mon profile de la recherche.</span><br>';
 					
@@ -411,6 +413,62 @@ function monemploi_user_edit_info() {
 			                }
 			                echo '<label for="html">Non</label>';
 			                
+			                echo '<p>Chat</p>';
+			                $disable_chat = get_user_meta( $userdata->ID, 'disable_chat_key', true);
+			              	echo '<span>Désactiver le chat.</span><br>';
+					
+					if($disable_chat == 1){
+			                	echo '<input type="radio" id="disable-chat" name="disable-chat" value="1" checked>';
+			                } else {
+			                	echo '<input type="radio" id="disable-chat" name="disable-chat" value="1">';
+			                }
+			                echo '<label for="html">Oui</label>';
+								
+					if($disable_chat == 0 || $disable_chat == ''){
+			                	echo '<input type="radio" id="disable-chat" name="disable-chat" value="0" checked>';
+			                } else {
+			                	echo '<input type="radio" id="disable-chat" name="disable-chat" value="0">';
+			                }
+			                echo '<label for="html">Non</label>';
+			                
+			                echo '<br>';
+			                
+			               	$hide_online = get_user_meta( $userdata->ID, 'hide_online_key', true);
+			              	echo '<span>Masquer le status en ligne/hors-ligne.</span><br>';
+					
+					if($hide_online == 1){
+			                	echo '<input type="radio" id="hide-online" name="hide-online" value="1" checked>';
+			                } else {
+			                	echo '<input type="radio" id="hide-online" name="hide-online" value="1">';
+			                }
+			                echo '<label for="html">Oui</label>';
+								
+					if($hide_online == 0 || $hide_online == ''){
+			                	echo '<input type="radio" id="hide-online" name="hide-online" value="0" checked>';
+			                } else {
+			                	echo '<input type="radio" id="hide-online" name="hide-online" value="0">';
+			                }
+			                echo '<label for="html">Non</label>';
+			                
+			                echo '<br>';
+			                
+			               	$hide_seen = get_user_meta( $userdata->ID, 'hide_seen_key', true);
+			              	echo '<span>Masquer le status vue/non-vue des messages.</span><br>';
+					
+					if($hide_seen == 1){
+			                	echo '<input type="radio" id="hide-seen" name="hide-seen" value="1" checked>';
+			                } else {
+			                	echo '<input type="radio" id="hide-seen" name="hide-seen" value="1">';
+			                }
+			                echo '<label for="html">Oui</label>';
+								
+					if($hide_seen == 0 || $hide_seen == ''){
+			                	echo '<input type="radio" id="hide-seen" name="hide-seen" value="0" checked>';
+			                } else {
+			                	echo '<input type="radio" id="hide-seen" name="hide-seen" value="0">';
+			                }
+			                echo '<label for="html">Non</label>';
+			                
 					$userid = $userdata->ID;
 					$user_meta = get_userdata($userid);
 					$user_role = $user_meta->roles[0];
@@ -489,9 +547,29 @@ function monemploi_user_edit_info() {
 				                	echo '<input type="radio" id="hide-contact-candidacy" name="hide-contact-candidacy" value="0">';
 				                }
 				                echo '<label for="html">Non</label>';
+				           
+				                echo '<br>';
+				                
+				                $hide_jobs_search = get_user_meta( $userdata->ID, 'hide_jobs_search_key', true);
+				              	echo '<span>Masquer les annonces de la page de recherche.</span><br>';
+						
+						if($hide_jobs_search == 1){
+				                	echo '<input type="radio" id="hide-jobs-search" name="hide-jobs-search" value="1" checked>';
+				                } else {
+				                	echo '<input type="radio" id="hide-jobs-search" name="hide-jobs-search" value="1">';
+				                }
+				                echo '<label for="html">Oui</label>';
+				                
+				                if($hide_jobs_search == 0 || $hide_jobs_search == ''){
+				                	echo '<input type="radio" id="hide-jobs-search" name="hide-jobs-search" value="0" checked>';
+				                } else {
+				                	echo '<input type="radio" id="hide-jobs-search" name="hide-jobs-search" value="0">';
+				                }
+				                echo '<label for="html">Non</label>';
 			                
 			                }
 			                
+			                echo '<br>';
 			                echo '<br>';
 								
 			                echo '<input type="hidden" name="userid" value="'. $userdata->ID .'" />';

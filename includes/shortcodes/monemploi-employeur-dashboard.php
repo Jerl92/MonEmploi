@@ -87,25 +87,27 @@ function employeur_dashboard() {
 				    }
 				    echo '<br>';
 				    
-			    	    if(!$cover_url && !$image_url){
-				    	echo '<div class="" style="position: absolute; right: 0; top: 25px; display: flex; width: auto;">';
-				    }
-				    if($cover_url && !$image_url){
-				    	echo '<div class="" style="position: absolute; right: 0; top: 300px; display: flex; width: auto;">';
-				    }
-				    if(!$cover_url && $image_url){
-				    	echo '<div class="" style="position: absolute; right: 0; top: 125px; display: flex; width: auto;">';
-				    }
-				    if($cover_url && $image_url){
-				    	echo '<div class="" style="position: absolute; right: 0; top: 325px; display: flex; width: auto;">';
-				    }
-				    	if($get_user_by_username->ID != get_current_user_id()){
-                           			 echo '<div class="chat-icons">';
-                                			echo '<a href="' . get_site_url() .'/chat/?username=' . $get_user_by_username->user_nicename . '"><span class="material-icons">mail</span></a>';
-						 echo '</div>';
-					}
-				     echo '</div>';
-				     
+				    $disable_chat = get_user_meta( $user_id, 'disable_chat_key', true);
+				    if($disable_chat == 0 || $disable_chat == ''){
+				    	    if(!$cover_url && !$image_url){
+					    	echo '<div class="" style="position: absolute; right: 0; top: 25px; display: flex; width: auto;">';
+					    }
+					    if($cover_url && !$image_url){
+					    	echo '<div class="" style="position: absolute; right: 0; top: 300px; display: flex; width: auto;">';
+					    }
+					    if(!$cover_url && $image_url){
+					    	echo '<div class="" style="position: absolute; right: 0; top: 125px; display: flex; width: auto;">';
+					    }
+					    if($cover_url && $image_url){
+					    	echo '<div class="" style="position: absolute; right: 0; top: 325px; display: flex; width: auto;">';
+					    }
+					    	if($get_user_by_username->ID != get_current_user_id()){
+	                           			 echo '<div class="chat-icons">';
+	                                			echo '<a href="' . get_site_url() .'/chat/?username=' . $get_user_by_username->user_nicename . '"><span class="material-icons">mail</span></a>';
+							 echo '</div>';
+						}
+					     echo '</div>';
+				     }
 				echo '</div>';
 				   
 				$current_user = wp_get_current_user();
@@ -212,6 +214,102 @@ function employeur_dashboard() {
 				
 				}
 				wp_reset_postdata();
+				
+				 if ( is_user_logged_in() ) {
+        
+				        $profile_id = $get_user_by_username->ID; // The ID of the user whose profile is being viewed
+				        $viewer_id = get_current_user_id();    // The ID of the person currently looking at the profile
+				
+				        // Don't track if the user is looking at their own profile
+				        if ( $profile_id !== $viewer_id ) {
+				            $viewers = get_user_meta( $profile_id, 'profile_viewers', true );
+				            
+				            if ( ! is_array( $viewers ) ) {
+				                $viewers = array();
+				            }
+				            
+				            $i = 0;
+				            $already_frist = 0;
+				            foreach($viewers as $viewer){
+						    foreach($viewer as $key => $item){
+							     if($key == $viewer_id){
+								     if($i == 0){
+								     	$already_frist = 1;							     
+								     }
+							     }
+							     $i++;
+						    }
+					    }
+				            		
+				            if($already_frist == 0){		
+						// Store viewer ID and the time they visited
+						$viewers_new[$viewer_id] = current_time( 'timestamp' );
+						
+						array_unshift($viewers, $viewers_new);
+						update_user_meta( $profile_id, 'profile_viewers', $viewers );
+									                
+						$viewers = get_user_meta( $profile_id, 'profile_viewers', true );
+						
+						$viewers_slice = array_slice($viewers, 0, 20, true);
+						
+						update_user_meta( $profile_id, 'profile_viewers', $viewers_slice );	
+				           }
+				                
+				        }
+				    }
+				    				    
+				    if(get_current_user_id() == $get_user_by_username->ID){
+				    $get_viewers = get_user_meta( $get_user_by_username->ID, 'profile_viewers', true );
+				      	echo '<h4>Visite récente</h4>';
+					    foreach($get_viewers as $viewers){
+					    foreach($viewers as $key => $item){
+					    	$viewer_id = $key;
+					    	$get_viewer_by_id = get_user_by('ID', $viewer_id);
+					    	$user_id_viewer = $get_viewer_by_id->ID;
+					    	$user_info_viewer = get_userdata($user_id_viewer);
+					        $user_roles_viewer = $user_info_viewer->roles;
+					        if(implode($user_roles_viewer) == 'employeur'){
+						    $company_key = get_user_meta($get_viewer_by_id->ID, 'company_key', true);
+						    echo '<a href="'. get_site_url() .'/employeur/?user='. $get_viewer_by_id->user_nicename .'">'. $get_viewer_by_id->user_nicename .'</a>';
+						    echo ' - ';
+					 	    echo $get_viewer_by_id->user_firstname;
+					 	    echo ' ';
+						    echo $get_viewer_by_id->user_lastname;
+						    if($company_key != ''){
+							    echo ' - ';
+							    echo $company_key;
+						    }
+						    echo ' - ';
+						    echo get_user_meta($get_viewer_by_id->ID, 'city_key', true);
+						    echo ' - ';
+						    echo 'Employeur';
+						    echo ' - ';
+						    echo date('Y-m-d H:i:s', $item);
+						    echo '<br>';
+						}
+						
+						if(implode($user_roles_viewer) == 'employer'){
+						    $company_key = get_user_meta($get_viewer_by_id->ID, 'company_key', true);
+						    echo '<a href="'. get_site_url() .'/employee/?user='. $get_viewer_by_id->user_nicename .'">'. $get_viewer_by_id->user_nicename .'</a>';
+						    echo ' - ';
+					 	    echo $get_viewer_by_id->user_firstname;
+					 	    echo ' ';
+						    echo $get_viewer_by_id->user_lastname;
+						    if($company_key != ''){
+							    echo ' - ';
+							    echo $company_key;
+						    }
+						    echo ' - ';
+						    echo get_user_meta($get_viewer_by_id->ID, 'city_key', true);
+						    echo ' - ';
+						    echo 'Employer';
+						    echo ' - ';
+						    echo date('Y-m-d H:i:s', $item);
+						    echo '<br>';
+						}
+					    }
+					}
+				    }
 				
 				echo '<h4>Avis</h4>';
 					

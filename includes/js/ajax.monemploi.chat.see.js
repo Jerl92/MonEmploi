@@ -29,6 +29,7 @@ jQuery(document).ready(function($) {
         comment_chat_see($);
     }, 2500);
     jQuery(window).focus(function(e) {
+    	comment_chat_see($);
         var myTimer = setTimeout(function() {
             comment_chat_see($);
         }, 2500);

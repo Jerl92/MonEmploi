@@ -6,17 +6,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 function is_user_online( $user_id ) {
     $online_users = get_user_meta($user_id, 'online_status_', true);
+    $hide_online = get_user_meta($user_id, 'hide_online_key', true);
     
-    if($online_users == true){
-        return 'En ligne';
-    } else {
-        return 'Hors ligne';
-    }
-    
-    
+    if($hide_online == 0 || $hide_online == '') {
+	    if($online_users == true){
+	        return ' - En ligne';
+	    } else {
+	        return ' - Hors ligne';
+	    }
+    } else  {
+    	return null;
+    }    
 }
 
-function secondsToTime($seconds) {
+function secondsToTime($seconds, $user_id) {
   // Create DateTime objects representing the start and end timestamps
   $dt1 = new DateTime("@0");
   $dt2 = new DateTime("@$seconds");
@@ -24,16 +27,25 @@ function secondsToTime($seconds) {
   // Calculate the difference between the two timestamps
   $diff = $dt1->diff($dt2);
   
-  if($seconds > 0) {
- 	return ' - ' . $diff->format('%a jours, %h:%i:%s');
-  } else {
-  	return '';
-  }
+  $hide_online = get_user_meta($user_id, 'hide_online_key', true);
+  
+  if($hide_online == 0 || $hide_online == '') {
+	  if($seconds > 0) {
+	 	return ' - ' . $diff->format('%a jours, %h:%i:%s');
+	  } else {
+	  	return '';
+	  }
+  } else  {
+    	return null;
+  }    
 }
 
 function monemploi_chat() {
 
     if(is_user_logged_in()){
+    
+      	$disable_chat = get_user_meta( get_current_user_id(), 'disable_chat_key', true);
+	if($disable_chat == 0 || $disable_chat == ''){
     
 	        echo '<div class="user-chat" style="display: flex;">';
 		        echo '<div class="user-chat-menu" style="padding-right: 15px; width: 25%;">';
@@ -68,7 +80,7 @@ function monemploi_chat() {
 							if($get_chat_menu != null){
 								echo '<div style="border-bottom: 0.25px solid black">';
 						                    	echo '<div style="display: flex;">';
-						                    	echo '<a href="' . get_site_url() .'/chat/?username=' . $user_by_id->user_nicename . '">' . $user_by_id->user_firstname . ' ' . $user_by_id->user_lastname . '</a> - ' . is_user_online($userid_menu);
+						                    	echo '<a href="' . get_site_url() .'/chat/?username=' . $user_by_id->user_nicename . '">' . $user_by_id->user_firstname . ' ' . $user_by_id->user_lastname . '</a>' . is_user_online($userid_menu);
 						                    	echo '<a href="' . get_site_url() .'/chat/?delete=' . $chat_menu->ID . '" style="margin-left: auto;">Supprimer</a>';
 						                    	echo '</div>';
 						                    	$end_chat_menu = end($get_chat_menu);
@@ -114,6 +126,10 @@ function monemploi_chat() {
 			
 			if(isset($_GET['username'])){
 				echo '<div class="user-chat-history" style="width: 75%;">';
+					$user_by_username = get_user_by('login', $_GET['username']);
+					$user_id_by_username = $user_by_username->ID;
+				      	$disable_chat = get_user_meta( $user_id_by_username, 'disable_chat_key', true);
+					if($disable_chat == 0 || $disable_chat == ''){
 					$get_args = array( 
 						'post_type' => 'chat',
 						'posts_per_page' => -1,
@@ -123,8 +139,6 @@ function monemploi_chat() {
 					
 					$get_chats = get_posts( $get_args );
 					
-					$user_by_username = get_user_by('login', $_GET['username']);
-					$user_id_by_username = $user_by_username->ID;
 					$user_roles = $user_by_username->roles;
 					$current_time = current_time('timestamp');
 					$offline_time = get_user_meta($user_id_by_username, 'offline_time_', true);
@@ -139,10 +153,10 @@ function monemploi_chat() {
 					$x = 0;
 										
 					if(implode($user_roles) == 'employer'){
-				    		echo '<h3><a href="'. get_site_url() .'/employee/?user='. $user_by_username->user_nicename .'">' . $user_by_username->user_nicename. '</a> - ' . $user_by_username->user_firstname . ' ' . $user_by_username->user_lastname. ' - <span class="online-status">' . is_user_online($user_id_by_username) . '</span><span class="offline-time">' . secondsToTime($offline_calc) . '</span></h3>';
+				    		echo '<h3><a href="'. get_site_url() .'/employee/?user='. $user_by_username->user_nicename .'">' . $user_by_username->user_nicename. '</a> - ' . $user_by_username->user_firstname . ' ' . $user_by_username->user_lastname. '<span class="online-status">' . is_user_online($user_id_by_username) . '</span><span class="offline-time">' . secondsToTime($offline_calc, $user_by_username->ID) . '</span></h3>';
 				    	}
 				    	if(implode($user_roles) == 'employeur'){
-				    		echo '<h3><a href="'. get_site_url() .'/employeur/?user='. $user_by_username->user_nicename .'">' . $user_by_username->user_nicename. '</a> - '  . $user_by_username->user_firstname . ' ' . $user_by_username->user_lastname. ' - <span class="online-status">' . is_user_online($user_id_by_username) . '</span><span class="offline-time">' . secondsToTime($offline_calc) . '</span></h3>';
+				    		echo '<h3><a href="'. get_site_url() .'/employeur/?user='. $user_by_username->user_nicename .'">' . $user_by_username->user_nicename. '</a> - '  . $user_by_username->user_firstname . ' ' . $user_by_username->user_lastname. '<span class="online-status">' . is_user_online($user_id_by_username) . '</span><span class="offline-time">' . secondsToTime($offline_calc, $user_by_username->ID) . '</span></h3>';
 				    	}
 					
 					$if_found = 0;
@@ -170,13 +184,16 @@ function monemploi_chat() {
 										echo '<div style="display: inline-block; text-align: right; width: 100%">';
 									}
 									echo '<span style="font-weight: bold;">';
-										if($chat_history[1] == 0){
-											echo 'Non vue';
+										$hide_seen = get_user_meta( $user_id_by_username, 'hide_seen_key', true);
+										if($hide_seen == 0 || $hide_seen == ''){
+											if($chat_history[1] == 0){
+												echo 'Non vue';
+											}
+											if($chat_history[1] == 1){
+												echo 'Vue';
+											}
+											echo ' - ';
 										}
-										if($chat_history[1] == 1){
-											echo 'Vue';
-										}
-										echo ' - ';
 										echo date('Y-m-d H:i:s', $chat_history[2]);
 										echo ' - ';
 										echo $get_user_by_id_chat->user_firstname . ' ' . $get_user_by_id_chat->user_lastname;
@@ -225,8 +242,19 @@ function monemploi_chat() {
 					</div>
 					<?php
 				echo '</div>';
+				} else {
+				
+					echo '<h4 style="text-align: center;">Cette utilisateur à désactiver le chat.</h4>';
+				
+				}
 			}
 		echo '</div>';
+		
+		} else {
+		
+			echo '<h4 style="text-align: center;">Le chat est désactivé.</h4>';		
+
+		}
 	}
 
 }

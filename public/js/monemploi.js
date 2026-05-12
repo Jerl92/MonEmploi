@@ -184,4 +184,10 @@ jQuery(document).ready(function($) {
 	    return false;  
 	  }
 	});  	
+	
+	var numItems = $('.job-wrapper-box').length;
+	jQuery('.job-search-count').html(numItems);
+	
+	var usernumItems = $('.user-search-wrapper').length;
+	jQuery('.user-search-count').html(usernumItems);
 });
