@@ -806,15 +806,17 @@ add_action('init', function(){
 	$errors = 0;
 	$user = wp_get_current_user();
 	$password = sanitize_text_field($_POST['password']);
-	require_once( ABSPATH . 'wp-admin/includes/user.php' );
+	// require_once( ABSPATH . 'wp-admin/includes/user.php' );
 	
-	if ( $user && wp_check_password( $password, $user->data->user_pass, $user->ID ) ) {
-		// everything is good.
-	} else {
-		$errors = 'Le mot de passe actuel n&#8216;est pas valide.';
+	if($password == ''){
+		$errors = 'password_empty';
+	}
+	
+	if (!wp_check_password( $password, $user->data->user_pass, $user->ID ) ) {
+		$errors = 'not_the_good_password';
 	}
 
-	if ( wp_delete_user( $user->ID, null ) && $errors == 0 ) {
+	if ( $errors == 0 ) {
 		$all_candidacys = get_posts(array(
 		    'post_type' => 'candidacy',
 		    'numberposts' => -1,
@@ -845,10 +847,18 @@ add_action('init', function(){
 				wp_delete_attachment($attachment->ID, false);
 			}
 		}
+		wp_delete_user( $user->ID, null );
 		wp_logout();
 		header("Location: " . trailingslashit( get_home_url() ) . "?delete_account=true");
 	} else {
-		wp_die($errors);
+		$current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . strtok($_SERVER['REQUEST_URI'], '?');
+		if($errors == 'not_the_good_password'){
+			header("Location: " . $current_url . "?delete_account=true&delete_account_wrong_password=true");
+		}
+		
+		if($errors == 'password_empty'){
+			header("Location: " . $current_url . "?delete_account=true&delete_account_password_empty=true");
+		}
 	}
 
 });
@@ -1237,5 +1247,140 @@ function show_draft_posts_on_front( $query ) {
     return $query;
 }
 add_filter( 'pre_get_posts', 'show_draft_posts_on_front' );
+
+add_action('init', function(){
+
+	// not the login request?
+	if(!isset($_POST['action']) || $_POST['action'] !== 'save_status_candidacy')
+		return;
+
+	$postid = $_POST['postid'];
+	$status = $_POST['status_'];	
+	$userid = $_POST['userid'];
+	
+	$get_candidacy_status = get_post_meta($postid, 'candidacy_status_', true);
+	
+	$author_id = get_post_field( 'post_author', $postid );
+	$author_email = get_the_author_meta( 'user_email', $author_id );
+	$to = $author_email;
+	
+	$subject = sprintf ( __( 'Nouveaux status #%s — %s — %s', 'monemploi' ), $postid, get_the_title($postid), get_bloginfo( 'name', 'display' ) );
+	$headers = array('Content-Type: text/html; charset=UTF-8');
+	
+	$message[] .= '<p>';
+	$message[] .= 'Nouveaux status #' . $postid;
+	$message[] .= '</p>';
+	$message[] .= '<p>';
+	$message[] .= 'Acien status: ';
+	
+	if($get_candidacy_status == 0 || $get_candidacy_status == null) {
+		$message[] .= 'En attente';
+	} elseif($get_candidacy_status == 1 ){
+		$message[] .= 'Refusé';
+	} elseif($get_candidacy_status == 2){
+		$message[] .= 'Entrevue accepté';
+	} elseif($get_candidacy_status == 3){
+		$message[] .= 'Embauché';
+	}
+	
+	$message[] .= '</p>';
+	$message[] .= '<p>';
+	$message[] .= 'Nouveaux status: ';
+
+	if($status == 0 || $status == null) {
+             	$message[] .= 'En attente';
+         } elseif($status == 1 ){
+	 	$message[] .= 'Refusé';
+	 } elseif($status == 2){
+	 	$message[] .= 'Entrevue accepté';
+	 } elseif($status == 3){
+	 	$message[] .= 'Embauché';
+	}
+	
+	$message[] .= '</p>';
+	$message[] .= '<a href="' . get_permalink( $postid ) . '">Voire le status</a>';
+		
+	if($get_candidacy_status !== $status){	
+		$my_employee = get_user_meta( get_current_user_id(), 'my_employee_key', true);
+		if($status == 3){
+			if($my_employee == ''){
+				update_user_meta( get_current_user_id(), 'my_employee_key', [$userid]);
+			} else {
+				array_unshift($my_employee, $userid);
+				update_user_meta( get_current_user_id(), 'my_employee_key', $my_employee);
+			}
+		} else {
+			$pos = array_search($userid, $my_employee);
+			if($pos != false){
+				unset($my_employee[$pos]);
+				update_user_meta( get_current_user_id(), 'my_employee_key', $my_employee);
+			}
+		}
+		update_post_meta($postid, 'candidacy_status_', $status);
+		
+		$my_awesome_post = array(
+			'ID'           => $postid,
+			'post_modified_gmt' => date('Y-m-d H:i:s')
+		);
+		
+		// Update the post into the database
+		$result = wp_update_post( $my_awesome_post, true );
+		
+		wp_mail($to, $subject, implode($message), $headers);
+	
+		$current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . strtok($_SERVER['REQUEST_URI'], '?');
+		
+		header("Location:0;" . $current_url . "?update_status=true");
+	} else {
+		$current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . strtok($_SERVER['REQUEST_URI'], '?');
+		
+		header("Location:0;" . $current_url . "?update_status=false");
+	}	
+	
+});
+
+add_action('init', function(){
+
+	// not the login request?
+	if(!isset($_POST['action']) || $_POST['action'] !== 'new_horaire')
+		return;
+		
+	$employee_horaire = $_POST['employee_horaire'];
+	$job_horaire = $_POST['job_horaire'];	
+	$datepickerstarthoraire = $_POST['datepickerstarthoraire'];
+	$timestarthoraire = $_POST['timestarthoraire'];	
+	$datepickerendhoraire = $_POST['datepickerendhoraire'];
+	$timeendhoraire = $_POST['timeendhoraire'];	
+	$salaire = $_POST['salaire'];
+	
+	$user_by_id = get_user_by('id', $employee_horaire);
+	
+	// Create the post data array
+	$my_post = array(
+	    'post_title'    => $user_by_id->user_nicename .'-' . $user_by_id->user_firstname . '-' . $user_by_id->user_lastname,
+	    'post_content'  => 'This is the content of my new post.',
+	    'post_status'   => 'publish', // Use 'draft' if you don't want it public immediately
+	    'post_author'   => get_current_user_id(),         // ID of the user who is the author
+	    'post_type' => 'horaire'
+	);
+	
+	// Insert the post into the database
+	$post_id = wp_insert_post( $my_post );
+	
+	// Check if there was an error
+	if ( is_wp_error( $post_id ) ) {
+	    echo $post_id->get_error_message();
+	} else {
+	    update_post_meta( $post_id, 'employee_horaire_key', $employee_horaire );
+	    update_post_meta( $post_id, 'job_horaire_key', $job_horaire );
+	    update_post_meta( $post_id, 'datepickerstarthoraire_key', $datepickerstarthoraire );
+	    update_post_meta( $post_id, 'timestarthoraire_key', $timestarthoraire );
+	    update_post_meta( $post_id, 'datepickerendhoraire_key', $datepickerendhoraire );
+	    update_post_meta( $post_id, 'timeendhoraire_key', $timeendhoraire );
+	    update_post_meta( $post_id, 'salaire_key', $salaire );
+	}
+		
+		
+});
 
 ?>

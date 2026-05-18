@@ -2,6 +2,8 @@
 jQuery(document).ready(function($) {
         jQuery('[data-toggle="datepickerstartjobscheduled"]').datepicker();
         jQuery('[data-toggle="datepickerendjobscheduled"]').datepicker();
+        jQuery('[data-toggle="datepickerstarthoraire"]').datepicker();
+	jQuery('[data-toggle="datepickerendhoraire"]').datepicker();
 });
 
 jQuery(window).on('load', function() {

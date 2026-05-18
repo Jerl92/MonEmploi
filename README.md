@@ -54,6 +54,9 @@ Is to set a page so you can edit basic info on the user.<br>
 [monemploi-chat]<br>
 To display the chat dashboard<br>
 
+[monemploi-calender]<br>
+To display the calender for timesheet<br>
+
 ## Frequently Asked Questions 
 
 Do you make money with this plugin.<br>
@@ -69,9 +72,12 @@ The answer is no.<br>
 <img style="max-width: 100%;" src="https://i.ibb.co/XxYC3DwC/monemploi40.png" /><br>
 <img style="max-width: 100%;" src="https://i.ibb.co/WpyYd6BZ/monemploi42.png" /><br>
 <img style="max-width: 100%;" src="https://i.ibb.co/4wz1qQmj/monemploi43.png" /><br>
+<img style="max-width: 100%;" src="https://i.ibb.co/nMkBFP0R/monemploi48.png" /><br>
+<img style="max-width: 100%;" src="https://i.ibb.co/rGNFYxc4/monemploi49.png" /><br>
 
 ## Changelog 
 
+0.7 - Add a calendar to add timesheet.<br>
 0.6 - Add a chat and all the ajax function and a widget for new chat message.<br>
 0.5.5 - Add user profile widget and move job apply question to profile.<br>
 0.5 - Add left menu to user-edit-info and add widget of new diploma and new experiance done.<br>

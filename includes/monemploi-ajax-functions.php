@@ -17,10 +17,6 @@ function monemploi_ajax_scripts() {
 	wp_localize_script( 'monemploi-ajax-send-cv-scripts', 'send_cv_monemploi_ajax_url', admin_url( 'admin-ajax.php', 'relative' ) );
 	wp_enqueue_script( 'monemploi-ajax-send-cv-scripts' );
 	
-	wp_register_script( 'monemploi-ajax-save-status-scripts', $url . "js/ajax.monemploi.status.js", array( 'jquery' ), '1.0.0', true );
-	wp_localize_script( 'monemploi-ajax-save-status-scripts', 'save_status_monemploi_ajax_url', admin_url( 'admin-ajax.php', 'relative' ) );
-	wp_enqueue_script( 'monemploi-ajax-save-status-scripts' );
-	
 	wp_register_script( 'monemploi-ajax-maps-scripts', $url . "js/ajax.monemploi.maps.js", array( 'jquery' ), '1.0.0', true );
 	wp_localize_script( 'monemploi-ajax-maps-scripts', 'maps_monemploi_ajax_url', admin_url( 'admin-ajax.php', 'relative' ) );
 	wp_enqueue_script( 'monemploi-ajax-maps-scripts' ); 
@@ -240,79 +236,6 @@ function monemploi_send_cv_job($post) {
 	
 	
         wp_send_json ( implode($html) );
-}	
-
-/* AJAX action callback */
-add_action( 'wp_ajax_monemploi_save_status', 'monemploi_save_status' );
-add_action( 'wp_ajax_nopriv_monemploi_save_status', 'monemploi_save_status' );
-function monemploi_save_status($post) {
-
-	$object_id = $_POST['object_id'];
-	
-	$status = $_POST['status'];
-	
-	$i = $_POST['i'];
-	
-	$get_candidacy_status = get_post_meta($object_id, 'candidacy_status_', true);
-	
-	$author_id = get_post_field( 'post_author', $object_id );
-	$author_email = get_the_author_meta( 'user_email', $author_id );
-	$to = $author_email;
-	
-	$subject = sprintf ( __( 'Nouveaux status #%s — %s — %s', 'monemploi' ), $object_id, get_the_title($object_id), get_bloginfo( 'name', 'display' ) );
-	$headers = array('Content-Type: text/html; charset=UTF-8');
-	
-	$message[] .= '<p>';
-	$message[] .= 'Nouveaux status #' . $object_id;
-	$message[] .= '</p>';
-	$message[] .= '<p>';
-	$message[] .= 'Acien status: ';
-	
-	if($get_candidacy_status == 0 || $get_candidacy_status == null) {
-		$message[] .= 'En attente';
-	} elseif($get_candidacy_status == 1 ){
-		$message[] .= 'Refusé';
-	} elseif($get_candidacy_status == 2){
-		$message[] .= 'Entrevue accepté';
-	} elseif($get_candidacy_status == 3){
-		$message[] .= 'Embauché';
-	}
-	
-	$message[] .= '</p>';
-	$message[] .= '<p>';
-	$message[] .= 'Nouveaux status: ';
-
-	if($status == 0 || $status == null) {
-             	$message[] .= 'En attente';
-         } elseif($status == 1 ){
-	 	$message[] .= 'Refusé';
-	 } elseif($status == 2){
-	 	$message[] .= 'Entrevue accepté';
-	 } elseif($status == 3){
-	 	$message[] .= 'Embauché';
-	}
-	
-	$message[] .= '</p>';
-	$message[] .= '<a href="' . get_permalink( $object_id ) . '">Voire le status</a>';
-		
-	if($get_candidacy_status !== $status){	
-		update_post_meta($object_id, 'candidacy_status_', $status);
-		
-		$my_awesome_post = array(
-			'ID'           => $object_id,
-			'post_modified_gmt' => date('Y-m-d H:i:s')
-		);
-		
-		// Update the post into the database
-		$result = wp_update_post( $my_awesome_post, true );
-		
-		wp_mail($to, $subject, implode($message), $headers);
-	
-		wp_send_json ( 'La candidature à été mise à jour à succès.' );
-	} else {
-		wp_send_json ( 'La candidature na pas été mise à jour.' );
-	}	
-	
 }	
 
 function generate_secure_string($length = 16) {

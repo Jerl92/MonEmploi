@@ -170,6 +170,8 @@ class Monemploi {
 		
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/shortcodes/monemploi-chat.php';
 		
+        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/shortcodes/monemploi-calender.php';
+		
 		$this->loader = new Monemploi_Loader();
 
 	}

@@ -156,6 +156,46 @@ function cpt_chats() {
 
 add_action('init', 'cpt_chats');
 
+
+function cpt_horaires() {
+
+    $labels = array(
+        'name'                  => 'horaires',
+        'singular_name'         => 'horaire',
+        'menu_name'             => 'horaires',
+        'name_admin_bar'        => 'horaire',
+        'add_new'               => 'Ajouter',
+        'add_new_item'          => 'Ajouter un horaire',
+        'new_item'              => 'Nouveau horaire',
+        'edit_item'             => 'Modifier le horaire',
+        'view_item'             => 'Voir le horaire',
+        'all_items'             => 'Tous les horaires',
+        'search_items'          => 'Rechercher des horaires',
+        'not_found'             => 'Aucun horaire trouvé',
+    );
+
+    $args = array(
+        'labels'             => $labels,
+        'public'             => true,
+        'has_archive'        => true,
+        'rewrite'            => array('slug' => 'horaires'),
+        'menu_icon'          => 'dashicons-portfolio',
+        'supports'           => array(
+            'title',
+            'editor',
+            'thumbnail',
+            'excerpt'
+        ),
+        'show_in_rest'       => false, // IMPORTANT pour Gutenberg
+        'exclude_from_search' => true,
+        'publicly_queryable' => true,
+    );
+
+    register_post_type('horaire', $args);
+}
+
+add_action('init', 'cpt_horaires');
+
 function education_register_genre_taxonomy() {
     $labels = array(
         'name'              => _x( 'Educations', 'taxonomy general name', 'textdomain' ),

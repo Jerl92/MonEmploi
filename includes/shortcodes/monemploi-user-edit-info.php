@@ -586,6 +586,14 @@ function monemploi_user_edit_info() {
 			if ($_GET['delete_account'] == true) {
 			
 				echo '<div class="delete-account" style="width: 75%;">';
+					
+				if ($_GET['delete_account_wrong_password'] == true) {
+					echo '<p>Le mot de passe n&#8216;est pas valide.</p>';
+				}
+				
+				if ($_GET['delete_account_password_empty'] == true) {
+					echo '<p>Le mot de passe est vide.</p>';
+				}
 				
 				    echo '<h2>Supprimer votre compte</h2>';
 				

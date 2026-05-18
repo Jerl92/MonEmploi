@@ -122,7 +122,7 @@ function employee_dashboard() {
 				 			 
 				 <?php
 				 
-				 				 if ( is_user_logged_in() ) {
+				 if ( is_user_logged_in() ) {
         
 				        $profile_id = $get_user_by_username->ID; // The ID of the user whose profile is being viewed
 				        $viewer_id = get_current_user_id();    // The ID of the person currently looking at the profile

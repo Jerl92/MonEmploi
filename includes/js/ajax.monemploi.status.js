@@ -5,7 +5,8 @@ function monemploi_save_status_job($) {
 		event.stopImmediatePropagation();
 		
 			var $this_i = jQuery(this),
-               		i = $this_i.data('object-id');
+               		i = $this_i.data('object-id'),
+ 			userid = $this_i.data('object-userid');
         
 			var $this = $("#status_"+i),
 				object_id = $this.data('object-id');
@@ -19,6 +20,7 @@ function monemploi_save_status_job($) {
 			    'object_id': object_id,
 			    'status': status,
 			    'i': i,
+			    'userid', userid,
 				'action': 'monemploi_save_status'
             },
             dataType: 'JSON',
