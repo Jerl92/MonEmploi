@@ -1299,18 +1299,21 @@ add_action('init', function(){
 	
 	$message[] .= '</p>';
 	$message[] .= '<a href="' . get_permalink( $postid ) . '">Voire le status</a>';
+	
+	$current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . strtok($_SERVER['REQUEST_URI'], '?');
 		
-	if($get_candidacy_status !== $status){	
+	if($get_candidacy_status != $status){	
 		$my_employee = get_user_meta( get_current_user_id(), 'my_employee_key', true);
 		if($status == 3){
 			if($my_employee == ''){
-				update_user_meta( get_current_user_id(), 'my_employee_key', [$userid]);
+				update_user_meta( get_current_user_id(), 'my_employee_key', array($userid));
 			} else {
-				array_unshift($my_employee, $userid);
+				array_push($my_employee, $userid);
 				update_user_meta( get_current_user_id(), 'my_employee_key', $my_employee);
 			}
 		} else {
-			$pos = array_search($userid, $my_employee);
+			$values = array_values($my_employee);
+			$pos = array_search($userid, $values);
 			if($pos != false){
 				unset($my_employee[$pos]);
 				update_user_meta( get_current_user_id(), 'my_employee_key', $my_employee);
@@ -1327,14 +1330,10 @@ add_action('init', function(){
 		$result = wp_update_post( $my_awesome_post, true );
 		
 		wp_mail($to, $subject, implode($message), $headers);
-	
-		$current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . strtok($_SERVER['REQUEST_URI'], '?');
 		
-		header("Location:0;" . $current_url . "?update_status=true");
-	} else {
-		$current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . strtok($_SERVER['REQUEST_URI'], '?');
-		
-		header("Location:0;" . $current_url . "?update_status=false");
+		header("Location: " . $current_url . "?update_status=true");
+	} else {		
+		header("Location: " . $current_url . "?update_status=false");
 	}	
 	
 });
@@ -1351,14 +1350,15 @@ add_action('init', function(){
 	$timestarthoraire = $_POST['timestarthoraire'];	
 	$datepickerendhoraire = $_POST['datepickerendhoraire'];
 	$timeendhoraire = $_POST['timeendhoraire'];	
+	$timebrake = $_POST['timebrake'];
 	$salaire = $_POST['salaire'];
 	
 	$user_by_id = get_user_by('id', $employee_horaire);
 	
 	// Create the post data array
 	$my_post = array(
-	    'post_title'    => $user_by_id->user_nicename .'-' . $user_by_id->user_firstname . '-' . $user_by_id->user_lastname,
-	    'post_content'  => 'This is the content of my new post.',
+	    'post_title'    => generateRandomString(16),
+	    'post_content'  => $user_by_id->user_nicename .'-' . $user_by_id->user_firstname . '-' . $user_by_id->user_lastname,
 	    'post_status'   => 'publish', // Use 'draft' if you don't want it public immediately
 	    'post_author'   => get_current_user_id(),         // ID of the user who is the author
 	    'post_type' => 'horaire'
@@ -1377,10 +1377,44 @@ add_action('init', function(){
 	    update_post_meta( $post_id, 'timestarthoraire_key', $timestarthoraire );
 	    update_post_meta( $post_id, 'datepickerendhoraire_key', $datepickerendhoraire );
 	    update_post_meta( $post_id, 'timeendhoraire_key', $timeendhoraire );
+	    update_post_meta( $post_id, 'timebrake_key', $timebrake );
 	    update_post_meta( $post_id, 'salaire_key', $salaire );
 	}
 		
 		
 });
 
+
+
+add_action('init', function(){
+
+	// not the login request?
+	if(!isset($_POST['action']) || $_POST['action'] !== 'new_punch_in_out')
+		return;
+	
+	$userid = $_POST['userid'];
+	$postid = $_POST['postid'];
+
+	$current_time = current_time( 'timestamp' );
+	$push_in_out = get_post_meta( $postid, 'push_in_out_key', true );
+	$push_ = get_post_meta( $postid, 'push_key', true );
+	if($push_in_out == 0 || $push_in_out == ''){
+		update_post_meta( $postid, 'push_in_out_key', 1 );
+		if($push_ == ''){
+			$push_in = array('entrer', $current_time);
+			update_post_meta( $postid, 'push_key', [$push_in] );
+		} else {
+			$push_in = array('entrer', $current_time);
+			array_push($push_, $push_in);
+			update_post_meta( $postid, 'push_key', $push_ );
+		}
+	}
+	if($push_in_out == 1){
+		update_post_meta( $postid, 'push_in_out_key', 0 );
+		$push_out = array('sortie', $current_time);
+		array_push($push_, $push_out);
+		update_post_meta( $postid, 'push_key', $push_ );
+	}
+
+});
 ?>

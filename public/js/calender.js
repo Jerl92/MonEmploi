@@ -83,8 +83,10 @@
 			    return jQuery.inArray(formattedDate, item) !== -1;
 			});
 			
-		  	if (results.length > 0) {
+		  	if (results.length == 1) {
 				tbody_html += "<td class='"+td_class+"' style='text-align: center; width: 14.28%;'><a href='"+current_url+"?daytime="+timeunix+"'>"+counter+"</a><br><span>"+timestart+"</span><br><span>"+timeend+"</span></td>";
+			} else if (results.length > 1) {
+				tbody_html += "<td class='"+td_class+"' style='text-align: center; width: 14.28%;'><a href='"+current_url+"?daytime="+timeunix+"'>"+counter+"</a><br><span>"+results.length+" horaires</span></td>";
 			} else {
 				tbody_html += "<td class='"+td_class+"' style='text-align: center; width: 14.28%;'><a href='"+current_url+"?daytime="+timeunix+"'>"+counter+"</a></td>";
 			}
