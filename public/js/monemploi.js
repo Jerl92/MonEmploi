@@ -3,7 +3,11 @@ jQuery(document).ready(function($) {
         jQuery('[data-toggle="datepickerstartjobscheduled"]').datepicker();
         jQuery('[data-toggle="datepickerendjobscheduled"]').datepicker();
         jQuery('[data-toggle="datepickerstarthoraire"]').datepicker();
-	jQuery('[data-toggle="datepickerendhoraire"]').datepicker();
+	    jQuery('[data-toggle="datepickerendhoraire"]').datepicker();
+        jQuery(".punchdateinout").each(function(index, element) {
+            var indexadd = index + 1;
+            jQuery('[data-toggle="punchdateinout-'+indexadd+'"]').datepicker();
+        });
 });
 
 jQuery(window).on('load', function() {
@@ -192,4 +196,28 @@ jQuery(document).ready(function($) {
 	
 	var usernumItems = $('.user-search-wrapper').length;
 	jQuery('.user-search-count').html(usernumItems);
+	
+	var punchdateinout = parseInt(jQuery('.punchdateinout').length);
+	jQuery('.punchquantity').val(punchdateinout);
+	
+	jQuery(".addpunch").on("click", function() {
+		var punchdateinout = jQuery('.punchdateinout').length+1;
+		var punchtimeinout = jQuery('.punchtimeinout').length+1;
+		if (punchdateinout % 2 === 0) {
+			var html = 'sortie - <input type="text" id="punchdateinout-'+punchdateinout+'" class="punchdateinout" name="punchdateinout-'+punchdateinout+'" data-toggle="punchdateinout-'+punchdateinout+'"> - <input type="time" id="punchtimeinout-'+punchtimeinout+'" class="punchtimeinout" name="punchtimeinout-'+punchtimeinout+'"><br>';
+		} else {
+			var html = 'entrer - <input type="text" id="punchdateinout-'+punchdateinout+'" class="punchdateinout" name="punchdateinout-'+punchdateinout+'" data-toggle="punchdateinout-'+punchdateinout+'"> - <input type="time" id="punchtimeinout-'+punchtimeinout+'" class="punchtimeinout" name="punchtimeinout-'+punchtimeinout+'"><br>';
+		}
+		jQuery('.addpunchdatetime').append(html);
+		jQuery('.punchquantity').val(punchdateinout);
+        	jQuery('[data-toggle="punchdateinout-'+punchdateinout+'"]').datepicker();
+	});
+	jQuery('.dayoff-reason').on('change', function() {
+	    var selectedValue = $(this).val();
+	    if(selectedValue == 6) {
+	    	jQuery('.employee-replace').css('display', 'block');
+	    } else {
+	    	jQuery('.employee-replace').css('display', 'none');
+	    } 
+	});
 });

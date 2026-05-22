@@ -1394,7 +1394,7 @@ add_action('init', function(){
 	
 	$userid = $_POST['userid'];
 	$postid = $_POST['postid'];
-
+	
 	$current_time = current_time( 'timestamp' );
 	$push_in_out = get_post_meta( $postid, 'push_in_out_key', true );
 	$push_ = get_post_meta( $postid, 'push_key', true );
@@ -1417,4 +1417,149 @@ add_action('init', function(){
 	}
 
 });
+
+add_action('init', function(){
+
+	// not the login request?
+	if(!isset($_POST['action']) || $_POST['action'] !== 'edit_horaire')
+		return;
+	
+	$userid = $_POST['userid'];
+	$postid = $_POST['postid'];	
+	$punchquantity = $_POST['punchquantity'];
+	
+	$datepickerstarthoraire = $_POST['datepickerstarthoraire'];
+	$timestarthoraire = $_POST['timestarthoraire'];	
+	$datepickerendhoraire = $_POST['datepickerendhoraire'];
+	$timeendhoraire = $_POST['timeendhoraire'];	
+	$timebrake = $_POST['timebrake'];
+	$salaire = $_POST['salaire'];
+	
+	update_post_meta( $postid, 'datepickerstarthoraire_key', $datepickerstarthoraire );
+	update_post_meta( $postid, 'timestarthoraire_key', $timestarthoraire );
+	update_post_meta( $postid, 'datepickerendhoraire_key', $datepickerendhoraire );
+	update_post_meta( $postid, 'timeendhoraire_key', $timeendhoraire );
+	update_post_meta( $postid, 'timebrake_key', $timebrake );
+	update_post_meta( $postid, 'salaire_key', $salaire );
+
+	$push_ = get_post_meta( $postid, 'push_key', true );
+	
+	for ($i = 1; $i <= $punchquantity; $i++) {
+		$punchdateinout = $_POST["punchdateinout-".$i];
+		$punchtimeinout = $_POST["punchtimeinout-".$i];
+		if($punchdateinout != '' && $punchtimeinout != '') {
+			$punchunixinout = strtotime($punchdateinout.' '.$punchtimeinout);
+			if ($i % 2 == 0) {
+				update_post_meta( $postid, 'push_in_out_key', 0 );
+				$push_[$i-1] = array('sortie', $punchunixinout);
+				update_post_meta( $postid, 'push_key', $push_ );
+			} else {
+				update_post_meta( $postid, 'push_in_out_key', 1 );
+				if($push_ == ''){
+					$push_in = array('entrer', $punchunixinout);
+					update_post_meta( $postid, 'push_key', [$push_in] );
+				} else {
+					$push_[$i-1] = array('entrer', $punchunixinout);
+					update_post_meta( $postid, 'push_key', $push_ );
+				}
+			}
+		}
+	}
+
+
+});
+
+
+add_action('init', function(){
+
+	// not the login request?
+	if(!isset($_POST['action']) || $_POST['action'] !== 'new_approve_time')
+		return;
+	
+	$userid = $_POST['userid'];
+	$postid = $_POST['postid'];
+	
+	update_post_meta( $postid, 'approve_time_key', 'true' );
+	
+});
+
+add_action('init', function(){
+
+	// not the login request?
+	if(!isset($_POST['action']) || $_POST['action'] !== 'new_desaprovar_time')
+		return;
+	
+	$userid = $_POST['userid'];
+	$postid = $_POST['postid'];
+	
+	update_post_meta( $postid, 'approve_time_key', 'false' );
+	
+});
+
+add_action('init', function(){
+
+	// not the login request?
+	if(!isset($_POST['action']) || $_POST['action'] !== 'new_delete_time')
+		return;
+	
+	$userid = $_POST['userid'];
+	$postid = $_POST['postid'];
+	
+	wp_delete_post( $postid, true);
+	
+	$url = home_url( $scheme = 'https' );
+
+	header("refresh:0;".$url."/horaire-des-employe/?delete=".$postid."");
+		
+});
+
+
+add_action('init', function(){
+
+	// not the login request?
+	if(!isset($_POST['action']) || $_POST['action'] !== 'new_dayoff')
+		return;
+	
+	$userid = $_POST['userid'];
+	$postid = $_POST['postid'];	
+	$status = $_POST['dayoff-status'];
+	$reason = $_POST['dayoff-reason'];
+	$explication = $_POST['dayoff-explication'];
+	$replace = $_POST['employee-replace'];
+	
+	if($status == ''){
+		update_post_meta( $postid, 'dayoff_new_key', 1 );
+	} else {
+		update_post_meta( $postid, 'dayoff_new_key', 0 );
+	}
+	update_post_meta( $postid, 'dayoff_status_key', $status );
+	update_post_meta( $postid, 'dayoff_reason_key', $reason );
+	update_post_meta( $postid, 'dayoff_explication_key', $explication );
+	
+	if($replace != ''){
+		update_post_meta( $postid, 'employee_replace_key', $replace );
+	}
+	
+	// 2. Include required WordPress files (needed for front-end execution)
+	require_once(ABSPATH . 'wp-admin/includes/image.php');
+	require_once(ABSPATH . 'wp-admin/includes/file.php');
+	require_once(ABSPATH . 'wp-admin/includes/media.php');
+	
+	// 3. Perform the upload
+	// Parameters: ($_FILES key, post_id to attach to [0 for none])
+	$attachment_id = media_handle_upload('dayoff_upload', $postid);
+	
+	if (is_wp_error($attachment_id)) {
+		echo "Error uploading file: " . $attachment_id->get_error_message();
+	} else {
+		$dayoff_attachment = get_post_meta( $postid, 'dayoff_attachment_key', true );
+		if($dayoff_attachment != ''){
+			wp_delete_attachment($dayoff_attachment, true);
+		}
+		update_post_meta( $postid, 'dayoff_attachment_key', $attachment_id );
+	}		
+
+		
+});
+
 ?>

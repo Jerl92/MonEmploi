@@ -83,7 +83,7 @@ class Monemploi_Public {
         	
         	wp_enqueue_style( 'passwordStrength', plugin_dir_url( __FILE__ ) . 'css/passwordStrength.css', array(), $this->version, 'all' );
         	
-            wp_enqueue_style( 'calender', plugin_dir_url( __FILE__ ) . 'css/calender.css', array(), $this->version, 'all' );
+            	wp_enqueue_style( 'calender', plugin_dir_url( __FILE__ ) . 'css/calender.css', array(), $this->version, 'all' );
         	
 	}
 
@@ -120,11 +120,11 @@ class Monemploi_Public {
 	        
 	        wp_enqueue_script( 'media-uploader', plugin_dir_url( __FILE__ ) . 'js/media-uploader.js', array( 'jquery' ), $this->version, false );
 	        
-	        wp_enqueue_script('notification', plugin_dir_url( __FILE__ ) . '/js/notification.js', array('jquery'), null, true);
+	        wp_enqueue_script('notification', plugin_dir_url( __FILE__ ) . '/js/notification.js', array('jquery'), $this->version, false );
     
-		    wp_localize_script('notification', 'wpNotification', array('PluginDirUrl' => plugin_dir_url( __FILE__ )));
+		wp_localize_script('notification', 'wpNotification', array('PluginDirUrl' => plugin_dir_url( __FILE__ )));
 
-            wp_enqueue_script('calender', plugin_dir_url( __FILE__ ) . '/js/calender.js', array('jquery'), null, true);
+            	wp_enqueue_script('calender', plugin_dir_url( __FILE__ ) . '/js/calender.js', array('jquery'), $this->version, false );
     
 	}
 

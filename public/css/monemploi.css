@@ -136,3 +136,7 @@
     -ms-overflow-style: none;
     scrollbar-width: none; 
 }
+
+button a {
+	color: #fff;
+}

@@ -39,11 +39,11 @@
 			var formattedDateend = (dateend.getMonth() + 1) + '/' + dateend.getDate() + '/' + dateend.getFullYear();
 			word.push([myArray[0], formattedDatestart, myArray[3], formattedDateend, myArray[5]]);
 		  });
-				  
+		  				  
 		  //To build the calendar body
 		  while (counter <= daysOfMonth[month]) {
 		  	var today = new Date();
-			var dayOfMonth = today.getDate();
+		  	var dayOfMonth = today.getDate();
 		  	datestring = months_full[month]+" "+counter+", "+year;
 		  	timeunix = parseInt((new Date(datestring).getTime() / 1000).toFixed(0));
 		  	if(weekday_count === 8){
@@ -54,7 +54,7 @@
 		  		tbody_html += "<tr>";
 		  		tr_count++;
 		  	}
-	  	// prepend blank tds
+	  		// prepend blank tds
 		  	while(offset_td < start_of_curr){
 		  		tbody_html += "<td class='empty'></td>";
 		  		offset_td++;
@@ -94,31 +94,24 @@
 		  	weekday_count++;
 		  	td_count++;
 		  }
-	  // append blank tds
-	  
-		  while((td_count-1) < (tr_count-1)*7){
-		  	tbody_html += "<td class='empty'></td>";
-		  	td_count++;
-		  }
-		  jQuery('#calendar_tbody').html(tbody_html);
-	  // setting master_data.jQuery("calendartest").html(item[2]);
-		  master_data.months.prev = month === 0 ? 11 : month - 1;
-		  master_data.months.next = month === 11 ? 0 : month + 1;
-		  debug && console.log("prev "+master_data.months.prev+" -> "+start_of_curr+" - "+daysOfMonth[master_data.months.prev]+"%7 = "+(start_of_curr - daysOfMonth[master_data.months.prev]%7));
-	  // setting master_data.day_start
-		  master_data.day_start.curr = start_of_curr;
-		  var temp_prev_som = start_of_curr - daysOfMonth[master_data.months.prev]%7;
-		  if(temp_prev_som < 0){
-		  	temp_prev_som = 7 + temp_prev_som;
-		  }
-		  master_data.day_start.prev = temp_prev_som;
-		  master_data.day_start.next = weekday_count === 8 ? 0 : weekday_count-1;
-		  //return prev_next;
-		  if(debug){
-		  	console.log("    P   C   N   ");
-		  	console.log(" m ", master_data.months.prev, " ", master_data.months.curr, " ", master_data.months.next);
-		  	console.log(" d ", master_data.day_start.prev, " ", master_data.day_start.curr, " ", master_data.day_start.next);
-		  }
+			// append blank tds
+			
+			while((td_count-1) < (tr_count-1)*7){
+				tbody_html += "<td class='empty'></td>";
+				td_count++;
+			}
+			// setting master_data
+			master_data.months.prev = month === 0 ? 11 : month - 1;
+			master_data.months.next = month === 11 ? 0 : month + 1;
+			// setting master_data.day_start
+			master_data.day_start.curr = start_of_curr;
+			var temp_prev_som = start_of_curr - daysOfMonth[master_data.months.prev]%7; 
+			if(temp_prev_som < 0){
+				temp_prev_som = 7 + temp_prev_som;
+			}
+			master_data.day_start.prev = temp_prev_som;
+			master_data.day_start.next = weekday_count === 8 ? 0 : weekday_count-1;
+			jQuery('.calendar_tbody').html(tbody_html);
 		}
 		var d = new Date();
 		var year = d.getUTCFullYear();
@@ -128,7 +121,7 @@
 		// our global object
 		var master_data = {
 			day_start: {
-				prev: 0, curr: day - (date%7 - 1) + 7, next: 0
+				prev: 0, curr: day - (date%7 - 1), next: 0
 			},
 			months: {
 				prev: month-1, curr: month, next: month+1
@@ -147,7 +140,6 @@
 		var debug = false;
 		jQuery(document).ready(function(){
 			console.clear();
-			var d = new Date();
 			myCalendar();
 			var main_obj = master_data;
 		  //Navigation Buttons
