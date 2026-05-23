@@ -1443,30 +1443,28 @@ add_action('init', function(){
 	update_post_meta( $postid, 'salaire_key', $salaire );
 
 	$push_ = get_post_meta( $postid, 'push_key', true );
-	
+		
 	for ($i = 1; $i <= $punchquantity; $i++) {
 		$punchdateinout = $_POST["punchdateinout-".$i];
 		$punchtimeinout = $_POST["punchtimeinout-".$i];
 		if($punchdateinout != '' && $punchtimeinout != '') {
-			$punchunixinout = strtotime($punchdateinout.' '.$punchtimeinout);
+			$punchunixinout = strtotime($punchdateinout.'T'.$punchtimeinout);
 			if ($i % 2 == 0) {
 				update_post_meta( $postid, 'push_in_out_key', 0 );
 				$push_[$i-1] = array('sortie', $punchunixinout);
 				update_post_meta( $postid, 'push_key', $push_ );
 			} else {
 				update_post_meta( $postid, 'push_in_out_key', 1 );
-				if($push_ == ''){
-					$push_in = array('entrer', $punchunixinout);
-					update_post_meta( $postid, 'push_key', [$push_in] );
+				if($i-1 == 0){
+					$punch_in = array('entrer', $punchunixinout);
+					update_post_meta( $postid, 'push_key', [$punch_in] );
 				} else {
 					$push_[$i-1] = array('entrer', $punchunixinout);
 					update_post_meta( $postid, 'push_key', $push_ );
-				}
+				} 
 			}
 		}
 	}
-
-
 });
 
 
@@ -1550,7 +1548,7 @@ add_action('init', function(){
 	$attachment_id = media_handle_upload('dayoff_upload', $postid);
 	
 	if (is_wp_error($attachment_id)) {
-		echo "Error uploading file: " . $attachment_id->get_error_message();
+		//
 	} else {
 		$dayoff_attachment = get_post_meta( $postid, 'dayoff_attachment_key', true );
 		if($dayoff_attachment != ''){

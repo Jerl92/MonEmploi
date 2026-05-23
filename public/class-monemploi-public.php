@@ -125,6 +125,8 @@ class Monemploi_Public {
 		wp_localize_script('notification', 'wpNotification', array('PluginDirUrl' => plugin_dir_url( __FILE__ )));
 
             	wp_enqueue_script('calender', plugin_dir_url( __FILE__ ) . '/js/calender.js', array('jquery'), $this->version, false );
+            	
+            	wp_enqueue_script('jquery.cookie', plugin_dir_url( __FILE__ ) . '/js/jquery.cookie.js', array('jquery'), $this->version, false );
     
 	}
 
