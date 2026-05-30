@@ -18,6 +18,17 @@ Retrieved 2026-05-12, License - CC BY-SA 3.0
 		}
 		.prev-month{ left: 1px; }
 		.next-month{ right: 1px; }
+        .prev-month-pay, .next-month-pay{
+		    cursor: pointer;
+		    position: absolute;
+		    top: 1px;
+		    background: #eee;
+		    width: 35px;
+		    height: 50px;
+		    padding: 8px 0 8px 0px;
+		}
+		.prev-month-pay{ left: 1px; }
+		.next-month-pay{ right: 1px; }
 		.month-year h3{
 			font-size: 40px;
 			margin-top: 10px;

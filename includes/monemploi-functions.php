@@ -1455,7 +1455,7 @@ add_action('init', function(){
 				update_post_meta( $postid, 'push_key', $push_ );
 			} else {
 				update_post_meta( $postid, 'push_in_out_key', 1 );
-				if($i-1 == 0){
+				if($i == 1 && $punchquantity == 1){
 					$punch_in = array('entrer', $punchunixinout);
 					update_post_meta( $postid, 'push_key', [$punch_in] );
 				} else {
@@ -1463,6 +1463,9 @@ add_action('init', function(){
 					update_post_meta( $postid, 'push_key', $push_ );
 				} 
 			}
+		} else {
+            unset($push_[$i-1]);
+            update_post_meta( $postid, 'push_key', $push_ );
 		}
 	}
 });

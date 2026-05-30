@@ -87,8 +87,8 @@ echo '</ul>';
 	$user_role = $user_meta->roles[0];
 	if($user_role == 'employeur'){ ?>
 		<button><a href="<?php echo $current_url; ?>?new_job=true">Ajouter un horaire</a></button>
-		<button><a href="<?php echo $current_url; ?>?summary=true">Somaire des paies</a></button>
 	<?php } ?>
+	<button><a href="<?php echo $current_url; ?>?summary=true">Somaire des paies</a></button>
 	<div class="container">
 			<div class="calendar_header">
 				<i class="prev-month fa fa-chevron-left fa-3x"></i>
@@ -244,7 +244,7 @@ foreach($posts as $post) {
 							$getdate = gmdate("m/d/Y", $_GET['daytime']);
 							
 							if($horaire[9] != '' && $horaire[10] == 3){ 
-								$employee_replace = get_post_meta( $horaire[0], 'employee_replace_key', true);
+								    $employee_replace = get_post_meta( $horaire[0], 'employee_replace_key', true);
 						    		$get_user_by_id = get_user_by('ID', $employee_replace);
 						    	} else { 
 						    		$employee_horaire = get_post_meta( $horaire[0], 'employee_horaire_key', true);
@@ -354,6 +354,10 @@ echo '</form>';
 }
 
 if ($_GET['summary'] == true) {
+    
+    echo '<div class="test"></div>';
+
+    echo '<div class="test2"></div>';
 
 	$current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . strtok($_SERVER['REQUEST_URI'], '?');
 	
@@ -377,24 +381,34 @@ if ($_GET['summary'] == true) {
 	    $startofmonth[$a] = date('m/d/Y', mktime(0, 0, 0, $m, 1, '2018'));
 	    $a++;
 	}
-		
-	for($i=1; $i<=780; $i++){
+	
+	echo '<ul class="Thursdayofpayroll" style="display: none;">';
+	$firstthursday = strtotime("01/09/2018");
+	for($i=1; $i<=760; $i++){
 		if ($i % 2 == 0) {
-			// null;	
-		} else {
-			$startofpayrollthursday[$y] = date("m/d/Y", strtotime('+'.$i.' Thursday', strtotime('01/22/2018') ));
+            $thursdayloop = strtotime('next Thursday', $firstthursday);
+            $firstthursday = $thursdayloop;
+            $startofpayrollthursday[$y] = date("m/d/Y", $firstthursday);
+            echo '<li>'.$firstthursday.'</li>';
 			$y++;
+		} else {
+            $thursdayloop = strtotime('next Thursday', $firstthursday);
+            $firstthursday = $thursdayloop;
 		}
 	}
+	echo '</ul>';
 	
+	echo '<ul class="startonmonday" style="display: none;">';
 	for($i=1; $i<=780; $i++){
 		if ($i % 2 == 0) {
 			// null;	
 		} else {
 			$startofworkdayonmonday[$x] = date("m/d/Y", strtotime('+'.$i.' Monday', strtotime('01/01/2018') ));
+			echo '<li>'.strtotime($startofworkdayonmonday[$x]).'</li>';
 			$x++;
 		}
 	}
+	echo '</ul>';
 	
 	$p = 0;
 	foreach($startofmonth as $month){
@@ -461,16 +475,16 @@ if ($_GET['summary'] == true) {
 	}
 	
 	if(isset($_GET['biweek'])) {
-		echo  'Le debut du deux semaine de travaille est le '.$startofworkdayonmonday[$value];
+		echo  'Le debut du deux semaine de travaille est le <span class="startbiweekmonday">'.$startofworkdayonmonday[$value].'</span>';
 		echo '<br>';
-		echo  'La fin du deux semaine de travaille est le '.$startofworkdayonmonday[$value+1];
+		echo  'La fin du deux semaine de travaille est le <span class="endbiweekmonday">'.$startofworkdayonmonday[$value+1].'</span>';
 		echo '<br>';
-		echo 'Le prochain jour de paie est le '.$startofpayrollthursday[$value];
+		echo 'Le prochain jour de paie est le <span class="biweekpayday">'.$startofpayrollthursday[$value].'</span>';
 		echo '<br>';
 	} elseif(isset($_GET['month'])) {
-		echo 'Le debut du mois est le '.$startofmonth[$value];
+		echo 'Le debut du mois est le <span class="startofmonth">'.$startofmonth[$value].'</span>';
 		echo '<br>';
-		echo 'La fin du mois est le '.date('m/d/Y', strtotime('-1 day', strtotime($startofmonth[$value+1])));
+		echo 'La fin du mois est le <span class="endofmonth">'.date('m/d/Y', strtotime('-1 day', strtotime($startofmonth[$value+1]))).'</span>';
 		echo '<br>';
 		$startofthemonth = strtotime($startofmonth[$value]);
 		$endofthemonth = strtotime(date('m/d/Y', strtotime('-1 day', strtotime($startofmonth[$value+1]))));
@@ -481,15 +495,15 @@ if ($_GET['summary'] == true) {
 		}	
 		echo 'Les jours de paye dans le mois sont ';
 		foreach($paydayinmonth as $paydaymonth){
-			echo $paydaymonth.' ';
+			echo '<span class="paydayinmonth">'.$paydaymonth.'</span> ';
 		}
 		echo '<br>';
 	} else {
-		echo  'Le debut du deux semaine de travaille est le '.$startofworkdayonmonday[$value];
+		echo  'Le debut du deux semaine de travaille est le <span class="startbiweekmonday">'.$startofworkdayonmonday[$value].'</span>';
 		echo '<br>';
-		echo  'La fin du deux semaine de travaille est le '.$startofworkdayonmonday[$value+1];
+		echo  'La fin du deux semaine de travaille est le <span class="endbiweekmonday">'.$startofworkdayonmonday[$value+1].'</span>';
 		echo '<br>';
-		echo 'Le prochain jour de paie est le '.$startofpayrollthursday[$value];
+		echo 'Le prochain jour de paie est le <span class="biweekpayday">'.$startofpayrollthursday[$value].'</span>';
 		echo '<br>';
 	}
 	
@@ -508,37 +522,71 @@ if ($_GET['summary'] == true) {
 		$push_ = get_post_meta( $post->ID, 'push_key', true );
 		foreach($push_ as $punch) {
 			if(isset($_GET['biweek'])) {
-				if($punch[1] > strtotime($startofworkdayonmonday[$value]) && $punch[1] < strtotime($startofworkdayonmonday[$value+1])) {
-					$pay_biweek[$i] = $post->ID;
-				} 
+				$pay_biweek[$i] = $post->ID;
 			} elseif(isset($_GET['month'])) {
 				if($punch[1] > strtotime($startofmonth[$value]) && $punch[1] < strtotime($startofmonth[$value+1])) {
 					$pay_biweek[$i] = $post->ID;
 				} 
 			} else  {
-				if($punch[1] > strtotime($startofworkdayonmonday[$value]) && $punch[1] < strtotime($startofworkdayonmonday[$value+1])) {
-					$pay_biweek[$i] = $post->ID;
-				} 
+			    $pay_biweek[$i] = $post->ID;
 			}
 		} 
 	$i++;
 	}
 	
+    $user_meta = get_userdata(get_current_user_id());
+	$user_role = $user_meta->roles[0];
+	
+	
 	$n = 0;
 	$l = -1;
 	foreach($pay_biweek as $pay_day) {
 		$push_ = get_post_meta( $pay_day, 'push_key', true );
-        	$salary = get_post_meta( $pay_day, 'salaire_key', true );
-		foreach($push_ as $punch) {
-			if($punch[0] == 'entrer'){
-				$datetimestarts[$n]['time'] = $punch[1];
-                		$datetimestarts[$n]['salary'] = $salary;
-			}
-			if($punch[0] == 'sortie'){
-				$datetimeends[$l] = $punch[1];
-			}
-			$n++;
-			$l++;
+        $salary = get_post_meta( $pay_day, 'salaire_key', true );
+        $employee_horaire = get_post_meta( $pay_day, 'employee_horaire_key', true );
+        $employee_replace = get_post_meta( $pay_day, 'employee_replace_key', true );
+        $dayoff_status = get_post_meta( $pay_day, 'dayoff_status_key', true );
+        $post = get_post($pay_day);
+        $author_id = $post->post_author;
+        $my_employee = get_user_meta( $author_id, 'my_employee_key', true);
+	    if($user_role == 'employer'){
+            if($employee_horaire == get_current_user_id() || ($employee_replace == get_current_user_id() && $dayoff_status == 3)){
+            foreach($push_ as $punch) {
+    			if($punch[0] == 'entrer'){
+                    if($employee_replace == get_current_user_id() && $dayoff_status == 3){
+                        $datetimestarts[$n]['userid'] = $employee_replace;
+                    } else {
+                        $datetimestarts[$n]['userid'] = $employee_horaire;
+                    }
+    				$datetimestarts[$n]['time'] = $punch[1];
+                    $datetimestarts[$n]['salary'] = $salary;
+    			}
+    			if($punch[0] == 'sortie'){
+    				$datetimeends[$l] = $punch[1];
+    			}
+    		$n++;
+    		$l++;
+		    }
+        }
+        } else if($user_role == 'employeur'){
+             if(in_array($employee_horaire, $my_employee)) {
+                foreach($push_ as $punch) {
+    			if($punch[0] == 'entrer'){
+                     if($employee_replace == get_current_user_id() && $dayoff_status == 3){
+                        $datetimestarts[$n]['userid'] = $employee_replace;
+                    } else {
+                        $datetimestarts[$n]['userid'] = $employee_horaire;
+                    }
+    				$datetimestarts[$n]['time'] = $punch[1];
+                    $datetimestarts[$n]['salary'] = $salary;
+    			}
+    			if($punch[0] == 'sortie'){
+    				$datetimeends[$l] = $punch[1];
+    			}
+    		$n++;
+    		$l++;
+		    }
+        }
 		}
 	}
 	
@@ -547,37 +595,28 @@ if ($_GET['summary'] == true) {
 	echo '<ul class="gettimepay" style="display: none;">';
 	foreach($datetimestarts as $datetimestart){
 		$timepay[$z] = $datetimeends[$t] - $datetimestart['time'];
-	        $salary = $datetimestart['salary'];
-	        $hours = floor($timepay[$z] / 3600);
+	    $salary = $datetimestart['salary'];
+	    $hours = floor($timepay[$z] / 3600);
 		$minutes = floor(($timepay[$z] / 60) % 60);
 		$worktime = ($hours * 60) + $minutes;
 		$salary_ = $salary/60;
 		$pay = $worktime * $salary_;
-		echo '<li>'.$datetimestart['time'].'||'.round($pay, 2).'</li>';
+		$timepayall[$z] = $pay;
+		echo '<li>'.$datetimestart['time'].'||'.round($pay, 2).'||'.$datetimestart['userid'].'</li>';
 		$t += 2;
 		$z++;
 	}
 	echo '</ul>';
 	
-	$timepay_sum = array_sum($timepay);
+	$timepay_sum = array_sum($timepayall);
 	
-	$hours = floor($timepay_sum / 3600);
-	$minutes = floor(($timepay_sum / 60) % 60);
-	
-	$salaire = array_filter($salaire);
-	$average = array_sum($salaire)/count($salaire);
-	
-	$worktime = ($hours * 60) + $minutes;
-	$salary = $average/60;
-	$pay_biweek = $worktime * $salary;
-	
-	echo 'Votre cheque de paie brute sera de '.round($pay_biweek, 2).'$';
+	echo 'Votre cheque de paie brute sera de '.round($timepay_sum, 2).'$';
 	?>
 	
         <div class="container">
 			<div class="calendar_header">
-				<i class="prev-month fa fa-chevron-left fa-3x"></i>
-				<i class="next-month fa fa-chevron-right fa-3x"></i>
+				<i class="prev-month-pay fa fa-chevron-left fa-3x"></i>
+				<i class="next-month-pay fa fa-chevron-right fa-3x"></i>
 				<div class="month-year text-center"></div>
 			</div>
 			<table class="table table-bordered">

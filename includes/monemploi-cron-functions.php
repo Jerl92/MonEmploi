@@ -179,5 +179,53 @@ if ( ! defined( 'ABSPATH' ) ) {
 		
 	}
 	
-
+	
+        add_action( 'init', function () {
+	
+	    ///Hook into that action that'll fire every six hours
+	    add_action( 'punch_in_cron_hook', 'punch_in_cron_function' );
+	
+	    //Schedule an action if it's not already scheduled
+	    if ( ! wp_next_scheduled( 'punch_in_cron_hook' ) ) {
+	        wp_schedule_event( time(), 'every_fifteen_minute', 'punch_in_cron_hook' );
+	    }
+	});
+	
+	//create your function, that runs on cron
+	function punch_in_cron_function() {
+	
+            $args = array(
+		        'orderby' => 'date',
+		        'order'   => 'DESC'
+		    );
+		
+		    $users = get_users( $args );
+	
+	        foreach ($users as $user) {
+	            
+	            $current_time = current_time( 'timestamp' );
+	
+                $all_horaires = get_posts(array(
+        		    'post_type' => 'horaire',
+        		    'numberposts' => -1,
+        		    'author'	=> $user->ID,
+        		    'post_status' => 'any',
+        		));
+        		
+        		foreach ($all_horaires as $post) {
+                    $push_ = get_post_meta( $postid, 'push_key', true );
+                    $punchcount = count($push_);
+                    $lastpunch = $push_[$punchcount-1];
+                    $lastpunchwith12hplus = $lastpunch[1] + 43200;
+                    if ($current_time >= $lastpunchwith12hplus && $lastpunch[0] == 'entrer' ) {
+            				update_post_meta( $post->ID, 'push_in_out_key', 0 );
+            				$push_[$lastpunch] = array('sortie', $current_time);
+            				update_post_meta( $post->ID, 'push_key', $push_ );
+                    }
+        		}
+        		
+	        }
+        		    
+	}
+	
 ?>
