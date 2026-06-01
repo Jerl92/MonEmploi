@@ -225,10 +225,10 @@ foreach($posts as $post) {
 					    		$getimepush = gmdate("H:i:s", $push[1]);
 					    		if($getdatepush == $getdate && $gethourspush == intval($i)){
 					    			if($push[0] == 'entrer'){
-					    				echo '<div><a href="'.get_permalink($horaire[0]).'">'.get_the_title($job_horaire).'</a> - ' . $get_user_by_id->user_firstname . ' ' . $get_user_by_id->user_lastname . ' - Pointer de départ: '.$getimepush.'</div>'; 
+					    				echo '<div>'.$horaire[0].' - <a href="'.get_permalink($horaire[0]).'">'.get_the_title($job_horaire).'</a> - ' . $get_user_by_id->user_firstname . ' ' . $get_user_by_id->user_lastname . ' - Pointer de départ: '.$getimepush.'</div>'; 
 					    			}
 					    			if($push[0] == 'sortie'){
-					    				echo '<div><a href="'.get_permalink($horaire[0]).'">'.get_the_title($job_horaire).'</a> - ' . $get_user_by_id->user_firstname . ' ' . $get_user_by_id->user_lastname . ' - Pointer de fin: '.$getimepush.'</div>'; 
+					    				echo '<div>'.$horaire[0].' - <a href="'.get_permalink($horaire[0]).'">'.get_the_title($job_horaire).'</a> - ' . $get_user_by_id->user_firstname . ' ' . $get_user_by_id->user_lastname . ' - Pointer de fin: '.$getimepush.'</div>'; 
 					    			}
 					    		}
 			    			}
@@ -266,10 +266,10 @@ foreach($posts as $post) {
 						    		$getimepush = gmdate("H:i:s", $push[1]);
 						    		if($getdatepush == $getdate && $gethourspush == intval($i)){
 						    			if($push[0] == 'entrer'){
-						    				echo '<div><a href="'.get_permalink($horaire[0]).'">'.get_the_title($job_horaire).'</a> - ' . $get_user_by_id->user_firstname . ' ' . $get_user_by_id->user_lastname . ' - Pointer de départ: '.$getimepush.'</div>'; 
+						    				echo '<div>'.$horaire[0].' - <a href="'.get_permalink($horaire[0]).'">'.get_the_title($job_horaire).'</a> - ' . $get_user_by_id->user_firstname . ' ' . $get_user_by_id->user_lastname . ' - Pointer de départ: '.$getimepush.'</div>'; 
 						    			}
 						    			if($push[0] == 'sortie'){
-						    				echo '<div><a href="'.get_permalink($horaire[0]).'">'.get_the_title($job_horaire).'</a> - ' . $get_user_by_id->user_firstname . ' ' . $get_user_by_id->user_lastname . ' - Pointer de fin: '.$getimepush.'</div>'; 
+						    				echo '<div>'.$horaire[0].' - <a href="'.get_permalink($horaire[0]).'">'.get_the_title($job_horaire).'</a> - ' . $get_user_by_id->user_firstname . ' ' . $get_user_by_id->user_lastname . ' - Pointer de fin: '.$getimepush.'</div>'; 
 						    			}
 						    		}
 						    	}
@@ -292,7 +292,8 @@ echo '<form action="'. $_SERVER['REQUEST_URI'] .'" method="post">';
 	echo '<option value="">Sélectionner un employé</option>';
 		foreach($my_employees as $employee){
 			$user_by_id = get_user_by('id', $employee);
-			echo '<option value="'.$employee.'">'. $user_by_id->user_nicename .' - ' . $user_by_id->user_firstname . ' ' . $user_by_id->user_lastname . '</option>';
+			$salary = get_user_meta( $employee, 'salary_key', true);
+			echo '<option value="'.$employee.'">'. $user_by_id->user_nicename .' - ' . $user_by_id->user_firstname . ' ' . $user_by_id->user_lastname . ' - ' . $salary . '$</option>';
 		}
 	echo '</select>';
 	
@@ -325,22 +326,24 @@ echo '<form action="'. $_SERVER['REQUEST_URI'] .'" method="post">';
 	
 	echo '<br>';
 	echo '<br>';
+	echo '<span>Debut de pause</span>';
+	echo '<br>';
+	echo '<input type="text" id="datepickerstartpause" class="datepickerstartpause" name="datepickerstartpause" data-toggle="datepickerstartpause" required>';
+	echo '<input type="time" id="timestartpause" name="timestartpause" required>';
+	
+	echo '<br>';
+	echo '<br>';
+	echo '<span>Fin de pause</span>';
+	echo '<br>';
+	echo '<input type="text" id="datepickerendpause" class="datepickerendpause" name="datepickerendpause" data-toggle="datepickerendpause" required>';
+	echo '<input type="time" id="timeendpause" name="timeendpause" required>';
+	
+	echo '<br>';
+	echo '<br>';
 	echo '<span>Fin de lhoraire</span>';
 	echo '<br>';
 	echo '<input type="text" id="datepickerendhoraire" class="datepickerendhoraire" name="datepickerendhoraire" data-toggle="datepickerendhoraire" required>';
 	echo '<input type="time" id="timeendhoraire" name="timeendhoraire" required>';
-	
-	echo '<br>';
-	echo '<br>';
-	echo '<span>Temps de pause</span>';
-	echo '<br>';
-	echo '<input type="number" class="timebrake" name="timebrake" id="timebrake" required>';
-	
-	echo '<br>';
-	echo '<br>';
-	echo '<span>Salaire de l&#8216;heure</span>';
-	echo '<br>';
-	echo '<input type="number" class="salaire" name="salaire" id="salaire" step=".01" required>';
 	
 	echo '<br>';
 	echo '<br>';
@@ -403,7 +406,7 @@ if ($_GET['summary'] == true) {
 		if ($i % 2 == 0) {
 			// null;	
 		} else {
-			$startofworkdayonmonday[$x] = date("m/d/Y", strtotime('+'.$i.' Monday', strtotime('01/01/2018') ));
+			$startofworkdayonmonday[$x] = date("m/d/Y", strtotime('+'.$i.' Sunday', strtotime('12/25/2017') ));
 			echo '<li>'.strtotime($startofworkdayonmonday[$x]).'</li>';
 			$x++;
 		}
@@ -421,8 +424,8 @@ if ($_GET['summary'] == true) {
 	
 	$p = 0;
 	foreach($startofworkdayonmonday as $daystartwork){
-		$last_week_monday = date('m/d/Y', strtotime('last week monday'));
-		if(strtotime($daystartwork) <= strtotime($last_week_monday)){
+		$monday = date('m/d/Y', strtotime('monday'));
+		if(strtotime($daystartwork) <= strtotime($monday)){
 			$current_biweek = $p;
 		}
 		$p++;
@@ -484,7 +487,7 @@ if ($_GET['summary'] == true) {
 	} elseif(isset($_GET['month'])) {
 		echo 'Le debut du mois est le <span class="startofmonth">'.$startofmonth[$value].'</span>';
 		echo '<br>';
-		echo 'La fin du mois est le <span class="endofmonth">'.date('m/d/Y', strtotime('-1 day', strtotime($startofmonth[$value+1]))).'</span>';
+		echo 'La fin du mois est le <span class="endofmonth">'.date('m/d/Y', strtotime($startofmonth[$value+1])).'</span>';
 		echo '<br>';
 		$startofthemonth = strtotime($startofmonth[$value]);
 		$endofthemonth = strtotime(date('m/d/Y', strtotime('-1 day', strtotime($startofmonth[$value+1]))));
@@ -507,6 +510,25 @@ if ($_GET['summary'] == true) {
 		echo '<br>';
 	}
 	
+	$n = 0;
+	$l = 0;
+	
+    $user_meta = get_userdata(get_current_user_id());
+	$user_role = $user_meta->roles[0];
+	
+	
+if($user_role == 'employeur'){
+	$args = array(
+		 'post_type' => 'horaire',
+		 'post_status'    => array('publish'),
+		  'orderby'       =>  'date',
+		  'author'        =>   get_current_user_id(),
+		  'order'         =>  'DESC',
+		  'posts_per_page' => -1
+	);
+}
+
+if($user_role == 'employer'){
 	$args = array(
 		 'post_type' => 'horaire',
 		 'post_status'    => array('publish'),
@@ -514,106 +536,128 @@ if ($_GET['summary'] == true) {
 		  'order'         =>  'DESC',
 		  'posts_per_page' => -1
 	);
+}
 				
 	$posts = get_posts( $args );
 	
+	
 	foreach($posts as $post) {
-		$salaire[$i] = get_post_meta( $post->ID, 'salaire_key', true );
+		$salary = get_post_meta( $post->ID, 'salaire_key', true );
 		$push_ = get_post_meta( $post->ID, 'push_key', true );
+		$employee_horaire = get_post_meta( $post->ID, 'employee_horaire_key', true );
+	        $employee_replace = get_post_meta( $post->ID, 'employee_replace_key', true );
+	        $dayoff_status = get_post_meta( $post->ID, 'dayoff_status_key', true );
+	        $author_id = $post->post_author;
+	        $my_employee = get_user_meta( $author_id, 'my_employee_key', true);
 		foreach($push_ as $punch) {
-			if(isset($_GET['biweek'])) {
-				$pay_biweek[$i] = $post->ID;
-			} elseif(isset($_GET['month'])) {
-				if($punch[1] > strtotime($startofmonth[$value]) && $punch[1] < strtotime($startofmonth[$value+1])) {
-					$pay_biweek[$i] = $post->ID;
-				} 
-			} else  {
-			    $pay_biweek[$i] = $post->ID;
+			if($user_role == 'employer'){
+				if($employee_horaire == get_current_user_id() || ($employee_replace == get_current_user_id() && $dayoff_status == 3)){
+					    if($punch[1] >= strtotime($startofworkdayonmonday[$value]) && $punch[1] < strtotime($startofworkdayonmonday[$value+1])){
+    					    if($punch[0] == 'entrer'){
+    							if($employee_replace == get_current_user_id() && $dayoff_status == 3){
+    								$datetimestarts[$n]['userid'] = $employee_replace;
+    							} else {
+    								$datetimestarts[$n]['userid'] = $employee_horaire;
+    							}
+    							$datetimestarts[$n]['time'] = $punch[1];
+    							$datetimestarts[$n]['salary'] = $salary;
+    							$n++;
+    						}
+    						if($punch[0] == 'sortie'){
+    							$datetimeends[$l] = $punch[1];
+    							 $l++;
+    						}
+					    }
+					}
+				
+				}
+				if($user_role == 'employeur'){
+					foreach($my_employee as $employee){
+					
+				
+							if($punch[0] == 'entrer'){
+								if($employee_replace == $employee && $dayoff_status == 3){
+									$datetimestarts[$n]['userid'] = $employee_replace;
+									$datetimestarts[$n]['time'] = $punch[1];
+									$datetimestarts[$n]['salary'] = $salary;
+									$n++;
+								} elseif ($employee_horaire == $employee) {
+									$datetimestarts[$n]['userid'] = $employee_horaire;
+									$datetimestarts[$n]['time'] = $punch[1];
+									$datetimestarts[$n]['salary'] = $salary;
+									$n++;
+								}
+							}
+							if($punch[0] == 'sortie'){
+								if($employee_replace == $employee && $dayoff_status == 3){
+									$datetimeends[$l] = $punch[1];
+									 $l++;
+								} elseif ($employee_horaire == $employee) {
+									$datetimeends[$l] = $punch[1];
+									 $l++;
+								}
+							}
+						}
+					
+					}
 			}
-		} 
-	$i++;
-	}
-	
-    $user_meta = get_userdata(get_current_user_id());
-	$user_role = $user_meta->roles[0];
-	
-	
-	$n = 0;
-	$l = -1;
-	foreach($pay_biweek as $pay_day) {
-		$push_ = get_post_meta( $pay_day, 'push_key', true );
-        $salary = get_post_meta( $pay_day, 'salaire_key', true );
-        $employee_horaire = get_post_meta( $pay_day, 'employee_horaire_key', true );
-        $employee_replace = get_post_meta( $pay_day, 'employee_replace_key', true );
-        $dayoff_status = get_post_meta( $pay_day, 'dayoff_status_key', true );
-        $post = get_post($pay_day);
-        $author_id = $post->post_author;
-        $my_employee = get_user_meta( $author_id, 'my_employee_key', true);
-	    if($user_role == 'employer'){
-            if($employee_horaire == get_current_user_id() || ($employee_replace == get_current_user_id() && $dayoff_status == 3)){
-            foreach($push_ as $punch) {
-    			if($punch[0] == 'entrer'){
-                    if($employee_replace == get_current_user_id() && $dayoff_status == 3){
-                        $datetimestarts[$n]['userid'] = $employee_replace;
-                    } else {
-                        $datetimestarts[$n]['userid'] = $employee_horaire;
-                    }
-    				$datetimestarts[$n]['time'] = $punch[1];
-                    $datetimestarts[$n]['salary'] = $salary;
-    			}
-    			if($punch[0] == 'sortie'){
-    				$datetimeends[$l] = $punch[1];
-    			}
-    		$n++;
-    		$l++;
-		    }
-        }
-        } else if($user_role == 'employeur'){
-             if(in_array($employee_horaire, $my_employee)) {
-                foreach($push_ as $punch) {
-    			if($punch[0] == 'entrer'){
-                     if($employee_replace == get_current_user_id() && $dayoff_status == 3){
-                        $datetimestarts[$n]['userid'] = $employee_replace;
-                    } else {
-                        $datetimestarts[$n]['userid'] = $employee_horaire;
-                    }
-    				$datetimestarts[$n]['time'] = $punch[1];
-                    $datetimestarts[$n]['salary'] = $salary;
-    			}
-    			if($punch[0] == 'sortie'){
-    				$datetimeends[$l] = $punch[1];
-    			}
-    		$n++;
-    		$l++;
-		    }
-        }
 		}
-	}
-	
+		
 	$t = 0;
 	$z = 0;
 	echo '<ul class="gettimepay" style="display: none;">';
 	foreach($datetimestarts as $datetimestart){
-		$timepay[$z] = $datetimeends[$t] - $datetimestart['time'];
-	    $salary = $datetimestart['salary'];
-	    $hours = floor($timepay[$z] / 3600);
+		if(isset($_GET['month'])) {
+			if($datetimestart['time'] >= strtotime($startofmonth[$value]) && $datetimeends[$t] < strtotime($startofmonth[$value+1])) {
+				$timepay[$z] = $datetimeends[$t] - $datetimestart['time'];
+			} 
+		}else if(isset($_GET['biweek'])) {
+			if($datetimestart['time'] >= strtotime($startofworkdayonmonday[$value]) && $datetimeends[$t] < strtotime($startofworkdayonmonday[$value+1])) {
+				$timepay[$z] = $datetimeends[$t] - $datetimestart['time'];
+			} 
+		} else  {
+			if($datetimestart['time'] >= strtotime($startofworkdayonmonday[$value]) && $datetimeends[$t] < strtotime($startofworkdayonmonday[$value+1])) {
+				$timepay[$z] = $datetimeends[$t] - $datetimestart['time'];
+			} 
+		}
+		$timepay_[$z] = $datetimeends[$t] - $datetimestart['time'];
+	    	$salaryi = $datetimestart['salary'];
+	    	$hours = floor($timepay[$z] / 3600);
 		$minutes = floor(($timepay[$z] / 60) % 60);
 		$worktime = ($hours * 60) + $minutes;
-		$salary_ = $salary/60;
+		$salary_ = $salaryi/60;
 		$pay = $worktime * $salary_;
 		$timepayall[$z] = $pay;
-		echo '<li>'.$datetimestart['time'].'||'.round($pay, 2).'||'.$datetimestart['userid'].'</li>';
-		$t += 2;
+		$payloop = 0;
+		$x = 0;
+		    for($i=1; $i<=780; $i++){
+		        if ($i % 2 == 0) {
+					// null;	
+				} else {
+		            $startofworkdayonmonday[$x] = date("m/d/Y", strtotime('+'.$i.' Monday', strtotime('01/01/2018') ));
+			    	if($datetimestart['time'] >= strtotime($startofworkdayonmonday[$x]) && $datetimeends[$t] < strtotime($startofworkdayonmonday[$x+2])){
+					    $payloop = $x;
+					}
+					$x++;
+				}
+			}
+		$salaryi_ = $datetimestart['salary'];
+	    	$hours_ = floor($timepay_[$z] / 3600);
+		$minutes_ = floor(($timepay_[$z] / 60) % 60);
+		$worktime_ = ($hours_ * 60) + $minutes_;
+		$salary__ = $salaryi_/60;
+		$pay_ = $worktime_ * $salary__;
+		echo '<li>'.$datetimestart['time'].'||'.$datetimeends[$t].'||'.round($pay_, 2).'||'.$datetimestart['userid'].'||'.$startofpayrollthursday[$payloop].'</li>';
+		$t++;
 		$z++;
 	}
 	echo '</ul>';
 	
 	$timepay_sum = array_sum($timepayall);
 	
-	echo 'Votre cheque de paie brute sera de '.round($timepay_sum, 2).'$';
-	?>
+    	echo 'Votre cheque de paie brute sera de '.round($timepay_sum, 2).'$';
 	
-        <div class="container">
+        ?><div class="container">
 			<div class="calendar_header">
 				<i class="prev-month-pay fa fa-chevron-left fa-3x"></i>
 				<i class="next-month-pay fa fa-chevron-right fa-3x"></i>

@@ -60,8 +60,20 @@ Retrieved 2026-05-12, License - CC BY-SA 3.0
 
 		.today {
 			font-weight: bold;
-			color: #fff;
-			background-color: gray;
+			color: #fff !important;
+			background-color: gray !important;
+		}
+		
+		.biweek {
+			font-weight: bold;
+			color: #000;
+			background-color: rgba(255, 188, 71, 0.25);
+		}
+		
+		.payday {
+			font-weight: bold;
+			color: #000;
+			background-color: rgba(60, 179, 113, 0.25);
 		}
 
 		th:nth-of-type(7), td:nth-of-type(7) {

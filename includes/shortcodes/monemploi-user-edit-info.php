@@ -160,41 +160,8 @@ function monemploi_user_edit_info() {
 					    echo '<p>La suppression de l&#8216;attachment #'. $_GET['delete_attachment'] . ' est confirmé.</p>';
 					}
 				
-				
-					?><form id="cover-photo-upload" method="POST" enctype="multipart/form-data">
-					    <?php wp_nonce_field('cover_photo_media_upload', 'cover_photo_media_nonce'); ?>
-					    <input type="file" name="cover_photo_file" id="cover_photo_file" />
-					    <input type="submit" name="submit_upload_cover_photo" value="Télécharger la photo de couverture" />
-					</form><?php
-					
-					?><form id="user-avatar-upload" method="POST" enctype="multipart/form-data">
-					    <?php wp_nonce_field('user_avatar_media_upload', 'user_avatar_media_nonce'); ?>
-					    <input type="file" name="user_avatar_file" id="user_avatar_file" />
-					    <input type="submit" name="submit_upload_user_avatar" value="Télécharger l&#8216;avatar de l'utilisateur" />
-					</form><?php
-				
 					echo '<div class="attachment-wrapper" style="display: flex;">';
-						if (isset($_POST['submit_upload_cover_photo'])) {
-						    // 1. Security Check: Verify Nonce
-						    if (!isset($_POST['cover_photo_media_nonce']) || !wp_verify_nonce($_POST['cover_photo_media_nonce'], 'cover_photo_media_upload')) {
-						        die('Security check failed.');
-						    }
-						
-						    require_once(ABSPATH . 'wp-admin/includes/image.php');
-						    require_once(ABSPATH . 'wp-admin/includes/file.php');
-						    require_once(ABSPATH . 'wp-admin/includes/media.php');
-						
-						    $attachment_id = media_handle_upload('cover_photo_file', 0);
-						
-						    if (is_wp_error($attachment_id)) {
-						        echo "Error uploading: " . $attachment_id->get_error_message();
-						    } else {
-                                $get_cover = get_user_meta($userdata->ID, 'cover_photo', true);
-                                wp_delete_attachment($get_cover);
-						       update_user_meta($userdata->ID, 'cover_photo', $attachment_id);
-						       header("Refresh:0");
-						    }
-						}
+
 						echo '<div class="cover-photo">';
 						echo 'Photo de couverture:';
 						echo '</br>';
@@ -213,27 +180,7 @@ function monemploi_user_edit_info() {
 						}
 						echo '</div>';
 						
-						if (isset($_POST['submit_upload_user_avatar'])) {
-						    // 1. Security Check: Verify Nonce
-						    if (!isset($_POST['user_avatar_media_nonce']) || !wp_verify_nonce($_POST['user_avatar_media_nonce'], 'user_avatar_media_upload')) {
-						        die('Security check failed.');
-						    }
-						
-						    require_once(ABSPATH . 'wp-admin/includes/image.php');
-						    require_once(ABSPATH . 'wp-admin/includes/file.php');
-						    require_once(ABSPATH . 'wp-admin/includes/media.php');
-						
-						    $attachment_id = media_handle_upload('user_avatar_file', 0);
-						
-						    if (is_wp_error($attachment_id)) {
-						        echo "Error uploading: " . $attachment_id->get_error_message();
-						    } else {
-                                $get_avatar = get_user_meta($userdata->ID, 'user_avatar', true);
-                                wp_delete_attachment($get_avatar);
-						       update_user_meta($userdata->ID, 'user_avatar', $attachment_id);
-						       header("Refresh:0");
-						    }
-						}
+
 						echo '<div class="user-avatar">';
 						echo 'Photo d&#8216;avatar:';
 						echo '</br>';
@@ -253,7 +200,18 @@ function monemploi_user_edit_info() {
 						echo '</div>';
 					echo '</div>';
 					
-					echo '<form action="'. $_SERVER['REQUEST_URI'] .'" method="post">';
+					echo '<form action="'. $_SERVER['REQUEST_URI'] .'" method="post" enctype="multipart/form-data">';
+					            echo '<br>';
+						    echo '<span>Photo de couverture</span>';
+						    echo '<br>';
+						    echo '<input type="file" name="cover_photo_file" id="cover_photo_file" />';
+						    echo '<br>';
+						    echo '<span>Photo d&#8216;avatar</span>';
+						    echo '<br>';
+						    echo '<input type="file" name="user_avatar_file" id="user_avatar_file" />';
+						    echo '<br>';
+						    echo '<br>';
+					
 						echo '<input type="text" id="user_nicename" name="user_nicename" placeholder="Votre nom d&#8216;utilisateur" value="' . $user_nicename . '" disabled style="width: 100%;">';
 						echo '<br>';
 						echo '<input type="text" id="user_firstname" name="user_firstname" placeholder="Votre prenom" value="' . $user_firstname . '" style="width: 100%;">';

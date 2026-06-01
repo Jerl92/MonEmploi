@@ -3,7 +3,9 @@ jQuery(document).ready(function($) {
         jQuery('[data-toggle="datepickerstartjobscheduled"]').datepicker();
         jQuery('[data-toggle="datepickerendjobscheduled"]').datepicker();
         jQuery('[data-toggle="datepickerstarthoraire"]').datepicker();
-	    jQuery('[data-toggle="datepickerendhoraire"]').datepicker();
+	jQuery('[data-toggle="datepickerendhoraire"]').datepicker();
+	jQuery('[data-toggle="datepickerstartpause"]').datepicker();
+	jQuery('[data-toggle="datepickerendpause"]').datepicker();
         jQuery(".punchdateinout").each(function(index, element) {
             var indexadd = index + 1;
             jQuery('[data-toggle="punchdateinout-'+indexadd+'"]').datepicker();

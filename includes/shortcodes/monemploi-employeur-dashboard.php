@@ -461,18 +461,19 @@ function employeur_dashboard() {
 					
 					echo '</div>';
 					
-					echo '<span>Moyenne</span>';
-					echo '<div class="moyenne-score-wrapper" style="padding-bottom: 25px;">';	
-						echo 'Horaire:';						
-						echo round($horaire_moyenne/$i, 2);
-						echo ' - ';
-						echo 'Superieur:';
-						echo round($superieur_moyenne/$i, 2);
-						echo ' - ';
-						echo 'Paie:';
-						echo round($paie_moyenne/$i, 2);
-					echo '</div>';
-			 
+					if($horaire_moyenne != 'NAN') {
+						echo '<span>Moyenne</span>';
+						echo '<div class="moyenne-score-wrapper" style="padding-bottom: 25px;">';	
+							echo 'Horaire:';						
+							echo round($horaire_moyenne/$i, 2);
+							echo ' - ';
+							echo 'Superieur:';
+							echo round($superieur_moyenne/$i, 2);
+							echo ' - ';
+							echo 'Paie:';
+							echo round($paie_moyenne/$i, 2);
+						echo '</div>';
+			 		}
 			 }
 			
 		} else  {

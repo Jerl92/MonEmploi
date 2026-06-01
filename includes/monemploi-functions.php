@@ -404,6 +404,36 @@ add_action('init', function(){
                    
     }
     
+    	$userdata = wp_get_current_user();
+        
+		require_once(ABSPATH . 'wp-admin/includes/image.php');
+		require_once(ABSPATH . 'wp-admin/includes/file.php');
+		require_once(ABSPATH . 'wp-admin/includes/media.php');
+		
+		$attachment_id = media_handle_upload('cover_photo_file', 0);
+		
+		if (is_wp_error($attachment_id)) {
+			//
+		} else {
+			$get_cover = get_user_meta($userdata->ID, 'cover_photo', true);
+			wp_delete_attachment($get_cover);
+			update_user_meta($userdata->ID, 'cover_photo', $attachment_id);
+		}
+	
+	    require_once(ABSPATH . 'wp-admin/includes/image.php');
+	    require_once(ABSPATH . 'wp-admin/includes/file.php');
+	    require_once(ABSPATH . 'wp-admin/includes/media.php');
+	
+	    $attachment_id = media_handle_upload('user_avatar_file', 0);
+	
+	    if (is_wp_error($attachment_id)) {
+		//
+	    } else {
+		$get_avatar = get_user_meta($userdata->ID, 'user_avatar', true);
+		wp_delete_attachment($get_avatar);
+	       update_user_meta($userdata->ID, 'user_avatar', $attachment_id);
+	    }
+	
     	$user_data = array(
     	    'ID'         => $user_id,
     	    'first_name' => $user_firstname,
@@ -1350,14 +1380,16 @@ add_action('init', function(){
 	$timestarthoraire = $_POST['timestarthoraire'];	
 	$datepickerendhoraire = $_POST['datepickerendhoraire'];
 	$timeendhoraire = $_POST['timeendhoraire'];	
-	$timebrake = $_POST['timebrake'];
-	$salaire = $_POST['salaire'];
+	$datepickerstartpause = $_POST['datepickerstartpause'];
+	$timestartpause = $_POST['timestartpause'];
+	$datepickerendpause = $_POST['datepickerendpause'];
+	$timeendpause = $_POST['timeendpause'];
 	
 	$user_by_id = get_user_by('id', $employee_horaire);
 	
 	// Create the post data array
 	$my_post = array(
-	    'post_title'    => generateRandomString(16),
+	    'post_title'    => generateRandomString(32),
 	    'post_content'  => $user_by_id->user_nicename .'-' . $user_by_id->user_firstname . '-' . $user_by_id->user_lastname,
 	    'post_status'   => 'publish', // Use 'draft' if you don't want it public immediately
 	    'post_author'   => get_current_user_id(),         // ID of the user who is the author
@@ -1377,8 +1409,15 @@ add_action('init', function(){
 	    update_post_meta( $post_id, 'timestarthoraire_key', $timestarthoraire );
 	    update_post_meta( $post_id, 'datepickerendhoraire_key', $datepickerendhoraire );
 	    update_post_meta( $post_id, 'timeendhoraire_key', $timeendhoraire );
-	    update_post_meta( $post_id, 'timebrake_key', $timebrake );
-	    update_post_meta( $post_id, 'salaire_key', $salaire );
+	    update_post_meta( $post_id, 'datepickerstartpause_key', $datepickerstartpause );
+	    update_post_meta( $post_id, 'timestartpause_key', $timestartpause );
+	    update_post_meta( $post_id, 'datepickerendpause_key', $datepickerendpause );
+	    update_post_meta( $post_id, 'timeendpause_key', $timeendpause );
+	    $timebrackcalc = strtotime($datepickerendpause.'T'.$timeendpause) - strtotime($datepickerstartpause.'T'.$timestartpause);
+	    $minutes = floor($timebrackcalc / 60);	    	    	    
+	    update_post_meta( $post_id, 'timebrake_key', $minutes );
+	    $salary = get_user_meta( $employee_horaire, 'salary_key', true);
+	    update_post_meta( $post_id, 'salaire_key', $salary );
 	}
 		
 		
@@ -1431,19 +1470,26 @@ add_action('init', function(){
 	$datepickerstarthoraire = $_POST['datepickerstarthoraire'];
 	$timestarthoraire = $_POST['timestarthoraire'];	
 	$datepickerendhoraire = $_POST['datepickerendhoraire'];
-	$timeendhoraire = $_POST['timeendhoraire'];	
-	$timebrake = $_POST['timebrake'];
+	$timeendhoraire = $_POST['timeendhoraire'];
+	$datepickerstartpause = $_POST['datepickerstartpause'];
+	$timestartpause = $_POST['timestartpause'];
+	$datepickerendpause = $_POST['datepickerendpause'];
+	$timeendpause = $_POST['timeendpause'];	
 	$salaire = $_POST['salaire'];
 	
 	update_post_meta( $postid, 'datepickerstarthoraire_key', $datepickerstarthoraire );
 	update_post_meta( $postid, 'timestarthoraire_key', $timestarthoraire );
 	update_post_meta( $postid, 'datepickerendhoraire_key', $datepickerendhoraire );
 	update_post_meta( $postid, 'timeendhoraire_key', $timeendhoraire );
-	update_post_meta( $postid, 'timebrake_key', $timebrake );
+	update_post_meta( $postid, 'datepickerstartpause_key', $datepickerstartpause );
+	update_post_meta( $postid, 'timestartpause_key', $timestartpause );
+	update_post_meta( $postid, 'datepickerendpause_key', $datepickerendpause );
+	update_post_meta( $postid, 'timeendpause_key', $timeendpause );
+	$timebrackcalc = strtotime($datepickerendpause.'T'.$timeendpause) - strtotime($datepickerstartpause.'T'.$timestartpause);
+	$minutes = floor($timebrackcalc / 60);	    	    	    
+	update_post_meta( $postid, 'timebrake_key', $minutes );
 	update_post_meta( $postid, 'salaire_key', $salaire );
 
-	$push_ = get_post_meta( $postid, 'push_key', true );
-		
 	for ($i = 1; $i <= $punchquantity; $i++) {
 		$punchdateinout = $_POST["punchdateinout-".$i];
 		$punchtimeinout = $_POST["punchtimeinout-".$i];
@@ -1455,17 +1501,12 @@ add_action('init', function(){
 				update_post_meta( $postid, 'push_key', $push_ );
 			} else {
 				update_post_meta( $postid, 'push_in_out_key', 1 );
-				if($i == 1 && $punchquantity == 1){
-					$punch_in = array('entrer', $punchunixinout);
-					update_post_meta( $postid, 'push_key', [$punch_in] );
-				} else {
-					$push_[$i-1] = array('entrer', $punchunixinout);
-					update_post_meta( $postid, 'push_key', $push_ );
-				} 
+				$push_[$i-1] = array('entrer', $punchunixinout);
+				update_post_meta( $postid, 'push_key', $push_ );
 			}
 		} else {
-            unset($push_[$i-1]);
-            update_post_meta( $postid, 'push_key', $push_ );
+	            unset($push_[$i-1]);
+	            update_post_meta( $postid, 'push_key', $push_ );
 		}
 	}
 });
@@ -1562,5 +1603,19 @@ add_action('init', function(){
 
 		
 });
+
+
+add_action('init', function(){
+
+	// not the login request?
+	if(!isset($_POST['action']) || $_POST['action'] !== 'new_section_employeur')
+		return;
+		
+	$userid = $_POST['userid'];
+	$salary = $_POST['salaire'];
+	
+	update_user_meta( $userid, 'salary_key', $salary);
+	
+});	
 
 ?>
