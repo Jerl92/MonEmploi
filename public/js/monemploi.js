@@ -223,3 +223,116 @@ jQuery(document).ready(function($) {
 	    } 
 	});
 });
+
+jQuery(document).ready(function($) {
+	$('.count-target-emploi').each(function () {
+	  var $this = $(this);
+	  jQuery({ Counter: 0 }).animate({ Counter: $this.text() }, {
+	    duration: 10000,
+	    easing: 'swing',
+	    step: function () {
+	      $this.text(Math.ceil(this.Counter));
+	    }
+	  });
+	});
+	$('.count-target-employeurs').each(function () {
+	  var $this = $(this);
+	  jQuery({ Counter: 0 }).animate({ Counter: $this.text() }, {
+	    duration: 10000,
+	    easing: 'swing',
+	    step: function () {
+	      $this.text(Math.ceil(this.Counter));
+	    }
+	  });
+	});
+	$('.count-target-employer').each(function () {
+	  var $this = $(this);
+	  jQuery({ Counter: 0 }).animate({ Counter: $this.text() }, {
+	    duration: 10000,
+	    easing: 'swing',
+	    step: function () {
+	      $this.text(Math.ceil(this.Counter));
+	    }
+	  });
+	});
+	$('.count-target-candidacys').each(function () {
+	  var $this = $(this);
+	  jQuery({ Counter: 0 }).animate({ Counter: $this.text() }, {
+	    duration: 10000,
+	    easing: 'swing',
+	    step: function () {
+	      $this.text(Math.ceil(this.Counter));
+	    }
+	  });
+	});
+	$('.count-target-candidacys-embaucher').each(function () {
+	  var $this = $(this);
+	  jQuery({ Counter: 0 }).animate({ Counter: $this.text() }, {
+	    duration: 10000,
+	    easing: 'swing',
+	    step: function () {
+	      $this.text(Math.ceil(this.Counter));
+	    }
+	  });
+	});
+	$('.count-target-avis-employeur').each(function () {
+	  var $this = $(this);
+	  jQuery({ Counter: 0 }).animate({ Counter: $this.text() }, {
+	    duration: 10000,
+	    easing: 'swing',
+	    step: function () {
+	      $this.text(Math.ceil(this.Counter));
+	    }
+	  });
+	});
+	$('.count-target-avis-employer').each(function () {
+	  var $this = $(this);
+	  jQuery({ Counter: 0 }).animate({ Counter: $this.text() }, {
+	    duration: 10000,
+	    easing: 'swing',
+	    step: function () {
+	      $this.text(Math.ceil(this.Counter));
+	    }
+	  });
+	});
+	$('.count-chat').each(function () {
+	  var $this = $(this);
+	  jQuery({ Counter: 0 }).animate({ Counter: $this.text() }, {
+	    duration: 10000,
+	    easing: 'swing',
+	    step: function () {
+	      $this.text(Math.ceil(this.Counter));
+	    }
+	  });
+	});
+	$('.count-horaire').each(function () {
+	  var $this = $(this);
+	  jQuery({ Counter: 0 }).animate({ Counter: $this.text() }, {
+	    duration: 10000,
+	    easing: 'swing',
+	    step: function () {
+	      $this.text(Math.ceil(this.Counter));
+	    }
+	  });
+	});
+	$('.count-punch-entrer').each(function () {
+	  var $this = $(this);
+	  jQuery({ Counter: 0 }).animate({ Counter: $this.text() }, {
+	    duration: 10000,
+	    easing: 'swing',
+	    step: function () {
+	      $this.text(Math.ceil(this.Counter));
+	    }
+	  });
+	});
+	$('.count-punch-sortie').each(function () {
+	  var $this = $(this);
+	  jQuery({ Counter: 0 }).animate({ Counter: $this.text() }, {
+	    duration: 10000,
+	    easing: 'swing',
+	    step: function () {
+	      $this.text(Math.ceil(this.Counter));
+	    }
+	  });
+	});
+});

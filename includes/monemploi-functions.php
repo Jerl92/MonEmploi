@@ -835,18 +835,17 @@ add_action('init', function(){
 		
 	$errors = 0;
 	$user = wp_get_current_user();
-	$password = sanitize_text_field($_POST['password']);
-	// require_once( ABSPATH . 'wp-admin/includes/user.php' );
-	
-	if($password == ''){
-		$errors = 'password_empty';
-	}
+	$password = $_POST['password'];
 	
 	if (!wp_check_password( $password, $user->data->user_pass, $user->ID ) ) {
 		$errors = 'not_the_good_password';
 	}
+		
+	if($password === ''){
+		$errors = 'password_empty';
+	}
 
-	if ( $errors == 0 ) {
+	if ( $errors === 0 ) {
 		$all_candidacys = get_posts(array(
 		    'post_type' => 'candidacy',
 		    'numberposts' => -1,
@@ -882,11 +881,11 @@ add_action('init', function(){
 		header("Location: " . trailingslashit( get_home_url() ) . "?delete_account=true");
 	} else {
 		$current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . strtok($_SERVER['REQUEST_URI'], '?');
-		if($errors == 'not_the_good_password'){
+		if($errors === 'not_the_good_password'){
 			header("Location: " . $current_url . "?delete_account=true&delete_account_wrong_password=true");
 		}
 		
-		if($errors == 'password_empty'){
+		if($errors === 'password_empty'){
 			header("Location: " . $current_url . "?delete_account=true&delete_account_password_empty=true");
 		}
 	}

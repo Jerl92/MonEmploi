@@ -113,6 +113,65 @@ function monemploi_home() {
 	
 	echo '<h2>Avec plus de <span class="count-target-avis-employer">' . $employer_count . '</span> avis sur les employés.</h2>';
 	
+	
+	$args_chat = array( 
+		'post_type' => 'chat',
+		'posts_per_page' => -1,
+		'orderby' => 'date',
+		'order' => 'DESC',
+	); 
+	
+	$get_chat  = get_posts( $args_chat );
+	
+	echo '<h2>Avec plus de <span class="count-chat">' . count($get_chat) . '</span> chat instantané.</h2>';
+	
+	$args_horaire = array( 
+		'post_type' => 'horaire',
+		'posts_per_page' => -1,
+		'orderby' => 'date',
+		'order' => 'DESC',
+	); 
+	
+	$get_horaire  = get_posts( $args_horaire );
+	
+	echo '<h2>Avec plus de <span class="count-horaire">' . count($get_horaire) . '</span> horaire cédulé.</h2>';
+	
+	$args_punch = array( 
+		'post_type' => 'horaire',
+		'posts_per_page' => -1,
+		'orderby' => 'date',
+		'order' => 'DESC',
+	); 
+	
+	$get_punch  = get_posts( $args_punch );
+	
+	$i = 0;
+	$x = 0;
+	
+	foreach($get_punch as $punch){
+	
+		$push_ = get_post_meta( $punch->ID, 'push_key', true );
+		if($push_ == ''){
+			$push_ = [];
+		}
+		foreach($push_ as $push){
+			if($push[0] == 'entrer'){
+				$entrer[$i] = $push[1];
+				$i++;				
+			}
+			if($push[0] == 'sortie'){
+				$sortie[$i] = $push[1];
+				$x++;
+			}
+		}
+	
+	}
+	
+	echo '<h2>Avec plus de <span class="count-punch-entrer">' . count($entrer) . '</span> pointage d&#8216;entrer.</h2>';
+	
+	echo '<h2>Avec plus de <span class="count-punch-sortie">' . count($sortie) . '</span> pointage de sortie.</h2>';
+
+	
 }
 add_shortcode('monemploi-home', 'monemploi_home');
 
