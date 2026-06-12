@@ -40,10 +40,10 @@
                             }
                     }
                     
-	              var startbiweekmonday = jQuery('.startbiweekmonday').html();
-	              var endbiweekmonday = jQuery('.endbiweekmonday').html();
-	              var starttimeunix = parseInt((new Date(startbiweekmonday).getTime() / 1000).toFixed(0));
-	              var endtimeunix = parseInt((new Date(endbiweekmonday).getTime() / 1000).toFixed(0));
+	              var startweekmonday = jQuery('.startweekmonday').html();
+	              var endweekmonday = jQuery('.endweekmonday').html();
+	              var startweekunix = parseInt((new Date(startweekmonday).getTime() / 1000).toFixed(0));
+	              var endweekunix = parseInt((new Date(endweekmonday).getTime() / 1000).toFixed(0));
 
                       // Displays the current month in Strings and the actual year 
                       jQuery('.month-year').html("<h3 style='text-align: center;'>"+months_full[month]+" "+year+"</h3>");
@@ -103,7 +103,7 @@
                                 return jQuery.inArray(formattedDate, item) !== -1;
                             });
 
-			if(starttimeunix <= timeunix && endtimeunix > timeunix) {
+			if( timeunix >= startweekunix && timeunix < endweekunix) {
                             if (results.length == 1) {
                                     tbody_html += "<td class='"+td_class+" biweek' style='text-align: center; width: 14.28%;'><a href='"+current_url+"?daytime="+timeunix+"'>"+counter+"</a><br><span>"+timestart+"</span><br><span>"+timeend+"</span></td>";
                             } else if (results.length > 1) {

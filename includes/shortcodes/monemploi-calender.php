@@ -867,9 +867,9 @@ if ($_GET['summary'] == true) {
 	}
 	
 	if(isset($_GET['week'])) {
-		echo  'Le debut de la semaine de travaille est le <span class="startbiweekmonday">'.$startofweek[$value].'</span>';
+		echo  'Le debut de la semaine de travaille est le <span class="startweekmonday">'.$startofweek[$value].'</span>';
 		echo '<br>';
-		echo  'La fin de la semaine de travaille est le <span class="endbiweekmonday">'.$startofweek[$value+1].'</span>';
+		echo  'La fin de la semaine de travaille est le <span class="endweekmonday">'.$startofweek[$value+1].'</span>';
 		echo '<br>';		
 	} else if(isset($_GET['biweek'])) {
 		echo  'Le debut du deux semaine de travaille est le <span class="startbiweekmonday">'.$startofworkdayonmonday[$value].'</span>';
@@ -918,7 +918,7 @@ if($user_role == 'employeur'){
 		 'post_status'    => array('publish'),
 		  'author'        =>   get_current_user_id(),
 		  'orderby'       =>  'modified',
-		  'order'         =>  'DESC',
+		  'order'         =>  'ASC',
 		  'posts_per_page' => -1
 	);
 }
@@ -928,7 +928,7 @@ if($user_role == 'employer'){
 		 'post_type' => 'horaire',
 		 'post_status'    => array('publish'),
 		  'orderby'       =>  'modified',
-		  'order'         =>  'DESC',
+		  'order'         =>  'ASC',
 		  'posts_per_page' => -1
 	);
 }
