@@ -140,10 +140,16 @@ function monemploi_register() {
 	   	echo '<input type="radio" id="employer" class="employer" name="status" value="employer">';
 	   } 
 	   echo '<label for="employer">Employer</label>';
+	   echo '<br>';
+	   echo '<br>';
 	   ?>
-	   </br>
-           <input type="submit" value="Inscription" />
+	   <!-- div to show reCAPTCHA -->
+           <span class="g-recaptcha" 
+           	data-sitekey="6LdqLRwtAAAAACecDPvN3wK7eHB2uyz6YF9OYME8">
+           </span>
+           <br>
 	   <input type="hidden" name="action" value="my_register_action" />
+           <input type="submit" value="Inscription" />
         </form>
     </div>
         

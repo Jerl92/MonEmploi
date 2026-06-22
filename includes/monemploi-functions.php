@@ -158,11 +158,7 @@ add_action('init', function(){
                 update_user_meta($user->ID, 'login_lock_time', '');
             }
             $login_lock = get_user_meta($user->ID, 'login_lock', true);
-            if($login_lock == 1){
-            	$unlock = $lock_time - $date1;
- 		$time_unlock = gmdate("H:i:s", $unlock);
-                wp_die($time_unlock . ' - Votre compte est barré pour 12 heures car vous avez echoué vos 5 tentative de connexion.');
-            }
+           
             wp_die('Nombre de tentative:' . $login_attemp_count . '/5 - Échec de la connexion. Mot de passe incorrect?');
         } else {
             if($date1 >= $lock_time && $lock_time != ''){
@@ -171,11 +167,6 @@ add_action('init', function(){
                 update_user_meta($user->ID, 'login_lock_time', '');
             }
             $login_lock = get_user_meta($user->ID, 'login_lock', true);
-	     if($login_lock == 1){
-            	$unlock = $lock_time - $date1;
- 		$time_unlock = gmdate("H:i:s", $unlock);
-                wp_die($time_unlock . ' - Votre compte est barré pour 12 heures car vous avez echoué vos 5 tentative de connexion.');
-            }
         }
      
         $user_info = get_userdata($user->ID);
@@ -215,8 +206,8 @@ add_action('init', function(){
         
         }
     
-      // redirect back to the requested page if login was successful    
-      header('Refresh:0;' . $_SERVER['REQUEST_URI']);
+            $redirect_to = $_SERVER['REQUEST_URI'];
+            wp_safe_redirect($redirect_to);
 });
 
 function generateRandomString($length = 10) {
@@ -257,6 +248,34 @@ add_action('init', function(){
     $poste = $_POST['poste'];
     
     $status = $_POST['status'];
+    
+    // Storing google recaptcha response
+    // in $recaptcha variable
+    $recaptcha = $_POST['g-recaptcha-response'];
+
+    // Put secret key here, which we get
+    // from google console
+    $secret_key = '6LdqLRwtAAAAAMHJVP7_ywtkLW8MCU6OaK4iH5kw';
+
+    // Hitting request to the URL, Google will
+    // respond with success or error scenario
+    $url = 'https://www.google.com/recaptcha/api/siteverify?secret='
+          . $secret_key . '&response=' . $recaptcha;
+
+    // Making request to verify captcha
+    $response = file_get_contents($url);
+
+    // Response return by google is in
+    // JSON format, so we have to parse
+    // that json
+    $response = json_decode($response);
+
+    // Checking, if response is true or not
+    if ($response->success == true) {
+	//
+    } else {
+        $errors->add('error_reCAPTACHA', 'Error in Google reCAPTACHA');
+    }
     
     // Basic validation
     if (username_exists($username) || email_exists($email)) {
@@ -984,25 +1003,6 @@ function employer_user_role() {
     );
 }
 
-add_action( 'init', 'redirect_to_custom_login' );
-function redirect_to_custom_login() {
-    global $pagenow;
-    // Check if on the login page and NOT trying to log out
-    if ( 'wp-login.php' == $pagenow && !isset($_GET['action']) ) {
-        wp_redirect( home_url( '/login/' ) );
-        exit();
-    }
-}
-
-/**
- * Redirect default login URL to a custom page
- */
-function my_custom_login_url( $login_url, $redirect, $force_reauth ) {
-    $custom_login_page = home_url( '/login/' ); // Your custom page slug
-    return add_query_arg( 'redirect_to', $redirect, $custom_login_page );
-}
-add_filter( 'login_url', 'my_custom_login_url', 10, 3 );
-
 function hide_admin_bar_settings() {
 ?>
     <style type="text/css">
@@ -1436,20 +1436,21 @@ add_action('init', function(){
 	$current_time = current_time( 'timestamp' );
 	$push_in_out = get_post_meta( $postid, 'push_in_out_key', true );
 	$push_ = get_post_meta( $postid, 'push_key', true );
+	$getcurrentuserid = get_current_user_id();
 	if($push_in_out == 0 || $push_in_out == ''){
 		update_post_meta( $postid, 'push_in_out_key', 1 );
 		if($push_ == ''){
-			$push_in = array('entrer', $current_time);
+			$push_in = array('entrer', $current_time, $getcurrentuserid);
 			update_post_meta( $postid, 'push_key', [$push_in] );
 		} else {
-			$push_in = array('entrer', $current_time);
+			$push_in = array('entrer', $current_time, $getcurrentuserid);
 			array_push($push_, $push_in);
 			update_post_meta( $postid, 'push_key', $push_ );
 		}
 	}
 	if($push_in_out == 1){
 		update_post_meta( $postid, 'push_in_out_key', 0 );
-		$push_out = array('sortie', $current_time);
+		$push_out = array('sortie', $current_time, $getcurrentuserid);
 		array_push($push_, $push_out);
 		update_post_meta( $postid, 'push_key', $push_ );
 	}
@@ -1496,11 +1497,11 @@ add_action('init', function(){
 			$punchunixinout = strtotime($punchdateinout.'T'.$punchtimeinout);
 			if ($i % 2 == 0) {
 				update_post_meta( $postid, 'push_in_out_key', 0 );
-				$push_[$i-1] = array('sortie', $punchunixinout);
+				$push_[$i-1] = array('sortie', $punchunixinout, $userid);
 				update_post_meta( $postid, 'push_key', $push_ );
 			} else {
 				update_post_meta( $postid, 'push_in_out_key', 1 );
-				$push_[$i-1] = array('entrer', $punchunixinout);
+				$push_[$i-1] = array('entrer', $punchunixinout, $userid);
 				update_post_meta( $postid, 'push_key', $push_ );
 			}
 		} else {

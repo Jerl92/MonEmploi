@@ -107,6 +107,8 @@ class Monemploi_Public {
 		 */
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/monemploi-public.js', array( 'jquery' ), $this->version, false );
+		
+		wp_enqueue_script( 'recaptcha', 'https://www.google.com/recaptcha/api.js', array( 'jquery' ), $this->version, false );
         
 	        wp_enqueue_script( 'datepicker', plugin_dir_url( __FILE__ ) . 'js/datepicker.js', array( 'jquery' ), $this->version, false );
 	        

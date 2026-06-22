@@ -336,3 +336,142 @@ jQuery(document).ready(function($) {
 	  });
 	});
 });
+
+jQuery(document).ready(function($) {
+
+	var mincalcsumavance = jQuery('.mincalcsumavance').html();
+	var mincalcsumlate = jQuery('.mincalcsumlate').html();
+	var mincalcsumsup = jQuery('.mincalcsumsup').html();
+	var mincalcsumhatif = jQuery('.mincalcsumhatif').html();
+	var mincalcsumtotal = jQuery('.mincalcsumtotal').html();
+	
+	jQuery('.mincalcsumavanceup').html(mincalcsumavance);
+	jQuery('.mincalcsumlateup').html(mincalcsumlate);
+	jQuery('.mincalcsumsupup').html(mincalcsumsup);
+	jQuery('.mincalcsumhatifup').html(mincalcsumhatif);
+	jQuery('.mincalcsumtotalup').html(mincalcsumtotal);
+	
+	// Select the checkbox
+	const checkbox = document.getElementById('coworker');
+	
+	// Listen for changes
+	checkbox.addEventListener('change', function() {
+		if (this.checked) {
+		
+			if(this.checked){
+				var val = true; 
+			} 
+
+			jQuery.ajax({
+				type: 'post',
+				url: coworker_monemploi_ajax_url,
+				data: {
+					'value': val,
+					'action': 'coworker_see_unsee'
+				},
+			dataType: 'JSON',
+				success: function(data) {
+					jQuery('#coworkertest').html(data);
+					location.reload(true);
+				},
+				error: function(error) {
+					console.log(error);
+				}
+			})
+			
+		} else {
+		
+			if(!this.checked){
+				var val = false; 
+			} 
+
+			jQuery.ajax({
+				type: 'post',
+				url: coworker_monemploi_ajax_url,
+				data: {
+					'value': val,
+					'action': 'coworker_see_unsee'
+				},
+			dataType: 'JSON',
+				success: function(data) {
+					jQuery('#coworkertest').html(data);
+					location.reload(true);
+				},
+				error: function(error) {
+					console.log(error);
+				}
+			})
+			
+		}
+	});
+
+});
+
+jQuery(document).ready(function($) {
+
+	// Select the checkbox
+	const select = document.getElementById('employee_horaire_select');
+	
+	if (jQuery(".employee_horaire_select")[0]){
+		var employee_horaire_select = $('#employee_horaire_select').find(":selected").val();
+		
+		jQuery.ajax({
+			type: 'post',
+			url: employee_horaire_select_monemploi_ajax_url,
+			data: {
+				'value': employee_horaire_select,
+				'action': 'employee_horaire_select'
+			},
+		dataType: 'JSON',
+			success: function(data) {
+			    if (window.location.href.indexOf('reload')==-1) {
+			         window.location.replace(window.location.href+'?reload');
+			    }
+			},
+			error: function(error) {
+				console.log(error);
+			}
+		})
+		
+		select.addEventListener('change', function(event) {
+		        const selectedValue = event.target.value;
+	
+			jQuery.ajax({
+				type: 'post',
+				url: employee_horaire_select_monemploi_ajax_url,
+				data: {
+					'value': selectedValue,
+					'action': 'employee_horaire_select'
+				},
+			dataType: 'JSON',
+				success: function(data) {
+					location.reload(true);
+				},
+				error: function(error) {
+					console.log(error);
+				}
+			})
+		});
+		
+	} else {
+	
+		jQuery.ajax({
+			type: 'post',
+			url: employee_horaire_select_monemploi_ajax_url,
+			data: {
+				'value': -1,
+				'action': 'employee_horaire_select'
+			},
+		dataType: 'JSON',
+			success: function(data) {
+				//NULL
+			},
+			error: function(error) {
+				console.log(error);
+			}
+		})
+		
+	}
+
+	
+});

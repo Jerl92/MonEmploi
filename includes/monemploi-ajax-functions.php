@@ -108,6 +108,14 @@ function monemploi_ajax_scripts() {
 	wp_register_script( 'monemploi-ajax-chat-nodification-scripts', $url . "js/ajax.monemploi.chat.nodification.js", array( 'jquery' ), '1.0.0', true );
 	wp_localize_script( 'monemploi-ajax-chat-nodification-scripts', 'chat_nodification_monemploi_ajax_url', admin_url( 'admin-ajax.php', 'relative' ) );
 	wp_enqueue_script( 'monemploi-ajax-chat-nodification-scripts' );
+	
+	wp_register_script( 'monemploi-ajax-coworker-scripts', $url . "js/null.js", array( 'jquery' ), '1.0.0', true );
+	wp_localize_script( 'monemploi-ajax-coworker-scripts', 'coworker_monemploi_ajax_url', admin_url( 'admin-ajax.php', 'relative' ) );
+	wp_enqueue_script( 'monemploi-ajax-coworker-scripts' );
+			
+	wp_register_script( 'monemploi-ajax-employee-horaire-select-scripts', $url . "js/null.js", array( 'jquery' ), '1.0.0', true );
+	wp_localize_script( 'monemploi-ajax-employee-horaire-select-scripts', 'employee_horaire_select_monemploi_ajax_url', admin_url( 'admin-ajax.php', 'relative' ) );
+	wp_enqueue_script( 'monemploi-ajax-employee-horaire-select-scripts' );
 
 }
 
@@ -1496,6 +1504,33 @@ function chat_nodification($post) {
 	}
 	
 	wp_send_json( $html );
+	
+}
+
+/* AJAX action callback */
+add_action( 'wp_ajax_coworker_see_unsee', 'coworker_see_unsee' );
+add_action( 'wp_ajax_nopriv_coworker_see_unsee', 'coworker_see_unsee' );
+function coworker_see_unsee($post) {
+
+	$value = $_POST['value'];
+	
+	update_user_meta(get_current_user_id(), 'coworker_see_unsee', $value);
+	
+	wp_send_json( $value );
+	
+}
+
+
+/* AJAX action callback */
+add_action( 'wp_ajax_employee_horaire_select', 'employee_horaire_select' );
+add_action( 'wp_ajax_nopriv_employee_horaire_select', 'employee_horaire_select' );
+function employee_horaire_select($post) {
+
+	$value = $_POST['value'];
+	
+	update_user_meta(get_current_user_id(), 'employee_horaire_select', $value);
+	
+	wp_send_json( $value );
 	
 }
 
