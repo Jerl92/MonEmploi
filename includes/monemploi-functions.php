@@ -158,7 +158,11 @@ add_action('init', function(){
                 update_user_meta($user->ID, 'login_lock_time', '');
             }
             $login_lock = get_user_meta($user->ID, 'login_lock', true);
-           
+            if($login_lock == 1){
+            	$unlock = $lock_time - $date1;
+ 		$time_unlock = gmdate("H:i:s", $unlock);
+                wp_die($time_unlock . ' - Votre compte est barré pour 12 heures car vous avez echoué vos 5 tentative de connexion.');
+            }
             wp_die('Nombre de tentative:' . $login_attemp_count . '/5 - Échec de la connexion. Mot de passe incorrect?');
         } else {
             if($date1 >= $lock_time && $lock_time != ''){
@@ -167,6 +171,11 @@ add_action('init', function(){
                 update_user_meta($user->ID, 'login_lock_time', '');
             }
             $login_lock = get_user_meta($user->ID, 'login_lock', true);
+	     if($login_lock == 1){
+            	$unlock = $lock_time - $date1;
+ 		$time_unlock = gmdate("H:i:s", $unlock);
+                wp_die($time_unlock . ' - Votre compte est barré pour 12 heures car vous avez echoué vos 5 tentative de connexion.');
+            }
         }
      
         $user_info = get_userdata($user->ID);
@@ -205,9 +214,8 @@ add_action('init', function(){
             update_user_meta($user->ID, 'login_info', $login_info);
         
         }
-    
-            $redirect_to = $_SERVER['REQUEST_URI'];
-            wp_safe_redirect($redirect_to);
+         
+       header('Refresh:0;' . $_SERVER['REQUEST_URI']);
 });
 
 function generateRandomString($length = 10) {
@@ -249,7 +257,7 @@ add_action('init', function(){
     
     $status = $_POST['status'];
     
-    // Storing google recaptcha response
+     // Storing google recaptcha response
     // in $recaptcha variable
     $recaptcha = $_POST['g-recaptcha-response'];
 
@@ -1003,6 +1011,24 @@ function employer_user_role() {
     );
 }
 
+
+add_action( 'init', 'redirect_to_custom_login' );
+function redirect_to_custom_login() {
+    global $pagenow;
+    // Check if on the login page and NOT trying to log out
+    if ( 'wp-login.php' == $pagenow && !isset($_GET['action']) ) {
+        wp_redirect( home_url( '/login/' ) );
+        exit();
+    }
+}
+
+function my_custom_login_url( $login_url, $redirect, $force_reauth ) {
+    $custom_login_page = home_url( '/login/' ); // Your custom page slug
+    return add_query_arg( 'redirect_to', $redirect, $custom_login_page );
+}
+add_filter( 'login_url', 'my_custom_login_url', 10, 3 );
+
+
 function hide_admin_bar_settings() {
 ?>
     <style type="text/css">
@@ -1432,11 +1458,11 @@ add_action('init', function(){
 	
 	$userid = $_POST['userid'];
 	$postid = $_POST['postid'];
+	$getcurrentuserid = get_current_user_id();
 	
 	$current_time = current_time( 'timestamp' );
 	$push_in_out = get_post_meta( $postid, 'push_in_out_key', true );
 	$push_ = get_post_meta( $postid, 'push_key', true );
-	$getcurrentuserid = get_current_user_id();
 	if($push_in_out == 0 || $push_in_out == ''){
 		update_post_meta( $postid, 'push_in_out_key', 1 );
 		if($push_ == ''){

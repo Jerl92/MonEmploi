@@ -136,8 +136,6 @@ class Monemploi {
 		
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/monemploi-chat-widget.php';
 		
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/recaptchalib.php';
-		
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/monemploi-functions.php';
         
         	require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/monemploi-cpt-functions.php';
@@ -171,10 +169,10 @@ class Monemploi {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/shortcodes/monemploi-user-edit-info.php';
 		
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/shortcodes/monemploi-chat.php';
-		
-        	require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/shortcodes/monemploi-calender.php';
         	
         	require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/shortcodes/monemploi-score.php';
+        	
+        	require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/shortcodes/monemploi-calender.php';
 		
 		$this->loader = new Monemploi_Loader();
 

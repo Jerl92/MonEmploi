@@ -409,6 +409,11 @@ jQuery(document).ready(function($) {
 
 jQuery(document).ready(function($) {
 
+	var urlParams = new URLSearchParams(window.location.search);
+	var horaireweek = urlParams.get('horaireweek');
+	var summary = urlParams.get('summary');	
+	var month = urlParams.get('month');	
+	
 	// Select the checkbox
 	const select = document.getElementById('employee_horaire_select');
 	
@@ -424,9 +429,15 @@ jQuery(document).ready(function($) {
 			},
 		dataType: 'JSON',
 			success: function(data) {
-			    if (window.location.href.indexOf('reload')==-1) {
-			         window.location.replace(window.location.href+'?reload');
-			    }
+				if(horaireweek || summary){
+				    if (window.location.href.indexOf('reload')==-1) {
+				         window.location.replace(window.location.href+'&reload');
+				    }
+				} else {
+				    if (window.location.href.indexOf('reload')==-1) {
+				         window.location.replace(window.location.href+'?reload');
+				    }
+				} 
 			},
 			error: function(error) {
 				console.log(error);
@@ -472,6 +483,75 @@ jQuery(document).ready(function($) {
 		})
 		
 	}
-
 	
+	// Select the checkbox
+	const scores = document.getElementById('employee_scores_select');
+	
+	if (jQuery(".employee_scores_select")[0]){
+		var employee_scores_select = $('#employee_scores_select').find(":selected").val();
+		
+		jQuery.ajax({
+			type: 'post',
+			url: employee_scores_select_monemploi_ajax_url,
+			data: {
+				'value': employee_scores_select,
+				'action': 'employee_scores_select'
+			},
+		dataType: 'JSON',
+			success: function(data) {
+				if(month){
+				    if (window.location.href.indexOf('reload')==-1) {
+				         window.location.replace(window.location.href+'&reload');
+				    }
+				} else {
+				    if (window.location.href.indexOf('reload')==-1) {
+				         window.location.replace(window.location.href+'?reload');
+				    }
+				} 
+			},
+			error: function(error) {
+				console.log(error);
+			}
+		})
+		
+		scores.addEventListener('change', function(event) {
+		        const selectedValue = event.target.value;
+	
+			jQuery.ajax({
+				type: 'post',
+				url: employee_scores_select_monemploi_ajax_url,
+				data: {
+					'value': selectedValue,
+					'action': 'employee_scores_select'
+				},
+			dataType: 'JSON',
+				success: function(data) {
+					location.reload(true);
+				},
+				error: function(error) {
+					console.log(error);
+				}
+			})
+		});
+		
+	} else {
+	
+		jQuery.ajax({
+			type: 'post',
+			url: employee_scores_select_monemploi_ajax_url,
+			data: {
+				'value': -1,
+				'action': 'employee_scores_select'
+			},
+		dataType: 'JSON',
+			success: function(data) {
+				//NULL
+			},
+			error: function(error) {
+				console.log(error);
+			}
+		})
+		
+	}	
 });
+
