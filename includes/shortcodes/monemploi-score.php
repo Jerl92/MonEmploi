@@ -173,17 +173,18 @@ function monemploi_score() {
     			echo date('m/Y', strtotime($startofmonths[$currentmonth]));
     			echo '<br>';
     		} 
+    		$currentmonth_ = $currentmonth;
     		if(isset($_GET['month'])) {
 	    		$monthminus = $_GET['month'] - 1;
 	    		$monthplus = $_GET['month'] + 1;
 	    		$currentmonth = $_GET['month'];
-    		} else  {
+    		} else {
 	    		$monthminus = $currentmonth - 1;
 	    		$monthplus = $currentmonth + 1;
 		}
     		echo '<a href="'.$current_url.'?month='.$monthminus.'">Précédent</a>';
 		echo ' - ';
-		echo '<a href="'.$current_url.'?month='.$currentmonth.'">Aujourd&#39;hui</a>';
+		echo '<a href="'.$current_url.'?month='.$currentmonth_.'">Aujourd&#39;hui</a>';
 		echo ' - ';
 		echo '<a href="'.$current_url.'?month='.$monthplus.'">Suivant</a>';
 		echo '<br>';

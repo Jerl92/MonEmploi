@@ -193,8 +193,7 @@
                       jQuery('ul.gettimepay li').each(function(index, element) {
                             var text = jQuery(element).text(); 
                             var myArray = text.split("||");
-                            var timeunixpayday = parseInt((new Date(myArray[4]).getTime() / 1000).toFixed(0));
-                            word.push([myArray[0], myArray[1], myArray[2], myArray[3], timeunixpayday]);
+                            word.push([myArray[0], myArray[1], myArray[2], myArray[3], myArray[4]]);
                       });
 
 
@@ -241,7 +240,7 @@
                             var timepay = [];
                             var results = jQuery.grep(word, function(item) {
                                 if(jQuery.inArray(datestring, item) !== -1){
-                                        timepay.push([item[2], item[3]]);
+                                        timepay.push([item[2], item[3], item[0]]);
                                 }
                                 return jQuery.inArray(datestring, item) !== -1;
                             });
@@ -254,7 +253,9 @@
                 jQuery.each(timepay, function(index, value) {
                     userid = parseFloat(value[1]);
                     useridindex.push([userid]);
-                    timepaycalc.push([parseFloat(value[0])]);
+                    if(value[2] === datestring){
+                    	timepaycalc.push([parseFloat(value[0])]);
+                    }
                 });
 
                 var timepaycalc_ = 0;
@@ -302,25 +303,9 @@
                 var somofpayday_ = [];
                 var formattedDate_ = 0;
                 jQuery.each(somofpayday, function(index, value) {
-                        var date = new Date(value[0] * 1000);
-                        var getmonth = 0;
-                        var getdate = 0;                                
-                    date.setDate(date.getDate());        
-                    if (/^\d$/.test(date.getMonth()+1)) {        
-                            getmonth = '0'+(date.getMonth()+1);
-                    } else          {        
-                            getmonth = (date.getMonth()+1);
-                    } 
-                    if (/^\d$/.test(date.getDate())) {        
-                            getdate = '0'+date.getDate();
-                    } else  {        
-                            getdate = date.getDate();
-                    } 
-
-                    var formattedDate = getmonth + '/' + getdate + '/' + date.getFullYear();
-                    if(formattedDate === datestring_) { 
+                    if(value[0] === datestring_) { 
                             sumpayroll = sumpayroll + parseFloat(value[1]);
-                            formattedDate_ = formattedDate;
+                            formattedDate_ = value[0];
                     }
                     sumpayroll__ = sumpayroll.toFixed(2);
                 });

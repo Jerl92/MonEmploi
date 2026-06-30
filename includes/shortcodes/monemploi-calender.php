@@ -1245,7 +1245,8 @@ if($user_role == 'employer'){
 	usort($datetimeends, function ($a, $b) {
 		return $a['time'] <=> $b['time'];
 	});
-
+	
+	$o = 0;
 	foreach($datetimestarts as $datetimestart){
 		if(isset($_GET['week'])) {
 			if($datetimestart['time'] >= strtotime($startofweek[$value]) && $datetimeends[$z] < strtotime($startofweek[$value+1])) {
@@ -1645,19 +1646,22 @@ if($user_role == 'employer'){
             }
 			
 		}
-	
+
+		$x = 1;
 		$payloop = 0;
-	$x = 1;
 		for($p=0; $p<=1670; $p++){
-				if($timepay_['start'] >= strtotime($startofpayrollthursday[$p]) && $timepay_['end'] < strtotime($startofpayrollthursday[$p+1])){
+				if( strtotime($startofworkdayonmonday[$p]) <= $timepay_['start'] && strtotime($startofworkdayonmonday[$p+1]) > $timepay_['end'] ){
 					$payloop = $x;
 				}
 				$x++;
 		}
-
-		$mypaycalender[] = array(date("m/d/Y", $timepay_['start']), $timepay_['end'], round($pay_, 2), $timepay_['userid'], $startofpayrollthursday[$payloop]);
+		
+		sort($payloop);
+				
+		$mypaycalender[$o] = array(date("m/d/Y", $timepay_['start']), $timepay_['end'], round($pay_, 2), $timepay_['userid'], $startofpayrollthursday[$payloop]);
 		$i++;
 		$y++;
+		$o++;
 	    
 	}
         
