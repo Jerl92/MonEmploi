@@ -57,6 +57,9 @@ To display the chat dashboard<br>
 [monemploi-calender]<br>
 To display the calender for timesheet<br>
 
+[monemploi-score]<br>
+To display the scores page of employee<br>
+
 ## Frequently Asked Questions 
 
 Do you make money with this plugin.<br>
@@ -76,9 +79,11 @@ The answer is no.<br>
 <img style="max-width: 100%;" src="https://i.ibb.co/twZLj0x6/monemploi50.png" /><br>
 <img style="max-width: 100%;" src="https://i.ibb.co/XrT6SW4S/monemploi58.png" /><br>
 <img style="max-width: 100%;" src="https://i.ibb.co/FqcqX20g/monemploi59.png" /><br>
+<img style="max-width: 100%;" src="https://i.ibb.co/Nd4VFHVT/monemploi09.png" /><br>
 
 ## Changelog 
 
+0.8 - Add a scores page for employee.<br>
 0.7 - Add a calendar to add timesheet.<br>
 0.6 - Add a chat and all the ajax function and a widget for new chat message.<br>
 0.5.5 - Add user profile widget and move job apply question to profile.<br>
