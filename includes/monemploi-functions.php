@@ -1363,14 +1363,18 @@ add_action('init', function(){
 			if($my_employee == ''){
 				update_user_meta( get_current_user_id(), 'my_employee_key', array($userid));
 			} else {
-				array_push($my_employee, $userid);
-				update_user_meta( get_current_user_id(), 'my_employee_key', $my_employee);
+				if (in_array($userid, $my_employee)) {
+					//
+				} else {
+					array_push($my_employee, $userid);
+					update_user_meta( get_current_user_id(), 'my_employee_key', $my_employee);
+				}
 			}
 		} else {
-			$values = array_values($my_employee);
-			$pos = array_search($userid, $values);
+			$pos = array_search($userid, $my_employee);
 			if($pos != false){
 				unset($my_employee[$pos]);
+				sort($my_employee); 
 				update_user_meta( get_current_user_id(), 'my_employee_key', $my_employee);
 			}
 		}

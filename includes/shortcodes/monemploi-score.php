@@ -60,19 +60,22 @@ function monemploi_score() {
 		$datestartstrtotime = strtotime($datepickerstarthoraire.'T'.$timestarthoraire);
 		$dateendstrtotime = strtotime($datepickerendhoraire.'T'.$timeendhoraire);
 		
-		$push_ = get_post_meta( $post->ID, 'push_key', true );
-		$employee_horaire = get_post_meta( $post->ID, 'employee_horaire_key', true );
-		$employee_replace = get_post_meta( $post->ID, 'employee_replace_key', true );
-		$dayoff_status = get_post_meta( $post->ID, 'dayoff_status_key', true );
-		$fristpush = array_values($push_)[0];
-		$endpush = end($push_);
-		$fristpushalls[$u]['time'] = $fristpush[1];
-		$fristpushalls[$u]['inout'] = $fristpush[0];
-		$fristpushalls[$u]['date'] = $datestartstrtotime;
-		$endpushallls[$u]['time'] = $endpush[1];
-		$endpushallls[$u]['inout'] = $endpush[0];
-		$endpushallls[$u]['date'] = $dateendstrtotime;
-		$u++;
+		if($employee_horaire == get_current_user_id()){
+			$push_ = get_post_meta( $post->ID, 'push_key', true );
+			$employee_horaire = get_post_meta( $post->ID, 'employee_horaire_key', true );
+			$employee_replace = get_post_meta( $post->ID, 'employee_replace_key', true );
+			$dayoff_status = get_post_meta( $post->ID, 'dayoff_status_key', true );
+			$fristpush = array_values($push_)[0];
+			$endpush = end($push_);
+			$fristpushalls[$u]['time'] = $fristpush[1];
+			$fristpushalls[$u]['inout'] = $fristpush[0];
+			$fristpushalls[$u]['date'] = $datestartstrtotime;
+			$fristpushalls[$u]['userid'] = $employee_horaire;
+			$endpushallls[$u]['time'] = $endpush[1];
+			$endpushallls[$u]['inout'] = $endpush[0];
+			$endpushallls[$u]['date'] = $dateendstrtotime;
+			$u++;
+		}
 	
 	}
     	    
@@ -96,6 +99,7 @@ function monemploi_score() {
 			$fristpushalls[$u]['time'] = $fristpush[1];
 			$fristpushalls[$u]['inout'] = $fristpush[0];
 			$fristpushalls[$u]['date'] = $datestartstrtotime;
+			$fristpushalls[$u]['userid'] = $employee_horaire;
 			$endpushallls[$u]['time'] = $endpush[1];
 			$endpushallls[$u]['inout'] = $endpush[0];
 			$endpushallls[$u]['date'] = $dateendstrtotime;
@@ -123,6 +127,7 @@ function monemploi_score() {
 					$fristpushalls[$u]['time'] = $fristpush[1];
 					$fristpushalls[$u]['inout'] = $fristpush[0];
 					$fristpushalls[$u]['date'] = $datestartstrtotime;
+					$fristpushalls[$u]['userid'] = $employee_horaire;
 					$endpushallls[$u]['time'] = $endpush[1];
 					$endpushallls[$u]['inout'] = $endpush[0];
 					$endpushallls[$u]['date'] = $dateendstrtotime;
@@ -212,6 +217,15 @@ function monemploi_score() {
 		                    if(strtotime($startofmonths[$currentmonth]) <= $fristpushall['time'] && strtotime($startofmonths[$currentmonth+1]) > $endpushallls[$t]['time']){
 			                    echo '<br>';
 			                    echo date('m/d/Y', $fristpushall['time']);
+			                    if($user_role == 'employeur'){
+				                    echo ' - ';
+				                    $getuserbyid = get_user_by('id', $fristpushall['userid']);
+				                    echo $getuserbyid->user_login;
+				                    echo ' - ';
+				                    echo $getuserbyid->user_firstname;
+				                    echo ' ';
+				                    echo $getuserbyid->user_lastname;
+			                    }
 			                    echo '<br>';
 		                    }
 	                	    if($fristpushall['inout'] == 'entrer'){

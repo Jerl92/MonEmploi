@@ -559,6 +559,9 @@ echo '</ul>';
 		<button><a href="<?php echo $current_url; ?>?new_job=true">Ajouter un horaire</a></button>
 	<?php } ?>
 	<button><a href="<?php echo $current_url; ?>?summary=true">Somaire des paies</a></button>
+	<?php if($user_role == 'employeur'){ ?>
+		<button style="float: right;"><a href="<?php echo $current_url; ?>?dayoff=true">Demande de congé</a></button>
+	<?php } ?>
 	<div class="container">
 			<div class="calendar_header">
 				<i class="prev-month fa fa-chevron-left fa-3x"></i>
@@ -835,6 +838,79 @@ echo '</ul>';
 	  </tbody>
 	</table>
 	<?php
+
+}
+
+if (isset($_GET['dayoff'])) {
+
+    $args = array(
+    	 'post_type' => 'horaire',
+    	 'post_status'    => array('publish'),
+    	  'orderby'       =>  'date',
+    	  'order'         =>  'DESC',
+    	  'posts_per_page' => -1
+    );
+    			
+    $posts = get_posts( $args );
+    
+    $user_meta = get_userdata(get_current_user_id());
+	$user_role = $user_meta->roles[0];
+	
+	if($user_role == 'employeur'){
+        
+        foreach($posts as $post) {
+            $dayoff_status = get_post_meta( $post->ID, 'dayoff_status_key', true );
+            $dayoff_reason = get_post_meta( $post->ID, 'dayoff_reason_key', true );
+            $employee_replace = get_post_meta( $post->ID, 'employee_replace_key', true );
+            $employee_horaire = get_post_meta( $post->ID, 'employee_horaire_key', true );
+            
+           if($dayoff_reason != ''){
+                echo '<a href="'.get_permalink($post->ID).'?dayoff=true">'.$post->ID.'</a>';
+                echo '<br>';
+		$getuserbyid = get_user_by('id', $employee_horaire);
+		echo $getuserbyid->user_login;
+		echo ' - ';
+		echo $getuserbyid->user_firstname;
+		echo ' ';
+		echo $getuserbyid->user_lastname;
+                echo '<br>';
+                if($dayoff_reason == 1){
+			echo 'Congés annuels (Vacances)';
+		}
+		if($dayoff_reason == 2){
+			echo 'Congés de maladie ou médicaux';
+		}
+		if($dayoff_reason == 3){
+			echo 'Congés parentaux';
+		}
+		if($dayoff_reason == 4){
+			echo 'Congés familiaux ou de deuil';
+		}
+		if($dayoff_reason == 5){
+			echo 'Congés sans solde';
+		}
+		if($dayoff_reason == 6){
+			echo 'Faire une demande de remplacement';
+		}
+		echo '<br>';
+            }
+            if($dayoff_status != ''){
+                if($dayoff_status  == 1){
+                    echo 'En revue';
+                }
+                if($dayoff_status  == 2){
+                    echo 'Refusé';
+                }
+                if($dayoff_status  == 3){
+                    echo 'Accepté';
+                }
+                if($dayoff_status  == 4){
+                    echo 'Manque d&#8216;information';
+                }
+                echo '<br>';
+           }
+        }
+    }
 
 }
 
@@ -1254,6 +1330,7 @@ if($user_role == 'employer'){
 				$timepays[$z]['end'] = $datetimeends[$z];
 				$timepays[$z]['time'] = $datetimeends[$z] - $datetimestart['time'];
 				$timepays[$z]['salary'] = $datetimestart['salary'];
+				$timepays[$z]['userid'] = $datetimestart['userid'];
 			} 
 		}else if(isset($_GET['month'])) {
 			if($datetimestart['time'] >= strtotime($startofmonth[$value]) && $datetimeends[$z] < strtotime($startofmonth[$value+1])) {
@@ -1261,6 +1338,7 @@ if($user_role == 'employer'){
 				$timepays[$z]['end'] = $datetimeends[$z];
 				$timepays[$z]['time'] = $datetimeends[$z] - $datetimestart['time'];
 				$timepays[$z]['salary'] = $datetimestart['salary'];
+				$timepays[$z]['userid'] = $datetimestart['userid'];
 			} 
 		}else if(isset($_GET['biweek'])) {
 			if($datetimestart['time'] >= strtotime($startofworkdayonmonday[$value]) && $datetimeends[$z] < strtotime($startofworkdayonmonday[$value+1])) {
@@ -1268,6 +1346,7 @@ if($user_role == 'employer'){
 				$timepays[$z]['end'] = $datetimeends[$z];
 				$timepays[$z]['time'] = $datetimeends[$z] - $datetimestart['time'];
 				$timepays[$z]['salary'] = $datetimestart['salary'];
+				$timepays[$z]['userid'] = $datetimestart['userid'];
 			} 
 		} else  {
 			if($datetimestart['time'] >= strtotime($startofworkdayonmonday[$value]) && $datetimeends[$z] < strtotime($startofworkdayonmonday[$value+1])) {
@@ -1275,6 +1354,7 @@ if($user_role == 'employer'){
 				$timepays[$z]['end'] = $datetimeends[$z];
 				$timepays[$z]['time'] = $datetimeends[$z] - $datetimestart['time'];
 				$timepays[$z]['salary'] = $datetimestart['salary'];
+				$timepays[$z]['userid'] = $datetimestart['userid'];
 			} 
 		}
 		$z++;
@@ -1283,36 +1363,33 @@ if($user_role == 'employer'){
 	if(isset($_GET['week'])) {
 		
 		$i = 0;
-		$timepaysum = 0;
+		$timepaysum = [];
+		$timepaysuppay = [];
+		$timepaynormalepay = [];
+		$paytime = [];
 		foreach ($timepays as $key => $timevalue) {
 			if($timevalue['start'] >= strtotime($startofweek[$value]) && $timevalue['end'] < strtotime($startofweek[$value+1])) {
-				$timepaysum = $timepaysum + $timevalue['time'];
+				$userid = $timevalue['userid'];
+			
+				$timepaysum[$userid] = $timepaysum[$userid] + $timevalue['time'];
 				   				
 				$salary = $timevalue['salary'];
 				$salary_ = ($salary/60);
 				
-				if($timepaysum > 144000) {
-					$timepaynormale = 144000;
-					$hours = floor($timepaynormale / 3600);
-					$minutes = floor(($timepaynormale / 60) % 60);
-					$worktime = ($hours * 60) + $minutes;
-					$timepaynormalepay = $worktime * $salary_;
-					$timepaysup = $timepaysum - 144000;
+				if($timepaysum[$userid] > 144000) {
+					$timepaysup = $timepaysum[$userid] - 144000;
 					$hours = floor($timepaysup / 3600);
 					$minutes = floor(($timepaysup / 60) % 60);
 					$worktimesup = ($hours * 60) + $minutes;
-					$timepaysuppay = $worktimesup * ($salary_ * 1.5);
-					$paytime = $timepaynormalepay + $timepaysuppay;
+					$timepaysuppay[$userid] = $worktimesup * ($salary_ * 1.5);
 				} else 	{	
-					$timepaysuppay = 0;
-					$timepaynormale = $timepaysum;
+					$timepaynormale = $timepaysum[$userid];
 					$hours = floor($timepaynormale / 3600);
 					$minutes = floor(($timepaynormale / 60) % 60);
 					$worktime = ($hours * 60) + $minutes;
-					$timepaynormalepay = $worktime * $salary_;
-					$paytime = $timepaynormalepay;
+					$timepaynormalepay[$userid] = $worktime * $salary_;
 				}
-				
+				$paytime[$userid] = $timepaynormalepay[$userid] + $timepaysuppay[$userid];
 			}
 			$i++;
 		}
@@ -1328,12 +1405,18 @@ if($user_role == 'employer'){
 		$allSundays = getSundaysBetweenDates($start, $end);
 	
 		$x = 0;
+		$timepaysum = [];
+		$timepaysuppay = [];
+		$timepaynormalepay = [];
+		$paytime = [];
 		foreach($allSundays as $allSunday) {
 			$i = 0;
 			$timepaysum[$x] = 0;
 			foreach ($timepays as $key => $timevalue) {
 				if($timevalue['start'] >= strtotime($allSunday) && $timevalue['end'] < strtotime($allSundays[$x+1])) {
-					$timepaysum[$x] = $timepaysum[$x] + $timevalue['time'];
+					$userid = $timevalue['userid'];
+				
+					$timepaysum[$x][$userid] = $timepaysum[$x][$userid] + $timevalue['time'];
 					       					
 					$salary = $timevalue['salary'];
 					$salary_ = ($salary/60);
@@ -1348,27 +1431,21 @@ if($user_role == 'employer'){
 					$timepaysuppay[$x] = 0;
 					$paytime[$x] = 0;
 					
-					if($timepaysum[$x] > 144000) {
-						$timepaynormale[$x] = 144000;
-						$hours[$x] = floor($timepaynormale[$x] / 3600);
-						$minutes[$x] = floor(($timepaynormale[$x] / 60) % 60);
-						$worktime[$x] = ($hours[$x] * 60) + $minutes[$x];
-						$timepaynormalepay[$x] = $worktime[$x] * $salary_;
-					    	$timepaysup[$x] = $timepaysum[$x] - 144000;
+					if($timepaysum[$x][$userid] > 144000) {
+					    	$timepaysup[$x] = $timepaysum[$x][$userid] - 144000;
 						$hours_[$x] = floor($timepaysup[$x] / 3600);
 						$minutes_[$x] = floor(($timepaysup[$x] / 60) % 60);
 						$worktimesup[$x] = ($hours_[$x] * 60) + $minutes_[$x];
-						$timepaysuppay[$x] = $worktimesup[$x] * ($salary_ * 1.5);
-						$paytime[$x] = $timepaynormalepay[$x] + $timepaysuppay[$x];
+						$timepaysuppay[$x][$userid] = $worktimesup[$x] * ($salary_ * 1.5);
 					} else {
-						$timepaysuppay[$x] = 0;
-						$timepaynormale[$x] = $timepaysum[$x];
+						$timepaynormale[$x] = $timepaysum[$x][$userid];
 						$hours[$x] = floor($timepaynormale[$x] / 3600);
 						$minutes[$x] = floor(($timepaynormale[$x] / 60) % 60);
 						$worktime[$x] = ($hours[$x] * 60) + $minutes[$x];
-						$timepaynormalepay[$x] = $worktime[$x] * $salary_;
-						$paytime[$x] = $timepaynormalepay[$x];
+						$timepaynormalepay[$x][$userid] = $worktime[$x] * $salary_;
+						
 					}
+					$paytime[$x][$userid] = $timepaynormalepay[$x][$userid] + $timepaysuppay[$x][$userid];
 				}
 				$i++;
 			}
@@ -1387,68 +1464,60 @@ if($user_role == 'employer'){
 		$allSundays = getSundaysBetweenDates($start, $end);
 		
 		$i = 0;
-		$timepaysumone = 0;
-		$timepaysumtow = 0;	
+		$timepaysumone = [];
+		$timepaysumtow = [];	
+		$timepaysuppayone = [];
+		$timepaynormalepayone = [];
+		$paytimeone = [];
 		foreach ($timepays as $key => $timevalue) {
 			if($timevalue['start'] >= strtotime($allSundays[0]) && $timevalue['end'] < strtotime($allSundays[1])) {
+			
+				$userid = $timevalue['userid'];
 
-				$timepaysumone = $timepaysumone + $timevalue['time'];
+				$timepaysumone[$userid] = $timepaysumone[$userid] + $timevalue['time'];
 			       				
 				$salary = $timevalue['salary'];
 				$salary_ = ($salary/60);
 				
-				if($timepaysumone > 144000) {
-					$timepaynormale = 144000;
-					$hours = floor($timepaynormale / 3600);
-					$minutes = floor(($timepaynormale / 60) % 60);
-					$worktime = ($hours * 60) + $minutes;
-					$timepaynormalepayone = $worktime * $salary_;
-					$timepaysup = $timepaysumone - 144000;
+				if($timepaysumone[$userid] > 144000) {
+					$timepaysup = $timepaysumone[$userid] - 144000;
 					$hours = floor($timepaysup / 3600);
 					$minutes = floor(($timepaysup / 60) % 60);
 					$worktimesup = ($hours * 60) + $minutes;
-					$timepaysuppayone = $worktimesup * ($salary_ * 1.5);
-					$paytimeone = $timepaynormalepayone + $timepaysuppayone;
+					$timepaysuppayone[$userid] = $worktimesup * ($salary_ * 1.5);
 				} else {
-					$timepaysuppayone = 0;
-					$timepaynormale = $timepaysumone;
+					$timepaynormale = $timepaysumone[$userid];
 					$hours = floor($timepaynormale / 3600);
 					$minutes = floor(($timepaynormale / 60) % 60);
 					$worktime = ($hours * 60) + $minutes;
-					$timepaynormalepayone = $worktime * $salary_;
-					$paytimeone = $timepaynormalepayone;
+					$timepaynormalepayone[$userid] = $worktime * $salary_;
 				}
-									
+				$paytimeone[$userid] = $timepaynormalepayone[$userid] + $timepaysuppayone[$userid];
 			} 
 
 			if($timevalue['start'] >= strtotime($allSundays[1]) && $timevalue['end'] < strtotime($allSundays[2])) {
+			
+				$userid = $timevalue['userid'];
 							
-				$timepaysumtow = $timepaysumtow + $timevalue['time'];
+				$timepaysumtow[$userid] = $timepaysumtow[$userid] + $timevalue['time'];
 				       				
 				$salary = $timevalue['salary'];
 				$salary_ = ($salary/60);
 								
-				if($timepaysumtow > 144000) {
-					$timepaynormale = 144000;
-					$hours = floor($timepaynormale / 3600);
-					$minutes = floor(($timepaynormale / 60) % 60);
-					$worktime = ($hours * 60) + $minutes;
-					$timepaynormalepaytow = $worktime * $salary_;
-					$timepaysup = $timepaysumtow - 144000;
+				if($timepaysumtow[$userid] > 144000) {
+					$timepaysup = $timepaysumtow[$userid] - 144000;
 					$hours = floor($timepaysup / 3600);
 					$minutes = floor(($timepaysup / 60) % 60);
 					$worktimesup = ($hours * 60) + $minutes;
-					$timepaysuppaytow = $worktimesup * ($salary_ * 1.5);
-					$paytimetow = $timepaynormalepaytow + $timepaysuppaytow;
+					$timepaysuppaytow[$userid] = $worktimesup * ($salary_ * 1.5);
 				} else {
-					$timepaysuppaytow = 0;
-					$timepaynormale = $timepaysumtow;
+					$timepaynormale = $timepaysumtow[$userid];
 					$hours = floor($timepaynormale / 3600);
 					$minutes = floor(($timepaynormale / 60) % 60);
 					$worktime = ($hours * 60) + $minutes;
-					$timepaynormalepaytow = $worktime * $salary_;
-					$paytimetow = $timepaynormalepaytow;
+					$timepaynormalepaytow[$userid] = $worktime * $salary_;
 				}
+				$paytimetow[$userid] = $timepaynormalepaytow[$userid] + $timepaysuppaytow[$userid];
 			}
 			$i++;
 		}
@@ -1461,68 +1530,63 @@ if($user_role == 'employer'){
 		$allSundays = getSundaysBetweenDates($start, $end);
 		
 		$i = 0;
-		$timepaysumone = 0;
-		$timepaysumtow = 0;
+		$timepaysumone = [];
+		$timepaysumtow = [];
+		$timepaynormalepayone = [];
+		$timepaysuppayone = [];
+		$paytimeone = [];
+		$timepaynormalepaytow = [];
+		$timepaysuppaytow = [];
+		$paytimetow = [];
 		foreach ($timepays as $key => $timevalue) {
 			if($timevalue['start'] >= strtotime($allSundays[0]) && $timevalue['end'] < strtotime($allSundays[1])) {
+			
+				$userid = $timevalue['userid'];
 
-				$timepaysumone = $timepaysumone + $timevalue['time'];
+				$timepaysumone[$userid] = $timepaysumone[$userid] + $timevalue['time'];
 			        				
 				$salary = $timevalue['salary'];
 				$salary_ = ($salary/60);
 				
-				if($timepaysumone > 144000) {
-					$timepaynormale = 144000;
+				if($timepaysumone[$userid] < 144000) {
+					$timepaynormale = $timepaysumone[$userid];
 					$hours = floor($timepaynormale / 3600);
 					$minutes = floor(($timepaynormale / 60) % 60);
 					$worktime = ($hours * 60) + $minutes;
-					$timepaynormalepayone = $worktime * $salary_;
-					$timepaysup = $timepaysumone - 144000;
+					$timepaynormalepayone[$userid] = $worktime * $salary_;
+				} else {
+					$timepaysup = $timepaysumone[$userid] - 144000;
 					$hours = floor($timepaysup / 3600);
 					$minutes = floor(($timepaysup / 60) % 60);
 					$worktimesup = ($hours * 60) + $minutes;
-					$timepaysuppayone = $worktimesup * ($salary_ * 1.5);
-					$paytimeone = $timepaynormalepayone + $timepaysuppayone;
-				} else {
-					$timepaysuppayone = 0;
-					$timepaynormale = $timepaysumone;
-					$hours = floor($timepaynormale / 3600);
-					$minutes = floor(($timepaynormale / 60) % 60);
-					$worktime = ($hours * 60) + $minutes;
-					$timepaynormalepayone = $worktime * $salary_;
-					$paytimeone = $timepaynormalepayone;
+					$timepaysuppayone[$userid] = $worktimesup * ($salary_ * 1.5);
 				}
-									
+		        	$paytimeone[$userid] = $timepaynormalepayone[$userid] + $timepaysuppayone[$userid];
 			} 
 
 			if($timevalue['start'] >= strtotime($allSundays[1]) && $timevalue['end'] < strtotime($allSundays[2])) {
+			
+				$userid = $timevalue['userid'];
 							
-				$timepaysumtow = $timepaysumtow + $timevalue['time'];
+				$timepaysumtow[$userid] = $timepaysumtow[$userid] + $timevalue['time'];
 				
 				$salary = $timevalue['salary'];
 				$salary_ = ($salary/60);
 								
-				if($timepaysumtow > 144000) {
-					$timepaynormale = 144000;
+				if($timepaysumtow[$userid] < 144000) {
+					$timepaynormale = $timepaysumtow[$userid];
 					$hours = floor($timepaynormale / 3600);
 					$minutes = floor(($timepaynormale / 60) % 60);
 					$worktime = ($hours * 60) + $minutes;
-					$timepaynormalepaytow = $worktime * $salary_;
-					$timepaysup = $timepaysumtow - 144000;
+					$timepaynormalepaytow[$userid] = $worktime * $salary_;
+				} else {
+					$timepaysup = $timepaysumtow[$userid] - 144000;
 					$hours = floor($timepaysup / 3600);
 					$minutes = floor(($timepaysup / 60) % 60);
 					$worktimesup = ($hours * 60) + $minutes;
-					$timepaysuppaytow = $worktimesup * ($salary_ * 1.5);
-					$paytimetow = $timepaynormalepaytow + $timepaysuppaytow;
-				} else {
-					$timepaysuppaytow = 0;
-					$timepaynormale = $timepaysumtow;
-					$hours = floor($timepaynormale / 3600);
-					$minutes = floor(($timepaynormale / 60) % 60);
-					$worktime = ($hours * 60) + $minutes;
-					$timepaynormalepaytow = $worktime * $salary_;
-					$paytimetow = $timepaynormalepaytow;
+					$timepaysuppaytow[$userid] = $worktimesup * ($salary_ * 1.5);
 				}
+				$paytimetow[$userid] = $timepaynormalepaytow[$userid] + $timepaysuppaytow[$userid];
 			}
 			$i++;
 		}
@@ -1532,17 +1596,16 @@ if($user_role == 'employer'){
 	$y = 0;
 	$loop = [];
 	foreach($datetimestarts as $datetimestart){
-		
-        $timepays_[$i]['userid'] = $datetimestart['userid'];
+        	$timepays_[$i]['userid'] = $datetimestart['userid'];
 		$timepays_[$i]['time'] = $datetimeends[$i] - $datetimestart['time'];
 		$timepays_[$i]['start'] = $datetimestart['time'];
 		$timepays_[$i]['end'] = $datetimeends[$i];
-        $timepays_[$i]['salary'] = $datetimestart['salary'];
-        $timestart = $datetimestart['time'];
-        $thissunday = date("m/d/Y", strtotime('this sunday', $timestart));
-        $timepays_[$i]['thissunday'] = $thissunday;
-        $nextsunday = date("m/d/Y", strtotime('+1 week sunday', $timestart));
-        $timepays_[$i]['nextsunday'] = $nextsunday;
+	        $timepays_[$i]['salary'] = $datetimestart['salary'];
+	        $timestart = $datetimestart['time'];
+	        $thissunday = date("m/d/Y", strtotime('this sunday', $timestart));
+	        $timepays_[$i]['thissunday'] = $thissunday;
+	        $nextsunday = date("m/d/Y", strtotime('+1 week sunday', $timestart));
+	        $timepays_[$i]['nextsunday'] = $nextsunday;
 		$i++;
 	}
 	
@@ -1558,21 +1621,22 @@ if($user_role == 'employer'){
         if(isset($_GET['week'])) {
             for($i = 0;$i <= count($startofweek); $i++){
                 if($timepay_['start'] >= strtotime($startofweek[$i]) && $timepay_['end'] < strtotime($startofweek[$i+1])){
-                			$counttimepay = $counttimepay + $timepay_['time'];
-                			if($counttimepay <= 144000){
+                			$userid = $timepay_['userid'];
+                			$counttimepay[$userid] = $counttimepay[$userid] + $timepay_['time'];
+                			if($counttimepay[$userid] <= 144000){
         			        	$hours_ = floor($timepay_['time'] / 3600);
         					$minutes_ = floor(($timepay_['time'] / 60) % 60);
         					$worktime_ = ($hours_ * 60) + $minutes_;
         					$salary__ = ($salaryi_/60);
-        					$pay_normale = $worktime_ * $salary__;
+        					$pay_normale['userid'] = $worktime_ * $salary__;
     					} else {
               			        	$hours_ = floor($timepay_['time'] / 3600);
         					$minutes_ = floor(($timepay_['time'] / 60) % 60);
         					$worktime_ = ($hours_ * 60) + $minutes_;
         					$salary__ = ($salaryi_/60) * 1.5;
-        					$pay_sup = $worktime_ * $salary__;
+        					$pay_sup['userid'] = $worktime_ * $salary__;
     					}
-    					$pay_ = $pay_normale + $pay_sup;
+    					$pay_ = $pay_normale['userid'] + $pay_sup['userid'];
                 }
             }
 		} else if(isset($_GET['month'])) {
@@ -1581,67 +1645,71 @@ if($user_role == 'employer'){
             
                  $startofmonthminus = strtotime($startofmonth[$i]) - 604800;
 		$startofmonthplus = strtotime($startofmonth[$i+1]) + 604800;
-            
+            	$counttimepay = [];
                 if($timepay_['start'] >= $startofmonthminus && $timepay_['end'] < $startofmonthplus){
+                			$userid = $timepay_['userid'];
                 			$counttimepay = $counttimepay + $timepay_['time'];
-                			if($counttimepay <= 144000){
+                			if($counttimepay[$userid] <= 144000){
         			        	$hours_ = floor($timepay_['time'] / 3600);
         					$minutes_ = floor(($timepay_['time'] / 60) % 60);
         					$worktime_ = ($hours_ * 60) + $minutes_;
         					$salary__ = ($salaryi_/60);
-        					$pay_normale = $worktime_ * $salary__;
+        					$pay_normale[$userid] = $worktime_ * $salary__;
     					} else {
               			        	$hours_ = floor($timepay_['time'] / 3600);
         					$minutes_ = floor(($timepay_['time'] / 60) % 60);
         					$worktime_ = ($hours_ * 60) + $minutes_;
         					$salary__ = ($salaryi_/60) * 1.5;
-        					$pay_sup = $worktime_ * $salary__;
+        					$pay_sup[$userid] = $worktime_ * $salary__;
     					}
-    					$pay_ = $pay_normale + $pay_sup;
+    					$pay_ = $pay_normale[$userid] + $pay_sup[$userid];
                 }
             }
 			
 		} else if(isset($_GET['biweek'])) {
-		
+		$counttimepay = [];
             for($i=0;$i <= count($startofworkdayonmonday);$i++){
                   if($timepay_['start'] >= strtotime($startofworkdayonmonday[$i]) && $timepay_['end'] < strtotime($startofworkdayonmonday[$i+1])){
-                			$counttimepay = $counttimepay + $timepay_['time'];
-                			if($counttimepay <= 144000){
+                  			$userid = $timepay_['userid'];
+                			$counttimepay[$userid] = $counttimepay[$userid] + $timepay_['time'];
+                			if($counttimepay[$userid] <= 144000){
         			        	$hours_ = floor($timepay_['time'] / 3600);
         					$minutes_ = floor(($timepay_['time'] / 60) % 60);
         					$worktime_ = ($hours_ * 60) + $minutes_;
         					$salary__ = ($salaryi_/60);
-        					$pay_normale = $worktime_ * $salary__;
+        					$pay_normale[$userid] = $worktime_ * $salary__;
     					} else {
               			        	$hours_ = floor($timepay_['time'] / 3600);
         					$minutes_ = floor(($timepay_['time'] / 60) % 60);
         					$worktime_ = ($hours_ * 60) + $minutes_;
         					$salary__ = ($salaryi_/60) * 1.5;
-        					$pay_sup = $worktime_ * $salary__;
+        					$pay_sup[$userid] = $worktime_ * $salary__;
     					}
-    					$pay_ = $pay_normale + $pay_sup;
+    					$pay_ = $pay_normale[$userid] + $pay_sup[$userid];
                 }
             }
 			
 		} else {
 		    
+		$counttimepay = [];
 		for($i=0;$i <= count($startofworkdayonmonday);$i++){
                   if($timepay_['start'] >= strtotime($startofworkdayonmonday[$i]) && $timepay_['end'] < strtotime($startofworkdayonmonday[$i+1])){
-                			$counttimepay = $counttimepay + $timepay_['time'];
-                			if($counttimepay <= 144000){
+                  			$userid = $timepay_['userid'];                  
+                			$counttimepay[$userid] = $counttimepay[$userid] + $timepay_['time'];
+                			if($counttimepay[$userid] <= 144000){
         			        	$hours_ = floor($timepay_['time'] / 3600);
         					$minutes_ = floor(($timepay_['time'] / 60) % 60);
         					$worktime_ = ($hours_ * 60) + $minutes_;
         					$salary__ = ($salaryi_/60);
-        					$pay_normale = $worktime_ * $salary__;
+        					$pay_normale[$userid] = $worktime_ * $salary__;
     					} else {
               			        	$hours_ = floor($timepay_['time'] / 3600);
         					$minutes_ = floor(($timepay_['time'] / 60) % 60);
         					$worktime_ = ($hours_ * 60) + $minutes_;
         					$salary__ = ($salaryi_/60) * 1.5;
-        					$pay_sup = $worktime_ * $salary__;
+        					$pay_sup[$userid] = $worktime_ * $salary__;
     					}
-    					$pay_ = $pay_normale + $pay_sup;
+    					$pay_ = $pay_normale[$userid] + $pay_sup[$userid];
                 }
             }
 			
@@ -1680,13 +1748,13 @@ if($user_role == 'employer'){
 	     if(isset($_GET['week'])) {
 	
 	        echo 'Votre montant brute pour le temps regulier pour cette semaine: ';
-	    	echo round($timepaynormalepay, 2).'$';
+	    	echo round(array_sum($timepaynormalepay), 2).'$';
 	    	echo '<br>';
 	    	echo 'Votre montant brute pour le temps suplementaire: ';
-	    	echo round($timepaysuppay, 2).'$';
+	    	echo round(array_sum($timepaysuppay), 2).'$';
 	    	echo '<br>';
 	    	echo 'Votre montant brute pour le total de la semaie: ';
-	    	echo round($paytime, 2).'$';
+	    	echo round(array_sum($paytime), 2).'$';
 	    	echo '<br>';
 	        
 	    } else if(isset($_GET['month'])) {
@@ -1694,13 +1762,13 @@ if($user_role == 'employer'){
 	        $i = 1;
 	        foreach($reindexed_array_paytotal as $reindexed_array_paytotal_){
 		        echo 'Votre montant brute pour le temps regulier pour la semaine numero '.$i.': ';
-		    	echo round($reindexed_array_normale[$x], 2).'$';
+		    	echo round(array_sum($reindexed_array_normale[$x]), 2).'$';
 		    	echo '<br>';
 		    	echo 'Votre montant brute pour le temps suplementaire pour la semaine numero '.$i.': ';
-		    	echo round($reindexed_array_sup[$x], 2).'$';
+		    	echo round(array_sum($reindexed_array_sup[$x]), 2).'$';
 		    	echo '<br>';
 		    	echo 'Votre montant brute pour le total de la semaie numero '.$i.': ';
-		    	echo round($reindexed_array_paytotal_, 2).'$';
+		    	echo round(array_sum($reindexed_array_paytotal_), 2).'$';
 		    	echo '<br>';
 		    	$x++;
 		    	$i++;
@@ -1712,50 +1780,50 @@ if($user_role == 'employer'){
 	    } else if(isset($_GET['biweek'])) {
 	        
 	        echo 'Votre montant brute pour le temps regulier pour la premiere semaine: ';
-	    	echo round($timepaynormalepayone, 2).'$';
+	    	echo round(array_sum($timepaynormalepayone), 2).'$';
 	    	echo '<br>';
 	    	echo 'Votre montant brute pour le temps suplementaire de la premiere semaine: ';
-	    	echo round($timepaysuppayone, 2).'$';
+	    	echo round(array_sum($timepaysuppayone), 2).'$';
 	    	echo '<br>';
 	    	echo 'Votre montant brute pour le total de la premiere semaie: ';
-	    	echo round($paytimeone, 2).'$';
+	    	echo round(array_sum($paytimeone), 2).'$';
 	    	echo '<br>';
 	    	echo 'Votre montant brute pour le temps regulier pour la seconde semaine: ';
-	    	echo round($timepaynormalepaytow, 2).'$';
+	    	echo round(array_sum($timepaynormalepaytow_), 2).'$';
 	    	echo '<br>';
 	    	echo 'Votre montant brute pour le temps suplementaire de la seconde semaine: ';
-	    	echo round($timepaysuppaytow, 2).'$';
+	    	echo round(array_sum($timepaysuppaytow), 2).'$';
 	    	echo '<br>';
 	    	echo 'Votre montant brute pour le total de la seconde semaie: ';
-	    	echo round($paytimetow, 2).'$';
+	    	echo round(array_sum($paytimetow), 2).'$';
 	    	echo '<br>';
 	    	echo 'Votre montant brute pour les deux semaines: ';
-	    	$paytimefull = $paytimeone + $paytimetow;
+	    	$paytimefull = array_sum($paytimeone) + array_sum($paytimetow);
 	    	echo round($paytimefull, 2).'$';
 	    	echo '<br>';
 	        
 	    } else  {
 	        
 	        echo 'Votre montant brute pour le temps regulier pour la premiere semaine: ';
-	    	echo round($timepaynormalepayone, 2).'$';
+	    	echo round(array_sum($timepaynormalepayone), 2).'$';
 	    	echo '<br>';
 	    	echo 'Votre montant brute pour le temps suplementaire de la premiere semaine: ';
-	    	echo round($timepaysuppayone, 2).'$';
+	    	echo round(array_sum($timepaysuppayone), 2).'$';
 	    	echo '<br>';
 	    	echo 'Votre montant brute pour le total de la premiere semaie: ';
-	    	echo round($paytimeone, 2).'$';
+	    	echo round(array_sum($paytimeone), 2).'$';
 	    	echo '<br>';
 	    	echo 'Votre montant brute pour le temps regulier pour la seconde semaine: ';
-	    	echo round($timepaynormalepaytow, 2).'$';
+	    	echo round(array_sum($timepaynormalepaytow), 2).'$';
 	    	echo '<br>';
 	    	echo 'Votre montant brute pour le temps suplementaire de la seconde semaine: ';
-	    	echo round($timepaysuppaytow, 2).'$';
+	    	echo round(array_sum($timepaysuppaytow), 2).'$';
 	    	echo '<br>';
 	    	echo 'Votre montant brute pour le total de la seconde semaie: ';
-	    	echo round($paytimetow, 2).'$';
+	    	echo round(array_sum($paytimetow), 2).'$';
 	    	echo '<br>';
 	    	echo 'Votre montant brute pour les deux semaines: ';
-	    	$paytimefull = $paytimeone + $paytimetow;
+	    	$paytimefull = array_sum($paytimeone) + array_sum($paytimetow);
 	    	echo round($paytimefull, 2).'$';
 	    	echo '<br>';
 	    }	
