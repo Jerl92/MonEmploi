@@ -120,6 +120,10 @@ function monemploi_ajax_scripts() {
 	wp_register_script( 'monemploi-ajax-employee-scores-select-scripts', $url . "js/null.js", array( 'jquery' ), '1.0.0', true );
 	wp_localize_script( 'monemploi-ajax-employee-scores-select-scripts', 'employee_scores_select_monemploi_ajax_url', admin_url( 'admin-ajax.php', 'relative' ) );
 	wp_enqueue_script( 'monemploi-ajax-employee-scores-select-scripts' );
+	
+	wp_register_script( 'monemploi-ajax-employee-jobs-select-scripts', $url . "js/null.js", array( 'jquery' ), '1.0.0', true );
+	wp_localize_script( 'monemploi-ajax-employee-jobs-select-scripts', 'horaire_jobs_select_monemploi_ajax_url', admin_url( 'admin-ajax.php', 'relative' ) );
+	wp_enqueue_script( 'monemploi-ajax-employee-jobs-select-scripts' );
 
 }
 
@@ -1546,6 +1550,19 @@ function employee_scores_select($post) {
 	$value = $_POST['value'];
 	
 	update_user_meta(get_current_user_id(), 'employee_scores_select', $value);
+	
+	wp_send_json( $value );
+	
+}
+
+/* AJAX action callback */
+add_action( 'wp_ajax_jobs_horaire_select', 'jobs_horaire_select' );
+add_action( 'wp_ajax_nopriv_jobs_horaire_select', 'jobs_horaire_select' );
+function jobs_horaire_select($post) {
+
+	$value = $_POST['value'];
+	
+	update_user_meta(get_current_user_id(), 'jobs_horaire_select', $value);
 	
 	wp_send_json( $value );
 	

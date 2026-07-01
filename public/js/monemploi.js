@@ -372,7 +372,7 @@ jQuery(document).ready(function($) {
 			dataType: 'JSON',
 				success: function(data) {
 					jQuery('#coworkertest').html(data);
-					location.reload(true);
+					location.reload();
 				},
 				error: function(error) {
 					console.log(error);
@@ -394,8 +394,7 @@ jQuery(document).ready(function($) {
 				},
 			dataType: 'JSON',
 				success: function(data) {
-					jQuery('#coworkertest').html(data);
-					location.reload(true);
+					location.reload();
 				},
 				error: function(error) {
 					console.log(error);
@@ -408,17 +407,15 @@ jQuery(document).ready(function($) {
 });
 
 jQuery(document).ready(function($) {
-
 	var urlParams = new URLSearchParams(window.location.search);
 	var horaireweek = urlParams.get('horaireweek');
 	var summary = urlParams.get('summary');	
-	var month = urlParams.get('month');	
-	
-	// Select the checkbox
-	const select = document.getElementById('employee_horaire_select');
+	var month = urlParams.get('month');
+	var biweek = urlParams.get('biweek');	
+	var week = urlParams.get('week');
 	
 	if (jQuery(".employee_horaire_select")[0]){
-		var employee_horaire_select = $('#employee_horaire_select').find(":selected").val();
+		var employee_horaire_select = jQuery('#employee_horaire_select').find(":selected").val();
 		
 		jQuery.ajax({
 			type: 'post',
@@ -429,7 +426,7 @@ jQuery(document).ready(function($) {
 			},
 		dataType: 'JSON',
 			success: function(data) {
-				if(horaireweek || summary){
+				if(summary || month || biweek || week){
 				    if (window.location.href.indexOf('reload')==-1) {
 				         window.location.replace(window.location.href+'&reload');
 				    }
@@ -444,19 +441,19 @@ jQuery(document).ready(function($) {
 			}
 		})
 		
-		select.addEventListener('change', function(event) {
-		        const selectedValue = event.target.value;
+		jQuery('#employee_horaire_select').on('change', function() {
+		        var selectedValue_horaire = jQuery(this).find(":selected").val();
 	
 			jQuery.ajax({
 				type: 'post',
 				url: employee_horaire_select_monemploi_ajax_url,
 				data: {
-					'value': selectedValue,
+					'value': selectedValue_horaire,
 					'action': 'employee_horaire_select'
 				},
 			dataType: 'JSON',
 				success: function(data) {
-					location.reload(true);
+					location.reload();
 				},
 				error: function(error) {
 					console.log(error);
@@ -483,12 +480,9 @@ jQuery(document).ready(function($) {
 		})
 		
 	}
-	
-	// Select the checkbox
-	const scores = document.getElementById('employee_scores_select');
-	
+
 	if (jQuery(".employee_scores_select")[0]){
-		var employee_scores_select = $('#employee_scores_select').find(":selected").val();
+		var employee_scores_select = jQuery('#employee_scores_select').find(":selected").val();
 		
 		jQuery.ajax({
 			type: 'post',
@@ -514,19 +508,19 @@ jQuery(document).ready(function($) {
 			}
 		})
 		
-		scores.addEventListener('change', function(event) {
-		        const selectedValue = event.target.value;
+		jQuery('#employee_scores_select').on('change', function() {
+		        var selectedValue_scores = jQuery(this).find(":selected").val();
 	
 			jQuery.ajax({
 				type: 'post',
 				url: employee_scores_select_monemploi_ajax_url,
 				data: {
-					'value': selectedValue,
+					'value': selectedValue_scores,
 					'action': 'employee_scores_select'
 				},
 			dataType: 'JSON',
 				success: function(data) {
-					location.reload(true);
+					location.reload();
 				},
 				error: function(error) {
 					console.log(error);
@@ -553,5 +547,139 @@ jQuery(document).ready(function($) {
 		})
 		
 	}	
+	
+	if (jQuery(".jobs_summary_select")[0]){
+		var jobs_summary_select = jQuery('#jobs_summary_select').find(":selected").val();
+		
+		jQuery.ajax({
+			type: 'post',
+			url: horaire_jobs_select_monemploi_ajax_url,
+			data: {
+				'value': jobs_summary_select,
+				'action': 'jobs_horaire_select'
+			},
+		dataType: 'JSON',
+			success: function(data) {
+				if(horaireweek){
+				    if (window.location.href.indexOf('reload')==-1) {
+				         window.location.replace(window.location.href+'&reload');
+				    }
+				} else {
+				    if (window.location.href.indexOf('reload')==-1) {
+				         window.location.replace(window.location.href+'?reload');
+				    }
+				} 
+			},
+			error: function(error) {
+				console.log(error);
+			}
+		})
+		
+		jQuery('#jobs_summary_select').on('change', function() {
+		        var jobs_summary_select_ = jQuery(this).val();
+
+			jQuery.ajax({
+				type: 'post',
+				url: horaire_jobs_select_monemploi_ajax_url,
+				data: {
+					'value': jobs_summary_select_,
+					'action': 'jobs_horaire_select'
+				},
+			dataType: 'JSON',
+				success: function(data) {
+					location.reload();
+				},
+				error: function(error) {
+					console.log(error);
+				}
+			})
+		});
+		
+	} else {
+	
+		jQuery.ajax({
+			type: 'post',
+			url: horaire_jobs_select_monemploi_ajax_url,
+			data: {
+				'value': -1,
+				'action': 'jobs_horaire_select'
+			},
+		dataType: 'JSON',
+			success: function(data) {
+				//NULL
+			},
+			error: function(error) {
+				console.log(error);
+			}
+		})
+		
+	}
+	
+	if (jQuery(".jobs_horaire_select")[0]){
+		var jobs_horaire_select = jQuery('#jobs_horaire_select').find(":selected").val();
+		
+		jQuery.ajax({
+			type: 'post',
+			url: horaire_jobs_select_monemploi_ajax_url,
+			data: {
+				'value': jobs_horaire_select,
+				'action': 'jobs_horaire_select'
+			},
+		dataType: 'JSON',
+			success: function(data) {
+				if(biweek || month || week || summary){
+				    if (window.location.href.indexOf('reload')==-1) {
+				         window.location.replace(window.location.href+'&reload');
+				    }
+				} else {
+				    if (window.location.href.indexOf('reload')==-1) {
+				         window.location.replace(window.location.href+'?reload');
+				    }
+				} 
+			},
+			error: function(error) {
+				console.log(error);
+			}
+		})
+		
+		jQuery('#jobs_horaire_select').on('change', function() {
+		        var jobs_horaire_select_ = jQuery(this).val();
+	
+			jQuery.ajax({
+				type: 'post',
+				url: horaire_jobs_select_monemploi_ajax_url,
+				data: {
+					'value': jobs_horaire_select_,
+					'action': 'jobs_horaire_select'
+				},
+			dataType: 'JSON',
+				success: function(data) {
+					location.reload();
+				},
+				error: function(error) {
+					console.log(error);
+				}
+			})
+		});
+		
+	} else {
+	
+		jQuery.ajax({
+			type: 'post',
+			url: horaire_jobs_select_monemploi_ajax_url,
+			data: {
+				'value': -1,
+				'action': 'jobs_horaire_select'
+			},
+		dataType: 'JSON',
+			success: function(data) {
+				//NULL
+			},
+			error: function(error) {
+				console.log(error);
+			}
+		})
+		
+	}
 });
 
