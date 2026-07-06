@@ -426,7 +426,7 @@ jQuery(document).ready(function($) {
 			},
 		dataType: 'JSON',
 			success: function(data) {
-				if(summary || month || biweek || week){
+				if(horaireweek || summary || month || biweek || week){
 				    if (window.location.href.indexOf('reload')==-1) {
 				         window.location.replace(window.location.href+'&reload');
 				    }
@@ -548,73 +548,6 @@ jQuery(document).ready(function($) {
 		
 	}	
 	
-	if (jQuery(".jobs_summary_select")[0]){
-		var jobs_summary_select = jQuery('#jobs_summary_select').find(":selected").val();
-		
-		jQuery.ajax({
-			type: 'post',
-			url: horaire_jobs_select_monemploi_ajax_url,
-			data: {
-				'value': jobs_summary_select,
-				'action': 'jobs_horaire_select'
-			},
-		dataType: 'JSON',
-			success: function(data) {
-				if(horaireweek){
-				    if (window.location.href.indexOf('reload')==-1) {
-				         window.location.replace(window.location.href+'&reload');
-				    }
-				} else {
-				    if (window.location.href.indexOf('reload')==-1) {
-				         window.location.replace(window.location.href+'?reload');
-				    }
-				} 
-			},
-			error: function(error) {
-				console.log(error);
-			}
-		})
-		
-		jQuery('#jobs_summary_select').on('change', function() {
-		        var jobs_summary_select_ = jQuery(this).val();
-
-			jQuery.ajax({
-				type: 'post',
-				url: horaire_jobs_select_monemploi_ajax_url,
-				data: {
-					'value': jobs_summary_select_,
-					'action': 'jobs_horaire_select'
-				},
-			dataType: 'JSON',
-				success: function(data) {
-					location.reload();
-				},
-				error: function(error) {
-					console.log(error);
-				}
-			})
-		});
-		
-	} else {
-	
-		jQuery.ajax({
-			type: 'post',
-			url: horaire_jobs_select_monemploi_ajax_url,
-			data: {
-				'value': -1,
-				'action': 'jobs_horaire_select'
-			},
-		dataType: 'JSON',
-			success: function(data) {
-				//NULL
-			},
-			error: function(error) {
-				console.log(error);
-			}
-		})
-		
-	}
-	
 	if (jQuery(".jobs_horaire_select")[0]){
 		var jobs_horaire_select = jQuery('#jobs_horaire_select').find(":selected").val();
 		
@@ -627,7 +560,7 @@ jQuery(document).ready(function($) {
 			},
 		dataType: 'JSON',
 			success: function(data) {
-				if(biweek || month || week || summary){
+				if(horaireweek || summary || month || biweek || week){
 				    if (window.location.href.indexOf('reload')==-1) {
 				         window.location.replace(window.location.href+'&reload');
 				    }
