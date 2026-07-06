@@ -1404,17 +1404,14 @@ if($user_role == 'employer'){
                                 if($user_role == 'employeur'){
                                 			if(intval($jobs_horaire_select) == intval($job_horaire)){
 	                                                        if($punch[0] == 'entrer'){
-	                                                                if(intval($employee_horaire_select) == $punch[2]){
+	                                                                if($employee_horaire_select == $punch[2]){
 	                                                                        $datetimestarts[$n]['userid'] = $punch[2];
 	                                                                        $datetimestarts[$n]['time'] = $punch[1];
 	                                                                        $datetimestarts[$n]['salary'] = $salary;
 	                                                                        $n++;
-	                                                                }else if(intval($employee_replace) == $punch[2] && $dayoff_status == 3){
-	                                                                        $datetimestarts[$n]['userid'] = $employee_replace;
-	                                                                        $datetimestarts[$n]['time'] = $punch[1];
-	                                                                        $datetimestarts[$n]['salary'] = $salary;
-	                                                                        $n++;
-	                                                                } else if (intval($employee_horaire_select) == 0) {
+	                                                                }
+
+	                                                                if ($employee_horaire_select == 0) {
 	                                                                        $datetimestarts[$n]['userid'] = $punch[2];
 	                                                                        $datetimestarts[$n]['time'] = $punch[1];
 	                                                                        $datetimestarts[$n]['salary'] = $salary;
@@ -1425,10 +1422,8 @@ if($user_role == 'employer'){
 	                                if(intval($employee_horaire_select) == $punch[2]){
 	                                    $datetimeends[$l] = $punch[1];
 	                                                                         $l++;
-	                                }else if(intval($employee_replace) == $punch[2] && $dayoff_status == 3){
-	                                                                        $datetimeends[$l] = $punch[1];
-	                                                                         $l++;
-	                                } else if (intval($employee_horaire_select) == 0) {
+	                                }
+	                                if (intval($employee_horaire_select) == 0) {
 	                                    $datetimeends[$l] = $punch[1];
 	                                                                         $l++;
 	                                                                }
@@ -1436,17 +1431,13 @@ if($user_role == 'employer'){
                                                  }
                                                  if(intval($jobs_horaire_select) == 0){
                                                                 if($punch[0] == 'entrer'){
-	                                                                if(intval($employee_horaire_select) == $punch[2]){
+	                                                                if($employee_horaire_select == $punch[2]){
 	                                                                        $datetimestarts[$n]['userid'] = $punch[2];
 	                                                                        $datetimestarts[$n]['time'] = $punch[1];
 	                                                                        $datetimestarts[$n]['salary'] = $salary;
 	                                                                        $n++;
-	                                                                }else if(intval($employee_replace) == $punch[2] && $dayoff_status == 3){
-	                                                                        $datetimestarts[$n]['userid'] = $employee_replace;
-	                                                                        $datetimestarts[$n]['time'] = $punch[1];
-	                                                                        $datetimestarts[$n]['salary'] = $salary;
-	                                                                        $n++;
-	                                                                } else if (intval($employee_horaire_select) == 0) {
+	                                                                }
+	                                                                if ($employee_horaire_select == 0) {
 	                                                                        $datetimestarts[$n]['userid'] = $punch[2];
 	                                                                        $datetimestarts[$n]['time'] = $punch[1];
 	                                                                        $datetimestarts[$n]['salary'] = $salary;
@@ -1457,10 +1448,8 @@ if($user_role == 'employer'){
 	                                if(intval($employee_horaire_select) == $punch[2]){
 	                                    $datetimeends[$l] = $punch[1];
 	                                                                         $l++;
-	                                }else if(intval($employee_replace) == $punch[2] && $dayoff_status == 3){
-	                                                                        $datetimeends[$l] = $punch[1];
-	                                                                         $l++;
-	                                } else if (intval($employee_horaire_select) == 0) {
+	                                }
+	                                if (intval($employee_horaire_select) == 0) {
 	                                    $datetimeends[$l] = $punch[1];
 	                                                                         $l++;
 	                                                                }
