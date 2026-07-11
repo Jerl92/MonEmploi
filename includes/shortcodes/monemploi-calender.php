@@ -635,9 +635,11 @@ foreach($posts as $post) {
         $dayoff_status = get_post_meta( $post->ID, 'dayoff_status_key', true );
         $employee_horaire_select = get_user_meta(get_current_user_id(), 'employee_horaire_select', true);
         $jobs_horaire_select = get_user_meta(get_current_user_id(), 'jobs_horaire_select', true);
+        $coworker_see_unsee = get_user_meta(get_current_user_id(), 'coworker_see_unsee', true);
+        
         if($user_role == 'employer'){
                 if($employee_replace != '' && $dayoff_status == 3){
-                	$employee_horaire = -1;
+                 	$employee_horaire = -1;
                	}
                	if($employee_horaire == get_current_user_id()){
 			echo '<li style="display: none;">'. $employee_horaire . '||' . $job_horaire . '||' . strtotime($datepickerstarthoraire) . '||' . $timestarthoraire . '||' . strtotime($datepickerendhoraire) . '||' . $timeendhoraire . '||' . $salaire . '</li>';
@@ -649,11 +651,21 @@ foreach($posts as $post) {
 			$horaires[$i] = array($post->ID, $employee_replace, $job_horaire, $datepickerstarthoraire, $timestarthoraire, $datepickerendhoraire, $timeendhoraire, $salaire, $push_, $employee_replace, $dayoff_status);
 	        	$i++;
         	}
+        	if($coworker_see_unsee == 'true' && ($employee_horaire != get_current_user_id() && ($employee_replace == '' && $dayoff_status != 3 ))){
+			echo '<li style="display: none;">'. $employee_horaire . '||' . $job_horaire . '||' . strtotime($datepickerstarthoraire) . '||' . $timestarthoraire . '||' . strtotime($datepickerendhoraire) . '||' . $timeendhoraire . '||' . $salaire . '</li>';
+			$horaires[$i] = array($post->ID, $employee_horaire, $job_horaire, $datepickerstarthoraire, $timestarthoraire, $datepickerendhoraire, $timeendhoraire, $salaire, $push_, $employee_replace, $dayoff_status);
+	        	$i++;
+        	}
+        	if($coworker_see_unsee == 'true' && ($employee_replace != get_current_user_id() && $dayoff_status == 3)){
+			echo '<li style="display: none;">'. $employee_replace . '||' . $job_horaire . '||' . strtotime($datepickerstarthoraire) . '||' . $timestarthoraire . '||' . strtotime($datepickerendhoraire) . '||' . $timeendhoraire . '||' . $salaire . '</li>';
+			$horaires[$i] = array($post->ID, $employee_replace, $job_horaire, $datepickerstarthoraire, $timestarthoraire, $datepickerendhoraire, $timeendhoraire, $salaire, $push_, $employee_replace, $dayoff_status);
+	        	$i++;
+        	}
         }
         if($user_role == 'employeur'){
-                 if($employee_replace != '' && $dayoff_status == 3){
+                if($employee_replace != '' && $dayoff_status == 3){
                  	$employee_horaire = -1;
-               	 }
+               	}
                	if($employee_horaire == $employee_horaire_select){
 			echo '<li style="display: none;">'. $employee_horaire . '||' . $job_horaire . '||' . strtotime($datepickerstarthoraire) . '||' . $timestarthoraire . '||' . strtotime($datepickerendhoraire) . '||' . $timeendhoraire . '||' . $salaire . '</li>';
 			$horaires[$i] = array($post->ID, $employee_horaire, $job_horaire, $datepickerstarthoraire, $timestarthoraire, $datepickerendhoraire, $timeendhoraire, $salaire, $push_, $employee_replace, $dayoff_status);
@@ -665,9 +677,15 @@ foreach($posts as $post) {
 	        	$i++;
         	}
         	if($employee_horaire_select == 0){
-			echo '<li style="display: none;">'. $employee_horaire . '||' . $job_horaire . '||' . strtotime($datepickerstarthoraire) . '||' . $timestarthoraire . '||' . strtotime($datepickerendhoraire) . '||' . $timeendhoraire . '||' . $salaire . '</li>';
-			$horaires[$i] = array($post->ID, $employee_horaire, $job_horaire, $datepickerstarthoraire, $timestarthoraire, $datepickerendhoraire, $timeendhoraire, $salaire, $push_, $employee_replace, $dayoff_status);
-	        	$i++;
+		        if($employee_replace != '' && $dayoff_status == 3){
+	        		echo '<li style="display: none;">'. $employee_replace . '||' . $job_horaire . '||' . strtotime($datepickerstarthoraire) . '||' . $timestarthoraire . '||' . strtotime($datepickerendhoraire) . '||' . $timeendhoraire . '||' . $salaire . '</li>';
+				$horaires[$i] = array($post->ID, $employee_replace, $job_horaire, $datepickerstarthoraire, $timestarthoraire, $datepickerendhoraire, $timeendhoraire, $salaire, $push_, $employee_replace, $dayoff_status);
+		        	$i++;
+	        	} else if($employee_horaire != ''){
+				echo '<li style="display: none;">'. $employee_horaire . '||' . $job_horaire . '||' . strtotime($datepickerstarthoraire) . '||' . $timestarthoraire . '||' . strtotime($datepickerendhoraire) . '||' . $timeendhoraire . '||' . $salaire . '</li>';
+				$horaires[$i] = array($post->ID, $employee_horaire, $job_horaire, $datepickerstarthoraire, $timestarthoraire, $datepickerendhoraire, $timeendhoraire, $salaire, $push_, $employee_replace, $dayoff_status);
+		        	$i++;
+		        }
         	}
 	}
 }
@@ -723,31 +741,6 @@ foreach($posts as $post) {
 	                $arraystart = explode(":", $horaire[4]);
 	                $arrayend = explode(":", $horaire[6]);
 	                $getdate = gmdate("m/d/Y", $_GET['daytime']);
-	
-			if($employee_horaire_select == 0){
-	                if($horaire[9] != '' && $horaire[10] == 3){ 
-	                            $employee_replace = get_post_meta( $horaire[0], 'employee_replace_key', true);
-	                            $get_user_by_id = get_user_by('ID', $employee_replace);
-	                    } else { 
-	                            $employee_horaire = get_post_meta( $horaire[0], 'employee_horaire_key', true);
-	                            $get_user_by_id = get_user_by('ID', $employee_horaire);
-	                    }
-	                  }
-	                  
-	          	if($employee_horaire_select != 0){
-	                if($horaire[9] != '' && $horaire[10] == 3){ 
-	                            $employee_replace = get_post_meta( $horaire[0], 'employee_replace_key', true);
-	                            if($employee_horaire_select == $employee_replace){ 
-	                                    $get_user_by_id = get_user_by('ID', $employee_replace);
-	                            }
-	                    } else { 
-	                            $employee_horaire = get_post_meta( $horaire[0], 'employee_horaire_key', true);
-	                            if($employee_horaire_select == $employee_horaire){ 
-	                            	$get_user_by_id = get_user_by('ID', $employee_horaire);
-	                            }
-	                    }
-	                  }    
-	                    $job_horaire = get_post_meta( $horaire[0], 'job_horaire_key', true);
 	                    if($horaire[3] == $getdate && $arraystart[0] == intval($i)){
 	                            $timestarthoraire = get_post_meta( $horaire[0], 'timestarthoraire_key', true);
 	                            $timeendhoraire = get_post_meta( $horaire[0], 'timeendhoraire_key', true);
@@ -793,29 +786,7 @@ foreach($posts as $post) {
                                                         $getdate = gmdate("m/d/Y", $_GET['daytime']);
 
 
-							if($employee_horaire_select == 0){
-                                                        if($horaire[9] != '' && $horaire[10] == 3){ 
-                                                                    $employee_replace = get_post_meta( $horaire[0], 'employee_replace_key', true);
-                                                                    $get_user_by_id = get_user_by('ID', $employee_replace);
-                                                            } else { 
-                                                                    $employee_horaire = get_post_meta( $horaire[0], 'employee_horaire_key', true);
-                                                                    $get_user_by_id = get_user_by('ID', $employee_horaire);
-                                                            }
-                                                          }
-                                                          
-                                                  	if($employee_horaire_select != 0){
-                                                        if($horaire[9] != '' && $horaire[10] == 3){ 
-                                                                    $employee_replace = get_post_meta( $horaire[0], 'employee_replace_key', true);
-                                                                    if($employee_horaire_select == $employee_replace){ 
-	                                                                    $get_user_by_id = get_user_by('ID', $employee_replace);
-                                                                    }
-                                                            } else { 
-                                                                    $employee_horaire = get_post_meta( $horaire[0], 'employee_horaire_key', true);
-                                                                    if($employee_horaire_select == $employee_horaire){ 
-                                                                    	$get_user_by_id = get_user_by('ID', $employee_horaire);
-                                                                    }
-                                                            }
-                                                          }  
+							    $get_user_by_id = get_user_by('ID', intval($horaire[1]));
                                                             $job_horaire = get_post_meta( $horaire[0], 'job_horaire_key', true);
                                                             if($horaire[3] == $getdate && $arraystart[0] == intval($i)){
                                                                     $timestarthoraire = get_post_meta( $horaire[0], 'timestarthoraire_key', true);
@@ -851,29 +822,7 @@ foreach($posts as $post) {
                                                         $getdate = gmdate("m/d/Y", $_GET['daytime']);
 
 
-							if($employee_horaire_select == 0){
-                                                        if($horaire[9] != '' && $horaire[10] == 3){ 
-                                                                    $employee_replace = get_post_meta( $horaire[0], 'employee_replace_key', true);
-                                                                    $get_user_by_id = get_user_by('ID', $employee_replace);
-                                                            } else { 
-                                                                    $employee_horaire = get_post_meta( $horaire[0], 'employee_horaire_key', true);
-                                                                    $get_user_by_id = get_user_by('ID', $employee_horaire);
-                                                            }
-                                                          }
-                                                          
-                                                  	if($employee_horaire_select != 0){
-                                                        if($horaire[9] != '' && $horaire[10] == 3){ 
-                                                                    $employee_replace = get_post_meta( $horaire[0], 'employee_replace_key', true);
-                                                                    if($employee_horaire_select == $employee_replace){ 
-	                                                                    $get_user_by_id = get_user_by('ID', $employee_replace);
-                                                                    }
-                                                            } else { 
-                                                                    $employee_horaire = get_post_meta( $horaire[0], 'employee_horaire_key', true);
-                                                                    if($employee_horaire_select == $employee_horaire){ 
-                                                                    	$get_user_by_id = get_user_by('ID', $employee_horaire);
-                                                                    }
-                                                            }
-                                                          }  
+							    $get_user_by_id = get_user_by('ID', intval($horaire[1]));
                                                             $job_horaire = get_post_meta( $horaire[0], 'job_horaire_key', true);
                                                             if($horaire[3] == $getdate && $arraystart[0] == intval($i)){
                                                                     $timestarthoraire = get_post_meta( $horaire[0], 'timestarthoraire_key', true);
