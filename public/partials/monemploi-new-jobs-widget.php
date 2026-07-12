@@ -62,8 +62,8 @@ class monemploi_new_jobs_widget extends WP_Widget {
 			foreach ( $get_jobs as $p ){
             $get_user_by_username = get_user_by( 'ID', $p->post_author );
 			$userid = $get_user_by_username->ID;
-			$hide_widget = get_user_meta($userid, 'hide_widget_key', true);
-		   	if($hide_widget == 0 || $hide_widget == '') {
+			$hide_widget_new_jobs = get_user_meta($userid, 'hide_widget_new_jobs_key', true);
+		   	if($hide_widget_new_jobs == 0 || $hide_widget_new_jobs == '') {
 				$user_meta = get_userdata($userid);
 				$user_role = $user_meta->roles[0];
 				if(get_post_status($p->ID) == 'draft' || get_post_status($p->ID) == 'future') {	
@@ -105,38 +105,39 @@ class monemploi_new_jobs_widget extends WP_Widget {
 								 $i++;
 							 }
 						}
-					} else {
-					
-						echo '<div style="display: block;"><a href="' . get_permalink( $p->ID ) .'">' . $p->ID . ' - ' . $p->post_title . '</a> - ';
-							echo '<a href="'. get_site_url() .'/employeur/?user='. $get_user_by_username->user_nicename .'">' . $get_user_by_username->user_nicename . '</a>';							
-							echo ' - ';
-							echo get_user_meta($userid, 'company_key', true);
-							echo ' - ';
-							echo $get_user_by_username->user_firstname;
-							echo ' ';
-							echo $get_user_by_username->user_lastname;
-							
-							$usermetadata = get_user_meta(get_current_user_id());	
-													
-							$field_data = $usermetadata['Code_postal'];
-							if($field_data){
-								echo '<span class="completeDeparture">';
-									echo '<div class="completeDeparture_'.  $i . '" style="display:none;">'. implode($field_data) . '</div>';
-									echo '<div class="completeArrival_' . $i . '" style="display: none;">' . get_post_meta( $p->ID, 'my_code_postal_key', true ) . '</div>';
-									echo ' - <span class="widgetdistance_' . $i . '"></span>';
-								echo '</span>';
-							}
-							
-							echo ' - ';
-							echo get_post_meta( $p->ID, 'my_city_key', true );
-							
-							echo '</br>';
-			
-						 echo '</div>';
-						 $i++;
-					
+						
 					}
+					
+					echo '<div style="display: block;"><a href="' . get_permalink( $p->ID ) .'">' . $p->ID . ' - ' . $p->post_title . '</a> - ';
+						echo '<a href="'. get_site_url() .'/employeur/?user='. $get_user_by_username->user_nicename .'">' . $get_user_by_username->user_nicename . '</a>';							
+						echo ' - ';
+						echo get_user_meta($userid, 'company_key', true);
+						echo ' - ';
+						echo $get_user_by_username->user_firstname;
+						echo ' ';
+						echo $get_user_by_username->user_lastname;
+						
+						$usermetadata = get_user_meta(get_current_user_id());	
+												
+						$field_data = $usermetadata['Code_postal'];
+						if($field_data){
+							echo '<span class="completeDeparture">';
+								echo '<div class="completeDeparture_'.  $i . '" style="display:none;">'. implode($field_data) . '</div>';
+								echo '<div class="completeArrival_' . $i . '" style="display: none;">' . get_post_meta( $p->ID, 'my_code_postal_key', true ) . '</div>';
+								echo ' - <span class="widgetdistance_' . $i . '"></span>';
+							echo '</span>';
+						}
+						
+						echo ' - ';
+						echo get_post_meta( $p->ID, 'my_city_key', true );
+						
+						echo '</br>';
+		
+					 echo '</div>';
+					 $i++;
+					
 				}
+				
 			}
 			echo '</div>';
 		}

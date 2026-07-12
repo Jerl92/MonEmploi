@@ -1225,7 +1225,6 @@ add_action('init', function(){
 	$hide_dashboard = $_POST['hide-dashboard'];
 	$hide_adresse = $_POST['hide-adresse'];
 	$hide_contact = $_POST['hide-contact'];
-	$hide_widget = $_POST['hide-widget'];
 	
 	$disable_chat = $_POST['disable-chat'];
 	$hide_online = $_POST['hide-online'];
@@ -1240,11 +1239,15 @@ add_action('init', function(){
 	$hide_contact_candidacy = $_POST['hide-contact-candidacy'];
 	$hide_jobs_search = $_POST['hide-jobs-search'];
 	
+	$hide_widget_new_jobs = $_POST['hide-widget-new-jobs'];
+	$hide_widget_finish_job = $_POST['hide-widget-finish-job'];
+	$hide_widget_school = $_POST['hide-widget-school'];
+	$hide_new_employee = $_POST['hide-new-employee'];
+	
 	update_user_meta( $userid, 'hide_search_key', $hide_search);
 	update_user_meta( $userid, 'hide_dashboard_key', $hide_dashboard);
 	update_user_meta( $userid, 'hide_adresse_key', $hide_adresse);
 	update_user_meta( $userid, 'hide_contact_key', $hide_contact);
-	update_user_meta( $userid, 'hide_widget_key', $hide_widget);
 	
 	update_user_meta( $userid, 'disable_chat_key', $disable_chat);
 	update_user_meta( $userid, 'hide_online_key', $hide_online);
@@ -1258,6 +1261,11 @@ add_action('init', function(){
 	update_user_meta( $userid, 'hide_adresse_candidacy_key', $hide_adresse_candidacy);
 	update_user_meta( $userid, 'hide_contact_candidacy_key', $hide_contact_candidacy);
 	update_user_meta( $userid, 'hide_jobs_search_key', $hide_jobs_search);
+	
+	update_user_meta( $userid, 'hide_widget_new_jobs_key', $hide_widget_new_jobs);
+	update_user_meta( $userid, 'hide_widget_finish_job_key', $hide_widget_finish_job);
+	update_user_meta( $userid, 'hide_widget_school_key', $hide_widget_school);
+	update_user_meta( $userid, 'hide_widget_new_employee_key', $hide_new_employee);
 
 	$current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . strtok($_SERVER['REQUEST_URI'], '?');
 	

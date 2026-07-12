@@ -24,11 +24,6 @@ class monemploi_new_school_widgets extends WP_Widget {
 
 	function widget( $args, $instance ) {
 
-    $current_user = wp_get_current_user();
-	$user_meta = get_userdata($current_user->ID);
-	$user_role = $user_meta->roles[0];
-	if($user_role == 'employeur' || $user_role == 'administrator'){
-
 		?><div><?php 
 
 		$title = apply_filters( 'widget_title', $instance['title'] );
@@ -69,8 +64,8 @@ class monemploi_new_school_widgets extends WP_Widget {
 		   krsort($school_array);
 		   
 		   foreach ($school_array as $school_user) {
-			   $hide_widget = get_user_meta( $school_user[0], 'hide_widget_key', true);
-			   if($hide_widget == 0 || $hide_widget == '') {
+			   $hide_widget_school = get_user_meta( $school_user[0], 'hide_widget_school_key', true);
+			   if($hide_widget_school == 0 || $hide_widget_school == '') {
 			       if($i <= 24) {
 	    		       $get_user_by_id = get_user_by('ID', $school_user[0]);
 	    		       echo '<a href="'. get_site_url() .'/employee/?user='. $get_user_by_id->user_nicename .'">' . $get_user_by_id->user_nicename. '</a>';
@@ -87,7 +82,6 @@ class monemploi_new_school_widgets extends WP_Widget {
 			       $i++;
 			   }
 		   }
-	}
     		
     		?></div><?php 
 

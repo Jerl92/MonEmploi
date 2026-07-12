@@ -42,8 +42,8 @@ class monemploi_new_employees_widgets extends WP_Widget {
 		   
 		   foreach ($users as $user) {
 		   
-		            $hide_widget = get_user_meta( $user->ID, 'hide_widget_key', true);
-		            if($hide_widget == 0 || $hide_widget == '') {
+		            $hide_widget_new_employee = get_user_meta( $user->ID, 'hide_widget_new_employee_key', true);
+		            if($hide_widget_new_employee == 0 || $hide_widget_new_employee == '') {
 		   
 		        ?><div><?php 
     			    $user_id = $user->ID;

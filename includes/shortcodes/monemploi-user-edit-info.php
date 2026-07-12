@@ -354,24 +354,6 @@ function monemploi_user_edit_info() {
 			                echo '<label for="html">Non</label>';
 			                
 			                echo '<br>';
-			            	$hide_widget = get_user_meta( $userdata->ID, 'hide_widget_key', true);
-			              	echo '<span>Masquer le compte des widgets.</span><br>';
-					
-					if($hide_widget == 1){
-			                	echo '<input type="radio" id="hide-widget" name="hide-widget" value="1" checked>';
-			                } else {
-			                	echo '<input type="radio" id="hide-widget" name="hide-widget" value="1">';
-			                }
-			                echo '<label for="html">Oui</label>';
-								
-					if($hide_widget == 0 || $hide_widget == ''){
-			                	echo '<input type="radio" id="hide-widget" name="hide-widget" value="0" checked>';
-			                } else {
-			                	echo '<input type="radio" id="hide-widget" name="hide-widget" value="0">';
-			                }
-			                echo '<label for="html">Non</label>';
-			                
-			          	echo '<br>';
 			                
 			                $hide_adresse_replace = get_user_meta( $userdata->ID, 'hide_adresse_replace_key', true);
 			         	echo '<span>Masquer l&#8216;adress du remplaçant.</span><br>';
@@ -408,6 +390,65 @@ function monemploi_user_edit_info() {
 			                	echo '<input type="radio" id="hide-contact-replace" name="hide-contact-replace" value="0">';
 			                }
 			                echo '<label for="html">Non</label>';
+			                
+			                echo '<p>Widget<p>';
+			                			          	
+			          	$hide_widget_finish_job = get_user_meta( $userdata->ID, 'hide_widget_finish_job_key', true);
+			          	echo '<span>Masquer la derniere emplois des emplois recent des widgets.</span><br>';
+					
+					if($hide_widget_finish_job == 1){
+			                	echo '<input type="radio" id="hide-widget-finish-job" name="hide-widget-finish-job" value="1" checked>';
+			                } else {
+			                	echo '<input type="radio" id="hide-widget-finish-job" name="hide-widget-finish-job" value="1">';
+			                }
+			                echo '<label for="html">Oui</label>';
+								
+					if($hide_widget_finish_job == 0 || $hide_widget_finish_job == ''){
+			                	echo '<input type="radio" id="hide-widget-finish-job" name="hide-widget-finish-job" value="0" checked>';
+			                } else {
+			                	echo '<input type="radio" id="hide-widget-finish-job" name="hide-widget-finish-job" value="0">';
+			                }
+			                echo '<label for="html">Non</label>';
+			                
+			          	echo '<br>';
+			          	
+			          	$hide_widget_school = get_user_meta( $userdata->ID, 'hide_widget_school_key', true);
+			       		echo '<span>Masquer la derniere école des écoles récente dans les widgets.</span><br>';
+					
+					if($hide_widget_school == 1){
+			                	echo '<input type="radio" id="hide-widget-school" name="hide-widget-school" value="1" checked>';
+			                } else {
+			                	echo '<input type="radio" id="hide-widget-school" name="hide-widget-school" value="1">';
+			                }
+			                echo '<label for="html">Oui</label>';
+								
+					if($hide_widget_school == 0 || $hide_widget_school == ''){
+			                	echo '<input type="radio" id="hide-widget-school" name="hide-widget-school" value="0" checked>';
+			                } else {
+			                	echo '<input type="radio" id="hide-widget-school" name="hide-widget-school" value="0">';
+			                }
+			                echo '<label for="html">Non</label>';
+			                
+			          	echo '<br>';
+			          	
+			          	$hide_widget_new_employee = get_user_meta( $userdata->ID, 'hide_widget_new_employee_key', true);
+			          	echo '<span>Masquer le compte du widget des nouveaux employer.</span><br>';
+					
+					if($hide_widget_new_employee == 1){
+			                	echo '<input type="radio" id="hide-new-employee" name="hide-new-employee" value="1" checked>';
+			                } else {
+			                	echo '<input type="radio" id="hide-new-employee" name="hide-new-employee" value="1">';
+			                }
+			                echo '<label for="html">Oui</label>';
+								
+					if($hide_widget_new_employee == 0 || $hide_widget_new_employee == ''){
+			                	echo '<input type="radio" id="hide-new-employee" name="hide-new-employee" value="0" checked>';
+			                } else {
+			                	echo '<input type="radio" id="hide-new-employee" name="hide-new-employee" value="0">';
+			                }
+			                echo '<label for="html">Non</label>';
+			                
+			          	echo '<br>';
 			                
 			                echo '<p>Chat</p>';
 			                $disable_chat = get_user_meta( $userdata->ID, 'disable_chat_key', true);
@@ -562,6 +603,27 @@ function monemploi_user_edit_info() {
 				                	echo '<input type="radio" id="hide-jobs-search" name="hide-jobs-search" value="0">';
 				                }
 				                echo '<label for="html">Non</label>';
+				                
+				                echo '<br>';
+				                
+				                $hide_widget_new_jobs = get_user_meta($userdata->ID, 'hide_widget_new_jobs_key', true);
+				    		echo '<span>Masquer les nouvelles offres d&#8216;emplois des widgets de l&#8216;employeur.</span><br>';
+						
+						if($hide_widget_new_jobs == 1){
+				                	echo '<input type="radio" id="hide-widget-new-jobs" name="hide-widget-new-jobs" value="1" checked>';
+				                } else {
+				                	echo '<input type="radio" id="hide-widget-new-jobs" name="hide-widget-new-jobs" value="1">';
+				                }
+				                echo '<label for="html">Oui</label>';
+									
+						if($hide_widget_new_jobs == 0 || $hide_widget_new_jobs == ''){
+				                	echo '<input type="radio" id="hide-widget-new-jobs" name="hide-widget-new-jobs" value="0" checked>';
+				                } else {
+				                	echo '<input type="radio" id="hide-widget-new-jobs" name="hide-widget-new-jobs" value="0">';
+				                }
+				                echo '<label for="html">Non</label>';
+				                
+				          	echo '<br>';
 			                
 			                }
 			                
