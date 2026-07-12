@@ -101,7 +101,7 @@ function employeur_dashboard() {
 					    if($cover_url && $image_url){
 					    	echo '<div class="" style="position: absolute; right: 0; top: 325px; display: flex; width: auto;">';
 					    }
-					    	if($get_user_by_username->ID != get_current_user_id()){
+					    	if($get_user_by_username->ID != get_current_user_id() && is_user_logged_in()){
 	                           			 echo '<div class="chat-icons">';
 	                                			echo '<a href="' . get_site_url() .'/chat/?username=' . $get_user_by_username->user_nicename . '"><span class="material-icons">mail</span></a>';
 							 echo '</div>';
@@ -473,6 +473,8 @@ function employeur_dashboard() {
 							echo 'Paie:';
 							echo round($paie_moyenne/$i, 2);
 						echo '</div>';
+			 		} else  {
+			 			echo '<span>Auccun avis sur cette employeur</span>';
 			 		}
 			 }
 			

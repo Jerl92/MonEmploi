@@ -614,5 +614,23 @@ jQuery(document).ready(function($) {
 		})
 		
 	}
+	
+	var ponctualite_moyenne_round = jQuery('.ponctualite_moyenne_round').html();
+	var connaisance_moyenne_round = jQuery('.connaisance_moyenne_round').html();
+	var attitude_moyenne_round = jQuery('.attitude_moyenne_round').html();
+	
+	jQuery('.ponctualite_moyenne_round_up').html(ponctualite_moyenne_round);
+	jQuery('.connaisance_moyenne_round_up').html(connaisance_moyenne_round);
+	jQuery('.attitude_moyenne_round_up').html(attitude_moyenne_round);
+	
+	if(ponctualite_moyenne_round == 'NAN'){
+		jQuery('.moyenne_employee_scores').css('display', 'none');
+		jQuery('.moyenne_employee_no').css('display', 'block');
+	}
+	
+	if(ponctualite_moyenne_round >= 0.1){
+		jQuery('.moyenne_employee_scores').css('display', 'block');
+		jQuery('.moyenne_employee_no').css('display', 'none');
+	}
 });
 

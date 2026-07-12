@@ -115,7 +115,7 @@ function employee_dashboard() {
 						    if($cover_url && $image_url){
 						    	echo '<div class="" style="position: absolute; right: 0; top: 325px; display: flex; width: auto;">';
 						    }
-		    					if($get_user_by_username->ID != get_current_user_id()){
+		    					if($get_user_by_username->ID != get_current_user_id() && is_user_logged_in()){
 		                           			 echo '<div class="chat-icons">';
 		                                			echo '<a href="' . get_site_url() .'/chat/?username=' . $get_user_by_username->user_nicename . '"><span class="material-icons">mail</span></a>';
 								 echo '</div>';
@@ -255,6 +255,23 @@ function employee_dashboard() {
 			
 					<?php
 					
+					echo '<div class="moyenne_employee_scores" style="display:block;">';
+						echo '<span>Moyenne</span>';
+						echo '<div class="moyenne-score-wrapper" style="padding-bottom: 25px;">';	
+							echo 'Poctualité:';						
+	    					        echo '<span class="ponctualite_moyenne_round_up"></span>';
+							echo ' - ';
+							echo 'Connaisance:';
+							echo '<span class="connaisance_moyenne_round_up"></span>';
+							echo ' - ';
+							echo 'Attitude:';
+							echo '<span class="attitude_moyenne_round_up"></span>';					
+						echo '</div>';
+					echo '</div>';
+					echo '<div class="moyenne_employee_no" style="display:none;">';
+						echo '<span>Auccun avis sur cette employer</span>'; 
+					echo '</div>';
+					
 					$allready_avis = 0;
 									
 					$get_args_avis = array( 
@@ -297,11 +314,13 @@ function employee_dashboard() {
 								
 							</div>
 								
-							<button class="avis-employer-send">
-								<input type="hidden" name="action" value="avis_employer_send" />
-								<input type="hidden" name="userid" value="<?php echo $user_id; ?>" />
-								<?php esc_html_e( 'Soumettre', 'monemploi' ); ?>
-							</button>
+							<?php
+							echo '<button class="avis-employer-send">';
+								echo '<input type="hidden" name="userid" value="'. $user_id .'" />';
+								echo '<input type="hidden" name="action" value="avis_employer_send" />';
+								echo esc_html_e( 'Soumettre', 'monemploi' );
+							echo '</button>';
+							?>
 								
 						</div>
 					</form>
@@ -401,22 +420,22 @@ function employee_dashboard() {
 						
 						echo '</div>';
 						
-						if($ponctualite_moyenne != 'NAN'){
+						echo '<div style="display:none;">';
 							echo '<span>Moyenne</span>';
 							echo '<div class="moyenne-score-wrapper" style="padding-bottom: 25px;">';	
 								echo 'Poctualité:';						
-								$ponctualite_moyenne_round =round($ponctualite_moyenne/$i, 2);
-		    					        echo $ponctualite_moyenne_round;
+								$ponctualite_moyenne_round = round($ponctualite_moyenne/$i, 2);
+		    					        echo '<span class="ponctualite_moyenne_round">'.$ponctualite_moyenne_round.'</span>';
 								echo ' - ';
 								echo 'Connaisance:';
 								$connaisance_moyenne_round = round($connaisance_moyenne/$i, 2);
-								echo $connaisance_moyenne_round;
+								echo '<span class="connaisance_moyenne_round">'.$connaisance_moyenne_round.'</span>';
 								echo ' - ';
 								echo 'Attitude:';
 								$attitude_moyenne_round = round($attitude_moyenne/$i, 2);
-								echo $attitude_moyenne_round;						
+								echo '<span class="attitude_moyenne_round">'.$attitude_moyenne_round.'</span>';					
 							echo '</div>';
-						}
+						echo '</div>';
 			
 		} else if ($_GET['user'] && $_GET['question']) { 
 		

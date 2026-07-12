@@ -371,6 +371,44 @@ function monemploi_user_edit_info() {
 			                }
 			                echo '<label for="html">Non</label>';
 			                
+			          	echo '<br>';
+			                
+			                $hide_adresse_replace = get_user_meta( $userdata->ID, 'hide_adresse_replace_key', true);
+			         	echo '<span>Masquer l&#8216;adress du remplaçant.</span><br>';
+					
+					if($hide_adresse_replace == 1){
+			                	echo '<input type="radio" id="hide-adress-replace" name="hide-adress-replace" value="1" checked>';
+			                } else {
+			                	echo '<input type="radio" id="hide-adress-replace" name="hide-adress-replace" value="1">';
+			                }
+			                echo '<label for="html">Oui</label>';
+								
+					if($hide_adresse_replace == 0 || $hide_adresse_replace == ''){
+			                	echo '<input type="radio" id="hide-adress-replace" name="hide-adress-replace" value="0" checked>';
+			                } else {
+			                	echo '<input type="radio" id="hide-adress-replace" name="hide-adress-replace" value="0">';
+			                }
+			                echo '<label for="html">Non</label>';
+			                
+			                echo '<br>';
+			                
+		   			$hide_contact_replace = get_user_meta( $userdata->ID, 'hide_contact_replace_key', true);
+					echo '<span>Masquer les informations de contact du remplaçant.</span><br>';
+					
+					if($hide_contact_replace == 1){
+			                	echo '<input type="radio" id="hide-contact-replace" name="hide-contact-replace" value="1" checked>';
+			                } else {
+			                	echo '<input type="radio" id="hide-contact-replace" name="hide-contact-replace" value="1">';
+			                }
+			                echo '<label for="html">Oui</label>';
+								
+					if($hide_contact_replace == 0 || $hide_contact_replace == ''){
+			                	echo '<input type="radio" id="hide-contact-replace" name="hide-contact-replace" value="0" checked>';
+			                } else {
+			                	echo '<input type="radio" id="hide-contact-replace" name="hide-contact-replace" value="0">';
+			                }
+			                echo '<label for="html">Non</label>';
+			                
 			                echo '<p>Chat</p>';
 			                $disable_chat = get_user_meta( $userdata->ID, 'disable_chat_key', true);
 			              	echo '<span>Désactiver le chat.</span><br>';

@@ -24,11 +24,6 @@ class monemploi_new_employees_widgets extends WP_Widget {
 
 	function widget( $args, $instance ) {
 
-$current_user = wp_get_current_user();
-	$user_meta = get_userdata($current_user->ID);
-	$user_role = $user_meta->roles[0];
-	if($user_role == 'employeur' || $user_role == 'administrator'){
-
 		?><div><?php 
 
 		$title = apply_filters( 'widget_title', $instance['title'] );
@@ -70,11 +65,8 @@ $current_user = wp_get_current_user();
 			    }
 
 	    	}
-	    
-	}
     		
     		?></div><?php 
-
 
 	}
 

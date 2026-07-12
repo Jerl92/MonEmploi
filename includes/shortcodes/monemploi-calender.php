@@ -861,6 +861,8 @@ foreach($posts as $post) {
 
 if (isset($_GET['dayoff'])) {
 
+echo '<h2>Demande de congé</h2>';
+
     $args = array(
              'post_type' => 'horaire',
              'post_status'    => array('publish'),
@@ -876,21 +878,54 @@ if (isset($_GET['dayoff'])) {
 
         if($user_role == 'employeur'){
 
+	$dayoffs_array = [];
+	
         foreach($posts as $post) {
-            $dayoff_status = get_post_meta( $post->ID, 'dayoff_status_key', true );
-            $dayoff_reason = get_post_meta( $post->ID, 'dayoff_reason_key', true );
-            $employee_replace = get_post_meta( $post->ID, 'employee_replace_key', true );
-            $employee_horaire = get_post_meta( $post->ID, 'employee_horaire_key', true );
+            $dayoff_current_time = get_post_meta( $post->ID, 'dayoff_current_time', true );
+            $dayoff_current_time_update = get_post_meta( $post->ID, 'dayoff_current_time_update', true );
+            if($dayoff_current_time_update != ''){
+           	$dayoffs_array[$dayoff_current_time_update] = array($dayoff_current_time_update, $post);
+            } else {
+           	$dayoffs_array[$dayoff_current_time] = array($dayoff_current_time, $post);
+            }
+        }
+                
+        krsort($dayoffs_array); 
+        
+        foreach($dayoffs_array as $post) {
+            $dayoff_status = get_post_meta( $post[1]->ID, 'dayoff_status_key', true );
+            $dayoff_reason = get_post_meta( $post[1]->ID, 'dayoff_reason_key', true );
+            $dayoff_explication = get_post_meta( $post[1]->ID, 'dayoff_explication_key', true );
+            $employee_replace = get_post_meta( $post[1]->ID, 'employee_replace_key', true );
+            $employee_horaire = get_post_meta( $post[1]->ID, 'employee_horaire_key', true );
+            $datepickerstarthoraire = get_post_meta( $post[1]->ID, 'datepickerstarthoraire_key', true );
+            $timestarthoraire = get_post_meta( $post[1]->ID, 'timestarthoraire_key', true );
+            $timeendhoraire = get_post_meta( $post[1]->ID, 'timeendhoraire_key', true );
+            $job_horaire = get_post_meta( $post[1]->ID, 'job_horaire_key', true );
+            $dayoff_current_time = get_post_meta( $post[1]->ID, 'dayoff_current_time', true );
+            $dayoff_current_time_update = get_post_meta( $post[1]->ID, 'dayoff_current_time_update', true );
 
            if($dayoff_reason != ''){
-                echo '<a href="'.get_permalink($post->ID).'?dayoff=true">'.$post->ID.'</a>';
+                echo '<a href="'.get_permalink($post[1]->ID).'?dayoff=true">'.$post[1]->ID.'</a>';
                 echo '<br>';
+                echo get_the_title($job_horaire);
+                echo '<br>';
+                if($dayoff_current_time != ''){
+                echo 'Crée: ' . date("m/d/Y H:i:s", $dayoff_current_time);
+                echo '<br>';
+                }
+                if($dayoff_current_time_update != ''){
+                echo 'Mise a jour: ' . date("m/d/Y H:i:s", $dayoff_current_time_update);
+                echo '<br>';
+                }
                 $getuserbyid = get_user_by('id', $employee_horaire);
                 echo $getuserbyid->user_login;
                 echo ' - ';
                 echo $getuserbyid->user_firstname;
                 echo ' ';
                 echo $getuserbyid->user_lastname;
+                echo '<br>';
+                echo $datepickerstarthoraire .' '. $timestarthoraire . ' -  ' . $timeendhoraire;
                 echo '<br>';
                 if($dayoff_reason == 1){
                         echo 'Congés annuels (Vacances)';
@@ -912,6 +947,18 @@ if (isset($_GET['dayoff'])) {
                 }
                 echo '<br>';
             }
+            if($dayoff_reason != ''){
+	            if($dayoff_explication != ''){
+	           	echo $dayoff_explication;
+			echo '<br>';
+	             }
+            }
+             if($dayoff_reason != ''){
+	             if($dayoff_status  == ''){
+	                echo 'En attente';
+	            	echo '<br>';
+	            }
+            }
             if($dayoff_status != ''){
                 if($dayoff_status  == 1){
                     echo 'En revue';
@@ -927,9 +974,7 @@ if (isset($_GET['dayoff'])) {
                 }
                 echo '<br>';
            }
-           if($dayoff_reason != ''){
-                   echo '<br>';
-           }
+           echo '<br>';
         }
     }
 

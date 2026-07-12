@@ -1059,12 +1059,11 @@ add_action('init', function(){
 	$ponctualite = $_POST['ponctualite-employer'];
 	$connaisance = $_POST['connaisance-employer'];
 	$attitude = $_POST['attitude-employer'];
-	$current_user_id = get_current_user_id();
-	
-	$get_user = get_user_by('id', $authorid);
-	$user_nicename = $get_user->user_firstname . ' ' . $get_user->user_lastname;
 	
 	if($avismessage != '' && $ponctualite != '' && $connaisance != '' && $attitude != ''){
+	
+		$get_user = get_user_by('id', get_current_user_id());
+		$user_nicename = $get_user->user_firstname . ' ' . $get_user->user_lastname;
 	
 		$new_post = array(
 			'post_title' => $user_nicename,
@@ -1082,7 +1081,8 @@ add_action('init', function(){
 		add_user_meta( $post_id, 'authorid_key', $authorid);
 		add_user_meta( $post_id, 'role_key', 'employer');
 		add_user_meta( $post_id, 'nicename_key', $user_nicename);
-		
+		get_user_meta( $post_id, 'authorid_key', $authorid);
+
 		$current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . strtok($_SERVER['REQUEST_URI'], '?');
 		
 		$url = $_SERVER['REQUEST_URI'];
@@ -1231,6 +1231,9 @@ add_action('init', function(){
 	$hide_online = $_POST['hide-online'];
 	$hide_seen = $_POST['hide-seen'];
 	
+	$hide_adresse_replace = $_POST['hide-adress-replace'];
+	$hide_contact_replace = $_POST['hide-contact-replace'];
+	
 	$hide_adresse_job = $_POST['hide-adresse-job'];
 	$hide_contact_job = $_POST['hide-contact-job'];
 	$hide_adresse_candidacy = $_POST['hide-adresse-candidacy'];
@@ -1246,6 +1249,9 @@ add_action('init', function(){
 	update_user_meta( $userid, 'disable_chat_key', $disable_chat);
 	update_user_meta( $userid, 'hide_online_key', $hide_online);
 	update_user_meta( $userid, 'hide_seen_key', $hide_seen);
+	
+	update_user_meta( $userid, 'hide_adresse_replace_key', $hide_adresse_replace);
+	update_user_meta( $userid, 'hide_contact_replace_key', $hide_contact_replace);
 	
 	update_user_meta( $userid, 'hide_adresse_job_key', $hide_adresse_job);
 	update_user_meta( $userid, 'hide_contact_job_key', $hide_contact_job);
@@ -1591,6 +1597,9 @@ add_action('init', function(){
 	// not the login request?
 	if(!isset($_POST['action']) || $_POST['action'] !== 'new_dayoff')
 		return;
+
+	$user_meta = get_userdata(get_current_user_id());
+        $user_role = $user_meta->roles[0];
 	
 	$userid = $_POST['userid'];
 	$postid = $_POST['postid'];	
@@ -1607,6 +1616,15 @@ add_action('init', function(){
 	update_post_meta( $postid, 'dayoff_status_key', $status );
 	update_post_meta( $postid, 'dayoff_reason_key', $reason );
 	update_post_meta( $postid, 'dayoff_explication_key', $explication );
+	
+	$dayoff_current_time = get_post_meta( $postid, 'dayoff_current_time', true );
+	if($dayoff_current_time == ''){
+		$current_time = current_time( 'timestamp' );
+		update_post_meta( $postid, 'dayoff_current_time', $current_time );
+	} else {
+		$current_time = current_time( 'timestamp' );
+		update_post_meta( $postid, 'dayoff_current_time_update', $current_time );
+	}
 	
 	if($replace != ''){
 		update_post_meta( $postid, 'employee_replace_key', $replace );
