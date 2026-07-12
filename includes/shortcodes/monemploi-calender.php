@@ -1500,7 +1500,8 @@ if($user_role == 'employer'){
 
         if(isset($_GET['week'])) {
 
-                $i = 0;
+		$timepaysum = [];
+
                 foreach ($timepays as $key => $timevalue) {
                         $timepaynormale = [];
                 	$timepaysup = [];
@@ -1527,10 +1528,11 @@ if($user_role == 'employer'){
                                 }
                                 $paytime[$userid] = $timepaynormalepay[$userid] + $timepaysuppay[$userid];
                         }
-                        $i++;
                 }
 
         } else if(isset($_GET['month'])) {
+        
+        	$timepaysum = [];
 
                 $startofmonthminus = strtotime($startofmonth[$value]) - 604800;
                 $startofmonthplus = strtotime($startofmonth[$value+1]) + 604800;

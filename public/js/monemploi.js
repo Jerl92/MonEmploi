@@ -344,12 +344,16 @@ jQuery(document).ready(function($) {
 	var mincalcsumsup = jQuery('.mincalcsumsup').html();
 	var mincalcsumhatif = jQuery('.mincalcsumhatif').html();
 	var mincalcsumtotal = jQuery('.mincalcsumtotal').html();
+	var mincalcsumdepase = jQuery('.mincalcsumdepase').html();
+	var mincalcsumreste = jQuery('.mincalcsumreste').html();
 	
 	jQuery('.mincalcsumavanceup').html(mincalcsumavance);
 	jQuery('.mincalcsumlateup').html(mincalcsumlate);
 	jQuery('.mincalcsumsupup').html(mincalcsumsup);
 	jQuery('.mincalcsumhatifup').html(mincalcsumhatif);
 	jQuery('.mincalcsumtotalup').html(mincalcsumtotal);
+	jQuery('.mincalcsumdepaseup').html(mincalcsumdepase);
+	jQuery('.mincalcsumresteup').html(mincalcsumreste);
 	
 	// Select the checkbox
 	const checkbox = document.getElementById('coworker');
@@ -407,7 +411,7 @@ jQuery(document).ready(function($) {
 });
 
 jQuery(document).ready(function($) {
-	var urlParams = new URLSearchParams(window.location.search);
+		var urlParams = new URLSearchParams(window.location.search);
 	var horaireweek = urlParams.get('horaireweek');
 	var summary = urlParams.get('summary');	
 	var month = urlParams.get('month');

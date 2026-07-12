@@ -269,7 +269,7 @@ function employee_dashboard() {
 						echo '</div>';
 					echo '</div>';
 					echo '<div class="moyenne_employee_no" style="display:none;">';
-						echo '<span>Auccun avis sur cette employer</span>'; 
+						echo '<p>Auccun avis sur cette employer</p>'; 
 					echo '</div>';
 					
 					$allready_avis = 0;
