@@ -73,7 +73,7 @@ Retrieved 2026-05-12, License - CC BY-SA 3.0
 		.payday {
 			font-weight: bold;
 			color: #000;
-			background-color: rgba(60, 179, 113, 0.25);
+			background-color: rgba(60, 179, 113, 0.25) !important;
 		}
 
 		th:nth-of-type(7), td:nth-of-type(7) {

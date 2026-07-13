@@ -231,13 +231,13 @@ echo '</ul>';
         }
         echo '</div>';
 
-         for($i=1; $i <= 1560; $i++){
+         for($i=0; $i <= 1560; $i++){
                 $startofweek[$i] = date("m/d/Y", strtotime('+'.$i.' Sunday', strtotime('01/01/2018') ));
         }        
 
         $current_time = current_time( 'timestamp' );
 
-    	$thissunday = date("m/d/Y", strtotime('this sunday', $current_time));
+    	$thissunday = date("m/d/Y", strtotime('sunday', $current_time));
 
         $p = 0;
         foreach($startofweek as $daystartweek){

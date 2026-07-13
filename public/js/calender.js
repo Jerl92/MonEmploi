@@ -166,7 +166,11 @@
                                     year++;
                             }
                     }
-
+                    
+              var startweekmonday = jQuery('.startweekmonday').html();
+	      var endweekmonday = jQuery('.endweekmonday').html();
+	      var startweekunix = parseInt((new Date(startweekmonday).getTime() / 1000).toFixed(0));
+	      var endweekunix = parseInt((new Date(endweekmonday).getTime() / 1000).toFixed(0));
               var startbiweekmonday = jQuery('.startbiweekmonday').html();
               var endbiweekmonday = jQuery('.endbiweekmonday').html();
               var starttimeunix = parseInt((new Date(startbiweekmonday).getTime() / 1000).toFixed(0));
@@ -322,7 +326,7 @@
 
                jQuery.each(somofpayday__, function(index, value) {
                     if(value[0] === datestring_){
-                                if(starttimeunix <= timeunixpayweek && endtimeunix > timeunixpayweek) {
+                                if((starttimeunix <= timeunixpayweek && endtimeunix > timeunixpayweek) || (startweekunix <= timeunixpayweek && endweekunix > timeunixpayweek)) {
                                     tbody_html += "<td class='"+td_class+" biweek' style='text-align: center; width: 14.28%;'>"+counter+"</a>";
                                     if(fixednum == ''){
                                             tbody_html += "<span>"+fixednum+"</span><br><span>Paie</span><br><span>"+value[1]+"$</span></td>";
@@ -338,7 +342,7 @@
                                                     tbody_html += "<br><span>"+fixednum+"</span><br><span>Paie</span><br><span>"+value[1]+"$</span></td>";
                                             }
                                     } else  {
-                                            tbody_html += "<td class='"+td_class+"' style='text-align: center; width: 14.28%;'>"+counter+"</a>";
+                                            tbody_html += "<td class='"+td_class+" payday' style='text-align: center; width: 14.28%;'>"+counter+"</a>";
                                             if(fixednum == ''){
                                                     tbody_html += "<span>"+fixednum+"</span><br><span>Paie</span><br><span>"+value[1]+"$</span></td>";
                                             } else {
@@ -351,7 +355,7 @@
                 });
 
                             if(i === 0){
-                                    if(starttimeunix <= timeunixpayweek && endtimeunix > timeunixpayweek) {
+                                if((starttimeunix <= timeunixpayweek && endtimeunix > timeunixpayweek) || (startweekunix <= timeunixpayweek && endweekunix > timeunixpayweek)) {
                                     tbody_html += "<td class='"+td_class+" biweek' style='text-align: center; width: 14.28%;'>"+counter+"</a><br><span>"+fixednum+"</span></td>";
                                 } else  {
                                     tbody_html += "<td class='"+td_class+"' style='text-align: center; width: 14.28%;'>"+counter+"</a><br><span>"+fixednum+"</span></td>";
