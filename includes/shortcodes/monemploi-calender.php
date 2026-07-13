@@ -1191,7 +1191,7 @@ for($i=0; $i<=1560; $i++){
         $p = 0;
         foreach($startofmonth as $month){
                 $frist_day_of_month = date('m/d/Y', strtotime('first day of this month'));
-                if(strtotime($month) <= strtotime($frist_day_of_month)){
+                if($month == $frist_day_of_month){
                         $currwent_month = $p;
                 }
                 $p++;
@@ -1199,7 +1199,8 @@ for($i=0; $i<=1560; $i++){
 
         $current_time = current_time( 'timestamp' );
 
-    	$thissunday = date("m/d/Y", strtotime('last sunday', $current_time));
+    	$thissunday = date("m/d/Y", strtotime('Sunday', $current_time));
+    	
 
         $p = 0;
         foreach($startofworkdayonmonday as $daystartwork){
@@ -1211,7 +1212,7 @@ for($i=0; $i<=1560; $i++){
 
         $p = 0;
         foreach($startofweek as $daystartweek){
-                if(strtotime($daystartweek) <= strtotime($thissunday)){
+                if($daystartweek == $thissunday){
                         $current_week = $p;
                 }
                 $p++;
