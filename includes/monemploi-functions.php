@@ -1414,6 +1414,20 @@ add_action('init', function(){
 	
 });
 
+function guidv4($data = null) {
+    // Generate 16 bytes (128 bits) of random data or use the data passed into the function.
+    $data = $data ?? random_bytes(16);
+    assert(strlen($data) == 16);
+
+    // Set version to 0100
+    $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
+    // Set bits 6-7 to 10
+    $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
+
+    // Output the 36 character UUID.
+    return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+}
+
 add_action('init', function(){
 
 	// not the login request?
@@ -1433,9 +1447,24 @@ add_action('init', function(){
 	
 	$user_by_id = get_user_by('id', $employee_horaire);
 	
+	$myuuid = guidv4();
+	
+	$args = array(
+	  'numberposts' => -1,
+	  'post_type'   => 'horaire'
+	);
+	
+	$get_horaires = get_posts( $args );
+	
+	foreach($get_horaires as $get_horaire){
+		if(strtoupper($myuuid) == get_the_title($get_horaire->ID)){
+			$myuuid = guidv4();
+		}
+	}
+
 	// Create the post data array
 	$my_post = array(
-	    'post_title'    => generateRandomString(32),
+	    'post_title'    => strtoupper($myuuid),
 	    'post_content'  => $user_by_id->user_nicename .'-' . $user_by_id->user_firstname . '-' . $user_by_id->user_lastname,
 	    'post_status'   => 'publish', // Use 'draft' if you don't want it public immediately
 	    'post_author'   => get_current_user_id(),         // ID of the user who is the author
