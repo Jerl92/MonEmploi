@@ -43,27 +43,27 @@ class monemploi_new_employers_widgets extends WP_Widget {
 		   
 		   foreach ($users as $user) {
 		   
-		   $hide_widget = get_user_meta( $user->ID, 'hide_widget_key', true);
-		   if($hide_widget == 0 || $hide_widget == '') {
-		   
-		   echo '<div>'; 
-	
-			    $user_id = $user->ID; // Replace with the desired user ID
-			    echo '<a href="'. get_site_url() .'/employeur/?user='. $user->user_nicename .'">' . $user->user_nicename . '</a>';
-			    echo ' - ';
-		 	    echo $user->user_firstname;
-		 	    echo ' ';
-			    echo $user->user_lastname;
-			    echo ' - ';
-			    echo get_user_meta($user_id, 'company_key', true);
-			    echo ' - ';
-			    echo get_user_meta($user_id, 'city_key', true);
+			   $hide_widget_new_employeur = get_user_meta( $user->ID, 'hide_widget_new_employeur_key', true);
+			   if($hide_widget_new_employeur == 0 || $hide_widget_new_employeur == '') {
+				   
+				   echo '<div>'; 
 			
-		   echo '</div>'; 
-		   
-		   }
+					    $user_id = $user->ID; // Replace with the desired user ID
+					    echo '<a href="'. get_site_url() .'/employeur/?user='. $user->user_nicename .'">' . $user->user_nicename . '</a>';
+					    echo ' - ';
+				 	    echo $user->user_firstname;
+				 	    echo ' ';
+					    echo $user->user_lastname;
+					    echo ' - ';
+					    echo get_user_meta($user_id, 'company_key', true);
+					    echo ' - ';
+					    echo get_user_meta($user_id, 'city_key', true);
+					
+				   echo '</div>'; 
+			   
+			}
 	    		
-	    }
+	    	}
 	    
 	echo '</div>';
 

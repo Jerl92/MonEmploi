@@ -24,8 +24,6 @@ class monemploi_new_jobs_widget extends WP_Widget {
 
 	function widget( $args, $instance ) {
 	
-		echo '<div>';
-
 		$title = apply_filters( 'widget_title', $instance['title'] );
 		
 		echo $args['before_widget'];
@@ -57,10 +55,12 @@ class monemploi_new_jobs_widget extends WP_Widget {
 		}
 	        
 	        $get_jobs = get_posts($get_jobs_args);
-	
+	        
+	        echo '<div style="padding-bottom: 25px;">';
+
 		if( ! empty( $get_jobs ) ){
 			foreach ( $get_jobs as $p ){
-            $get_user_by_username = get_user_by( 'ID', $p->post_author );
+            		$get_user_by_username = get_user_by( 'ID', $p->post_author );
 			$userid = $get_user_by_username->ID;
 			$hide_widget_new_jobs = get_user_meta($userid, 'hide_widget_new_jobs_key', true);
 		   	if($hide_widget_new_jobs == 0 || $hide_widget_new_jobs == '') {
@@ -141,6 +141,11 @@ class monemploi_new_jobs_widget extends WP_Widget {
 				}
 				
 			}
+		}
+		echo '</div>';
+		if($i == 0){
+			echo '<div style="text-align: center; padding-bottom: 25px;">';
+				echo '<div>Pas de nouvelle offre d&#8216;emplois</div>';
 			echo '</div>';
 		}
 	}

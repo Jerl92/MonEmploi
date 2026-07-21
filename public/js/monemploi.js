@@ -569,5 +569,23 @@ jQuery(document).ready(function($) {
 		jQuery('.moyenne_employee_scores').css('display', 'block');
 		jQuery('.moyenne_employee_no').css('display', 'none');
 	}
+	
+	var horaire_moyenne_round = jQuery('.horaire_moyenne_round').html();
+	var superieur_moyenne_round = jQuery('.superieur_moyenne_round').html();
+	var paie_moyenne_round = jQuery('.paie_moyenne_round').html();
+	
+	jQuery('.horaire_moyenne_round_up').html(horaire_moyenne_round);
+	jQuery('.superieur_moyenne_round_up').html(superieur_moyenne_round);
+	jQuery('.paie_moyenne_round_up').html(paie_moyenne_round);
+	
+	if(horaire_moyenne_round == 'NAN'){
+		jQuery('.moyenne_employeur_scores').css('display', 'none');
+		jQuery('.moyenne_employeur_no').css('display', 'block');
+	}
+	
+	if(horaire_moyenne_round >= 0.1){
+		jQuery('.moyenne_employeur_scores').css('display', 'block');
+		jQuery('.moyenne_employeur_no').css('display', 'none');
+	}
 });
 

@@ -76,15 +76,6 @@ function monemploi_city() {
 								echo ' ';
 								echo $get_user_by_username->user_lastname;
 												
-								$field_data = $usermetadata['Code_postal'];				
-								if($field_data){
-									echo '<span class="autocompleteDeparture">';
-									echo '<span class="autocompleteDeparture_'.  $i . '" style="display:none;">'. implode($field_data) . '</span>';
-									echo '<span class="autocompleteArrival_' . $i . '" style="display: none;">' . get_post_meta( $value[ID], 'my_code_postal_key', true ) . '</span>';
-									echo ' - <span class="distance_' . $i . '"></span>';
-									echo '</span>';
-								}
-								
 								if(get_post_status($value[ID]) == 'draft') {
 									echo ' - Brouillon';
 									echo '</br>';
@@ -110,15 +101,7 @@ function monemploi_city() {
 						echo $get_user_by_username->user_firstname;
 						echo ' ';
 						echo $get_user_by_username->user_lastname;
-								
-						$field_data = $usermetadata['Code_postal'];				
-						if($field_data){
-							echo '<span class="autocompleteDeparture">';
-							echo '<span class="autocompleteDeparture_'.  $i . '" style="display:none;">'. implode($field_data) . '</span>';
-							echo '<span class="autocompleteArrival_' . $i . '" style="display: none;">' . get_post_meta( $value[ID], 'my_code_postal_key', true ) . '</span>';
-							echo ' - <span class="distance_' . $i . '"></span>';
-							echo '</span>';
-						}
+
 						echo '</br>';	
 						$i++;				
 					}	

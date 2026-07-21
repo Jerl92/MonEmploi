@@ -10,8 +10,6 @@ function monemploi_ajax_scripts() {
 
 	/* Plugin DIR URL */
 	$url = trailingslashit( plugin_dir_url( __FILE__ ) );
-    
-	//wp_enqueue_script( 'maps', "https://maps.googleapis.com/maps/api/js?key=AIzaSyAQJhQQ_wNHUOVollbuGpJG_eAQ6-4xz3E", array( 'jquery' ), '1.0.0', true );
 	
 	wp_register_script( 'monemploi-ajax-send-cv-scripts', $url . "js/ajax.monemploi.send.js", array( 'jquery' ), '1.0.0', true );
 	wp_localize_script( 'monemploi-ajax-send-cv-scripts', 'send_cv_monemploi_ajax_url', admin_url( 'admin-ajax.php', 'relative' ) );

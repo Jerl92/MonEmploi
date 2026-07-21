@@ -59,35 +59,60 @@ if (isset($_GET['delete'])) {
 }
 
 $i = 0;
-$author_id = 0;
 
-$args = array(
-         'post_type' => 'horaire',
-         'post_status'    => array('publish'),
-          'orderby'       =>  'date',
-          'order'         =>  'DESC',
-          'posts_per_page' => -1
-);
+$user_meta = get_userdata(get_current_user_id());
+$user_role = $user_meta->roles[0];
+
+if($user_role == 'employeur'){
+        $args = array(
+                 'post_type' => 'horaire',
+                 'post_status'    => array('publish', 'draft', 'future'),
+                  'orderby'       =>  'date',
+                  'author'        =>   get_current_user_id(),
+                  'order'         =>  'DESC',
+                  'posts_per_page' => -1
+        );
+}
+
+if($user_role == 'employer'){
+        $args = array(
+                 'post_type' => 'horaire',
+                 'post_status'    => array('publish'),
+                  'orderby'       =>  'date',
+                  'order'         =>  'DESC',
+                  'posts_per_page' => -1
+        );
+}
+
+if($user_role == 'employeur'){
+	$my_employees = get_user_meta( get_current_user_id(), 'my_employee_key', true);
+}
+
+if($user_role == 'employer'){
+	$x = 0;
+	$blogusers = get_users( array( 'role__in' => array( 'employeur' ) ) );
+	foreach ( $blogusers as $user ) {
+		$userid_employeurs[$x] = $user->ID;
+		$x++;
+	}
+	
+	foreach ( $userid_employeurs as $userid_employeur ) {
+		$my_employees[$userid_employeur] = get_user_meta( $userid_employeur, 'my_employee_key', true);
+	}
+	
+	foreach ( $my_employees as $key => $value ) {
+		if (in_array(get_current_user_id(), $value)) {
+			$my_employeur = $key;
+		}
+	}
+}
 
 $posts = get_posts( $args );
 
-$current_author_id = 0;
-
 echo '<ul class="horaire-job" style="display: none;">';
-foreach($posts as $post) {
+	foreach($posts as $post) {
         $user_meta = get_userdata(get_current_user_id());
         $user_role = $user_meta->roles[0];
-
-        $author_id = $post->post_author;
-        $my_employee = get_user_meta( $author_id, 'my_employee_key', true);
-        
-        foreach($my_employee as $employee){
-        
-        	if($employee == get_current_user_id()){
-        		$current_author_id = $post->post_author;
-        	}
-        
-        }
 
         $employee_horaire = get_post_meta( $post->ID, 'employee_horaire_key', true );
         $job_horaire = get_post_meta( $post->ID, 'job_horaire_key', true );
@@ -185,6 +210,12 @@ foreach($posts as $post) {
                         $i++;
 
                     }
+                    
+                    if($employee_horaire_select == 0 && $employee_horaire_select == -2){
+                    	echo '<li style="display: none;"></li>';
+                        $horaires[$i] = array(null);
+			$i++;
+                    }
                   
 		}
 		
@@ -192,16 +223,27 @@ foreach($posts as $post) {
 
 echo '</ul>';
 
-
 	echo '<div style="display: float; height: 50px">';
-        $get_args_emploi = array( 
-                'post_type' => 'emploi',
-                'posts_per_page' => -1,
-                'post_status' => array('publish', 'draft', 'future'),
-                'author'        => $current_author_id,
-                'orderby' => 'date',
-                'order' => 'DESC'
-        ); 
+	if($user_role == 'employeur'){
+	        $get_args_emploi = array( 
+	                'post_type' => 'emploi',
+	                'posts_per_page' => -1,
+	                'post_status' => array('publish', 'draft', 'future'),
+	                'author'        => get_current_user_id(),
+	                'orderby' => 'date',
+	                'order' => 'DESC'
+	        ); 
+        }
+        if($user_role == 'employer'){
+	        $get_args_emploi = array( 
+	                'post_type' => 'emploi',
+	                'posts_per_page' => -1,
+	                'post_status' => array('publish'),
+	                'author'        => $my_employeur,
+	                'orderby' => 'date',
+	                'order' => 'DESC'
+	        ); 
+        }
 
         $get_emplois = get_posts( $get_args_emploi );
         echo '<select name="jobs_horaire_select" id="jobs_horaire_select" class="jobs_horaire_select" style="float: left;">';
@@ -217,15 +259,20 @@ echo '</ul>';
 
         if($user_role == 'employeur'){
                 echo '<select name="employee_horaire_select" id="employee_horaire_select" class="employee_horaire_select" style="float: right;">';
-                    echo '<option value="0">Tous les employers</option>';
-                        foreach($my_employee as $employee){
-                                $user_by_id = get_user_by('id', $employee);
-                                $salary = get_user_meta( $employee, 'salary_key', true);
-                                if($employee_horaire_select === $employee){
-                                    echo '<option value="'.$employee.'" selected>'. $user_by_id->user_nicename .' - ' . $user_by_id->user_firstname . ' ' . $user_by_id->user_lastname . ' - ' . $salary . '$</option>';
-                                } else {
-                                    echo '<option value="'.$employee.'">'. $user_by_id->user_nicename .' - ' . $user_by_id->user_firstname . ' ' . $user_by_id->user_lastname . ' - ' . $salary . '$</option>';
-                                }
+                    	$count_employees = count($my_employees);
+                    	if($count_employees <= 1 && $user_role == 'employeur'){
+                    		echo '<option value="-2">Pas d&#39;employer</option>';
+                    	} else {
+                    	        echo '<option value="0">Tous les employers</option>';
+	                        foreach($my_employees as $employee){
+	                                $user_by_id = get_user_by('id', $employee);
+	                                $salary = get_user_meta( $employee, 'salary_key', true);
+	                                if($employee_horaire_select === $employee){
+	                                    echo '<option value="'.$employee.'" selected>'. $user_by_id->user_nicename .' - ' . $user_by_id->user_firstname . ' ' . $user_by_id->user_lastname . ' - ' . $salary . '$</option>';
+	                                } else {
+	                                    echo '<option value="'.$employee.'">'. $user_by_id->user_nicename .' - ' . $user_by_id->user_firstname . ' ' . $user_by_id->user_lastname . ' - ' . $salary . '$</option>';
+	                                }
+	                        }
                         }
                 echo '</select>';
         }
@@ -239,7 +286,7 @@ echo '</ul>';
 
     	$thissunday = date("m/d/Y", strtotime('sunday', $current_time));
 
-        $p = 0;
+        $p = -1;
         foreach($startofweek as $daystartweek){
                 if($daystartweek == $thissunday){
                         $current_week = $p;
@@ -275,7 +322,7 @@ echo '</ul>';
                 if($user_role == 'employeur'){
                         $args = array(
                                  'post_type' => 'horaire',
-                                 'post_status'    => array('publish'),
+                                 'post_status'    => array('publish', 'draft', 'future'),
                                   'orderby'       =>  'date',
                                   'author'        =>   get_current_user_id(),
                                   'order'         =>  'DESC',
@@ -303,7 +350,7 @@ echo '</ul>';
                                 $employee_replace = get_post_meta( $post->ID, 'employee_replace_key', true );
                                 $dayoff_status = get_post_meta( $post->ID, 'dayoff_status_key', true );
                                 $author_id = $post->post_author;
-                                $my_employee = get_user_meta( $author_id, 'my_employee_key', true);
+                                $my_employees = get_user_meta( get_current_user_id(), 'my_employee_key', true);
                                 $datepickerstarthoraire = get_post_meta( $post->ID, 'datepickerstarthoraire_key', true );
                                 $timestarthoraire = get_post_meta( $post->ID, 'timestarthoraire_key', true );
                                 $datepickerendhoraire = get_post_meta( $post->ID, 'datepickerendhoraire_key', true );
@@ -596,32 +643,35 @@ if (isset($_GET['daytime'])) {
 
 $i = 0;
 
-$current_author_id = 0;
+$user_meta = get_userdata(get_current_user_id());
+$user_role = $user_meta->roles[0];
 
-$args = array(
-         'post_type' => 'horaire',
-         'post_status'    => array('publish'),
-          'orderby'       =>  'date',
-          'order'         =>  'DESC',
-          'posts_per_page' => -1
-);
+if($user_role == 'employeur'){
+        $args = array(
+                 'post_type' => 'horaire',
+                 'post_status'    => array('publish', 'draft', 'future'),
+                  'orderby'       =>  'date',
+                  'author'        =>   get_current_user_id(),
+                  'order'         =>  'DESC',
+                  'posts_per_page' => -1
+        );
+}
+
+if($user_role == 'employer'){
+        $args = array(
+                 'post_type' => 'horaire',
+                 'post_status'    => array('publish'),
+                  'orderby'       =>  'date',
+                  'order'         =>  'DESC',
+                  'posts_per_page' => -1
+        );
+}
 
 $posts = get_posts( $args );
 
 foreach($posts as $post) {
         $user_meta = get_userdata(get_current_user_id());
         $user_role = $user_meta->roles[0];
-
-        $author_id = $post->post_author;
-        $my_employee = get_user_meta( $author_id, 'my_employee_key', true);
-        
-        foreach($my_employee as $employee){
-        
-        	if($employee == get_current_user_id()){
-        		$current_author_id = $post->post_author;
-        	}
-        
-        }
 
         $employee_horaire = get_post_meta( $post->ID, 'employee_horaire_key', true );
         $job_horaire = get_post_meta( $post->ID, 'job_horaire_key', true );
@@ -687,20 +737,31 @@ foreach($posts as $post) {
 		        	$i++;
 		        }
         	}
+        	
+		if($employee_horaire_select == 0 && $employee_horaire_select == -2){
+			echo '<li style="display: none;"></li>';
+			$horaires[$i] = array(null);
+			$i++;
+		}
 	}
 }
 
         if($user_role == 'employeur'){
                 echo '<select name="employee_horaire_select" id="employee_horaire_select" class="employee_horaire_select" style="float: right;">';
-                    echo '<option value="0">Tous les employers</option>';
-                        foreach($my_employee as $employee){
-                                $user_by_id = get_user_by('id', $employee);
-                                $salary = get_user_meta( $employee, 'salary_key', true);
-                                if($employee_horaire_select === $employee){
-                                    echo '<option value="'.$employee.'" selected>'. $user_by_id->user_nicename .' - ' . $user_by_id->user_firstname . ' ' . $user_by_id->user_lastname . ' - ' . $salary . '$</option>';
-                                } else {
-                                    echo '<option value="'.$employee.'">'. $user_by_id->user_nicename .' - ' . $user_by_id->user_firstname . ' ' . $user_by_id->user_lastname . ' - ' . $salary . '$</option>';
-                                }
+                    	$count_employees = count($my_employees);
+                    	if($count_employees <= 1 && $user_role == 'employeur'){
+                    		echo '<option value="-2">Pas d&#39;employer</option>';
+                    	} else {
+                    	        echo '<option value="0">Tous les employers</option>';
+	                        foreach($my_employees as $employee){
+	                                $user_by_id = get_user_by('id', $employee);
+	                                $salary = get_user_meta( $employee, 'salary_key', true);
+	                                if($employee_horaire_select === $employee){
+	                                    echo '<option value="'.$employee.'" selected>'. $user_by_id->user_nicename .' - ' . $user_by_id->user_firstname . ' ' . $user_by_id->user_lastname . ' - ' . $salary . '$</option>';
+	                                } else {
+	                                    echo '<option value="'.$employee.'">'. $user_by_id->user_nicename .' - ' . $user_by_id->user_firstname . ' ' . $user_by_id->user_lastname . ' - ' . $salary . '$</option>';
+	                                }
+	                        }
                         }
                 echo '</select>';
         }
@@ -863,18 +924,31 @@ if (isset($_GET['dayoff'])) {
 
 echo '<h2>Demande de congé</h2>';
 
-    $args = array(
-             'post_type' => 'horaire',
-             'post_status'    => array('publish'),
-              'orderby'       =>  'date',
-              'order'         =>  'DESC',
-              'posts_per_page' => -1
-    );
+	$user_meta = get_userdata(get_current_user_id());
+	$user_role = $user_meta->roles[0];
+	
+	if($user_role == 'employeur'){
+	        $args = array(
+	                 'post_type' => 'horaire',
+	                 'post_status'    => array('publish', 'draft', 'future'),
+	                  'orderby'       =>  'date',
+	                  'author'        =>   get_current_user_id(),
+	                  'order'         =>  'DESC',
+	                  'posts_per_page' => -1
+	        );
+	}
+	
+	if($user_role == 'employer'){
+	        $args = array(
+	                 'post_type' => 'horaire',
+	                 'post_status'    => array('publish'),
+	                  'orderby'       =>  'date',
+	                  'order'         =>  'DESC',
+	                  'posts_per_page' => -1
+	        );
+	}
 
-    $posts = get_posts( $args );
-
-    $user_meta = get_userdata(get_current_user_id());
-        $user_role = $user_meta->roles[0];
+   	$posts = get_posts( $args );
 
         if($user_role == 'employeur'){
 
@@ -983,10 +1057,30 @@ echo '<h2>Demande de congé</h2>';
 if (isset($_GET['new_job'])) {
 
 echo '<form action="'. $_SERVER['REQUEST_URI'] .'" method="post">';
+
+	if($user_role == 'employer'){
+		$x = 0;
+		$blogusers = get_users( array( 'role__in' => array( 'employeur' ) ) );
+		foreach ( $blogusers as $user ) {
+			$userid_employeurs[$x] = $user->ID;
+			$x++;
+		}
+		
+		foreach ( $userid_employeurs as $userid_employeur ) {
+			$my_employees[$userid_employeur] = get_user_meta( $userid_employeur, 'my_employee_key', true);
+		}
+		
+		foreach ( $my_employees as $key => $value ) {
+			if (in_array(get_current_user_id(), $value)) {
+				$my_employeur = $key;
+			}
+		}
+	}
+
         echo '<h4>Ajouter un horaire.</h4>';
         $my_employees = get_user_meta( get_current_user_id(), 'my_employee_key', true);
         echo '<select name="employee_horaire" id="employee_horaire" required>';
-        echo '<option value="">Sélectionner un employé</option>';
+        echo '<option value="0">Sélectionner un employé</option>';
                 foreach($my_employees as $employee){
                         $user_by_id = get_user_by('id', $employee);
                         $salary = get_user_meta( $employee, 'salary_key', true);
@@ -997,18 +1091,30 @@ echo '<form action="'. $_SERVER['REQUEST_URI'] .'" method="post">';
         echo '<br>';
         echo '<br>';
 
-        $get_args_emploi = array( 
-                'post_type' => 'emploi',
-                'posts_per_page' => -1,
-                'post_status' => array('publish', 'draft', 'future'),
-                'author'        => get_current_user_id(),
-                'orderby' => 'date',
-                'order' => 'DESC'
-        ); 
+        if($user_role == 'employeur'){
+	        $get_args_emploi = array( 
+	                'post_type' => 'emploi',
+	                'posts_per_page' => -1,
+	                'post_status' => array('publish', 'draft', 'future'),
+	                'author'        => get_current_user_id(),
+	                'orderby' => 'date',
+	                'order' => 'DESC'
+	        ); 
+	}
+	if($user_role == 'employer'){
+		$get_args_emploi = array( 
+	                'post_type' => 'emploi',
+	                'posts_per_page' => -1,
+	                'post_status' => array('publish'),
+	                'author'        =>   $my_employeur,
+	                'orderby' => 'date',
+	                'order' => 'DESC'
+	        ); 
+	}
 
         $get_emplois = get_posts( $get_args_emploi );
         echo '<select name="job_horaire" id="job_horaire" required>';
-        echo '<option value="">Sélectionner un poste</option>';
+        echo '<option value="0">Sélectionner un poste</option>';
                 foreach($get_emplois as $emploi){
                         echo '<option value="'. $emploi->ID .'">'. $emploi->post_name .' - ' . get_post_status ( $emploi->ID ) . '</option>';
                 }
@@ -1016,7 +1122,7 @@ echo '<form action="'. $_SERVER['REQUEST_URI'] .'" method="post">';
 
         echo '<br>';
         echo '<br>';
-        echo '<span>Début de lhoraire</span>';
+        echo '<span>Début de l&#39;horaire</span>';
         echo '<br>';
         echo '<input type="text" id="datepickerstarthoraire" class="datepickerstarthoraire" name="datepickerstarthoraire" data-toggle="datepickerstarthoraire" required>';
         echo '<input type="time" id="timestarthoraire" name="timestarthoraire" required>';
@@ -1037,7 +1143,7 @@ echo '<form action="'. $_SERVER['REQUEST_URI'] .'" method="post">';
 
         echo '<br>';
         echo '<br>';
-        echo '<span>Fin de lhoraire</span>';
+        echo '<span>Fin de l&#39;horaire</span>';
         echo '<br>';
         echo '<input type="text" id="datepickerendhoraire" class="datepickerendhoraire" name="datepickerendhoraire" data-toggle="datepickerendhoraire" required>';
         echo '<input type="time" id="timeendhoraire" name="timeendhoraire" required>';
@@ -1064,23 +1170,39 @@ if ($_GET['summary'] == true) {
 
         // Parse the query string into a resulting array
         parse_str($queryString, $params);
-
-        $i = 0;
-        $x = 0;
-        $y = 0;
-        $a = 0;
-        $w = null;
-        $salaire = null;
-
+       
         $user_meta = get_userdata(get_current_user_id());
         $user_role = $user_meta->roles[0];
+        
+	if($user_role == 'employeur'){
+		$my_employees = get_user_meta( get_current_user_id(), 'my_employee_key', true);
+	}
+        
+        if($user_role == 'employer'){
+		$x = 0;
+		$blogusers = get_users( array( 'role__in' => array( 'employeur' ) ) );
+		foreach ( $blogusers as $user ) {
+			$userid_employeurs[$x] = $user->ID;
+			$x++;
+		}
+		
+		foreach ( $userid_employeurs as $userid_employeur ) {
+			$my_employees[$userid_employeur] = get_user_meta( $userid_employeur, 'my_employee_key', true);
+		}
+		
+		foreach ( $my_employees as $key => $value ) {
+			if (in_array(get_current_user_id(), $value)) {
+				$my_employeur = $key;
+			}
+		}
+	}
 
         if($user_role == 'employeur'){
                 $args = array(
                          'post_type' => 'horaire',
-                         'post_status'    => array('publish'),
+                         'post_status'    => array('publish', 'draft', 'future'),
+                         'author'        =>   get_current_user_id(),
                           'orderby'       =>  'date',
-                          'author'        =>   get_current_user_id(),
                           'order'         =>  'DESC',
                           'posts_per_page' => -1
                 );
@@ -1097,37 +1219,31 @@ if ($_GET['summary'] == true) {
         }
 
         $posts = get_posts( $args );
-
-	$current_author_id = 0;
-
-        foreach($posts as $post) {
-
-                $author_id = $post->post_author;
-                $my_employee = get_user_meta( $author_id, 'my_employee_key', true);  
-                
-                foreach($my_employee as $employee){
-                
-                	if($employee == get_current_user_id()){
-                		$current_author_id = $post->post_author;
-                	}
-                
-                }
-
-        }
         
         $employee_horaire_select = get_user_meta(get_current_user_id(), 'employee_horaire_select', true);
         $jobs_horaire_select = get_user_meta(get_current_user_id(), 'jobs_horaire_select', true);
      
         echo '<div style="display: float; height: 50px">';
-        $get_args_emploi = array( 
-                'post_type' => 'emploi',
-                'posts_per_page' => -1,
-                'post_status' => array('publish', 'draft', 'future'),
-                'author'        => $current_author_id,
-                'orderby' => 'date',
-                'order' => 'DESC'
-        ); 
-
+        if($user_role == 'employeur'){
+	        $get_args_emploi = array( 
+	                'post_type' => 'emploi',
+	                'posts_per_page' => -1,
+	                'post_status' => array('publish', 'draft', 'future'),
+	                'author'        => get_current_user_id(),
+	                'orderby' => 'date',
+	                'order' => 'DESC'
+	        ); 
+	}
+	if($user_role == 'employer'){
+		$get_args_emploi = array( 
+	                'post_type' => 'emploi',
+	                'posts_per_page' => -1,
+	                'post_status' => array('publish'),
+	                'author'        =>   $my_employeur,
+	                'orderby' => 'date',
+	                'order' => 'DESC'
+	        ); 
+	}
         $get_emplois = get_posts( $get_args_emploi );
         echo '<select name="jobs_horaire_select" id="jobs_horaire_select" class="jobs_horaire_select" style="float: left;">';
         echo '<option value="0">Tous les emplois</option>';
@@ -1142,48 +1258,54 @@ if ($_GET['summary'] == true) {
 
         if($user_role == 'employeur'){
                 echo '<select name="employee_horaire_select" id="employee_horaire_select" class="employee_horaire_select" style="float: right;">';
-                    echo '<option value="0">Tous les employés</option>';
-                        foreach($my_employee as $employee){
-                                $user_by_id = get_user_by('id', $employee);
-                                $salary = get_user_meta( $employee, 'salary_key', true);
-                                if($employee_horaire_select === $employee){
-                                    echo '<option value="'.$employee.'" selected>'. $user_by_id->user_nicename .' - ' . $user_by_id->user_firstname . ' ' . $user_by_id->user_lastname . ' - ' . $salary . '$</option>';
-                                } else {
-                                    echo '<option value="'.$employee.'">'. $user_by_id->user_nicename .' - ' . $user_by_id->user_firstname . ' ' . $user_by_id->user_lastname . ' - ' . $salary . '$</option>';
-                                }
+                    	$count_employees = count($my_employees);
+                    	if($count_employees <= 1 && $user_role == 'employeur'){
+                    		echo '<option value="-2">Pas d&#39;employer</option>';
+                    	} else {
+                    		echo '<option value="0">Tous les employés</option>';
+	                        foreach($my_employees as $employee){
+	                                $user_by_id = get_user_by('id', $employee);
+	                                $salary = get_user_meta( $employee, 'salary_key', true);
+	                                if($employee_horaire_select === $employee){
+	                                    echo '<option value="'.$employee.'" selected>'. $user_by_id->user_nicename .' - ' . $user_by_id->user_firstname . ' ' . $user_by_id->user_lastname . ' - ' . $salary . '$</option>';
+	                                } else {
+	                                    echo '<option value="'.$employee.'">'. $user_by_id->user_nicename .' - ' . $user_by_id->user_firstname . ' ' . $user_by_id->user_lastname . ' - ' . $salary . '$</option>';
+	                                }
+	                        }
                         }
                 echo '</select>';
         }
         echo '</div>';
 
 
-        for ($m = 0; $m <= 600; $m++) {
-            $startofmonth[$a] = date('m/d/Y', mktime(0, 0, 0, $m, 1, '2018'));
-            $a++;
+        for ($m = 0; $m <= 1200; $m++) {
+            $startofmonth[$m] = date('m/d/Y', mktime(0, 0, 0, $m, 1, '2018'));
         }
 
-$firstthursday = strtotime("01/01/2018");
-for($i=0; $i<=1560; $i++){
-        if ($i % 2 == 0) {
-            $thursdayloop = strtotime('next Thursday', $firstthursday);
-            $firstthursday = $thursdayloop;
-        } else {
-            $thursdayloop = strtotime('next Thursday', $firstthursday);
-            $firstthursday = $thursdayloop;
-            $startofpayrollthursday[$y] = date("m/d/Y", $firstthursday);
-            $y++;
-        }
-}
+	$y = 0;
+	$firstthursday = strtotime("01/01/2018");
+	for($i=0; $i<=1560; $i++){
+	        if ($i % 2 == 0) {
+	            $thursdayloop = strtotime('next Thursday', $firstthursday);
+	            $firstthursday = $thursdayloop;
+	        } else {
+	            $thursdayloop = strtotime('next Thursday', $firstthursday);
+	            $firstthursday = $thursdayloop;
+	            $startofpayrollthursday[$y] = date("m/d/Y", $firstthursday);
+	            $y++;
+	        }
+	}
 
-for($i=0; $i<=1560; $i++){
-        if ($i % 2 == 0) {
-                // null;        
-        } else {
-                $startofworkdayonmonday[$x] = date("m/d/Y", strtotime('+'.$i.' Sunday', strtotime('01/01/2018') ));
-                $x++;
-        }
-}
-
+	$x = 0;
+	for($i=0; $i<=1560; $i++){
+	        if ($i % 2 == 0) {
+	                // null;        
+	        } else {
+	                $startofworkdayonmonday[$x] = date("m/d/Y", strtotime('+'.$i.' Sunday', strtotime('01/01/2018') ));
+	                $x++;
+	        }
+	}
+	
         for($i=0; $i<=1560; $i++){
                 $startofweek[$i] = date("m/d/Y", strtotime('+'.$i.' Sunday', strtotime('01/01/2018') ));
         }        
@@ -1191,8 +1313,8 @@ for($i=0; $i<=1560; $i++){
         $p = 0;
         foreach($startofmonth as $month){
                 $frist_day_of_month = date('m/d/Y', strtotime('first day of this month'));
-                if($month == $frist_day_of_month){
-                        $currwent_month = $p;
+                if(strtotime($month) <= strtotime($frist_day_of_month)){
+                        $current_month = $p;
                 }
                 $p++;
         }
@@ -1202,7 +1324,7 @@ for($i=0; $i<=1560; $i++){
     	$thissunday = date("m/d/Y", strtotime('Sunday', $current_time));
     	
 
-        $p = 0;
+        $p = -1;
         foreach($startofworkdayonmonday as $daystartwork){
                 if(strtotime($daystartwork) <= strtotime($thissunday)){
                         $current_biweek = $p;
@@ -1210,9 +1332,9 @@ for($i=0; $i<=1560; $i++){
                 $p++;
         }
 
-        $p = 0;
+        $p = -1;
         foreach($startofweek as $daystartweek){
-                if($daystartweek == $thissunday){
+                if(strtotime($daystartweek) <= strtotime($thissunday)){
                         $current_week = $p;
                 }
                 $p++;
@@ -1220,7 +1342,7 @@ for($i=0; $i<=1560; $i++){
 
         $value_week = $current_week;
         $value_biweek = $current_biweek;
-        $value_month = $currwent_month;
+        $value_month = $current_month;
         if(isset($_GET['week'])) {
                 $value = $_GET['week'];
                 $calc_minus = $_GET['week'] - 1;
@@ -1262,7 +1384,7 @@ for($i=0; $i<=1560; $i++){
         } elseif(isset($_GET['month'])) {
                 echo '<a href="'.$current_url.'?summary='. $params[summary] .'&month='.$calc_minus.'">Précédent</a>';
                 echo ' - ';
-                echo '<a href="'.$current_url.'?summary='. $params[summary] .'&month='.$currwent_month.'">Aujourd&#39;hui</a>';
+                echo '<a href="'.$current_url.'?summary='. $params[summary] .'&month='.$current_month.'">Aujourd&#39;hui</a>';
                 echo ' - ';
                 echo '<a href="'.$current_url.'?summary='. $params[summary] .'&month='.$calc_plus.'">Suivant</a>';
                 echo '<br>';
@@ -1324,7 +1446,7 @@ for($i=0; $i<=1560; $i++){
 if($user_role == 'employeur'){
         $args = array(
                  'post_type' => 'horaire',
-                 'post_status'    => array('publish'),
+                 'post_status'    => array('publish', 'draft', 'future'),
                   'author'        =>   get_current_user_id(),
                   'orderby'       =>  'modified',
                   'order'         =>  'ASC',
@@ -1353,7 +1475,7 @@ if($user_role == 'employer'){
                 $employee_replace = get_post_meta( $post->ID, 'employee_replace_key', true );
                 $dayoff_status = get_post_meta( $post->ID, 'dayoff_status_key', true );
                 $author_id = $post->post_author;
-                $my_employee = get_user_meta( $author_id, 'my_employee_key', true);
+                $my_employees = get_user_meta( $author_id, 'my_employee_key', true);
         	$job_horaire = get_post_meta( $post->ID, 'job_horaire_key', true );  
         	$employee_horaire_select = get_user_meta(get_current_user_id(), 'employee_horaire_select', true);
         	$jobs_horaire_select = get_user_meta(get_current_user_id(), 'jobs_horaire_select', true);

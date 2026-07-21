@@ -149,18 +149,8 @@ function employeur_dashboard() {
 				foreach($posts as $post)  {
 				    if ( get_post_status ( $post->ID ) == 'draft' || get_post_status ( $post->ID ) == 'future' ) {
 			    		        if(get_current_user_id() == $post->post_author) {
-					
 							echo '<a href="' . get_permalink( $post->ID ) .'">' .  $post->ID . ' - ' . $post->post_title . '</a>';
-							$usermetadata = get_user_meta(get_current_user_id());
-							$field_data_adresse = $usermetadata['Adresse'];
-							$field_data = $usermetadata['Code_postal'];
-							if($field_data){
-								echo '<span class="autocompleteDeparture">';
-									echo '<span class="autocompleteDeparture_'.  $i . '" style="display:none;">'. $field_data_adresse . ' ' .implode($field_data) . '</span>';
-									echo '<span class="autocompleteArrival_' . $i . '" style="display: none;">' . get_post_meta( $post->ID, 'my_code_postal_key', true ) . '</span>';
-									echo ' - <span class="distance_' . $i . '"></span>';
-								echo '</span>';
-							}
+							echo ' - ';
 							echo get_post_meta( $post->ID, 'my_city_key', true );
 							$from = strtotime(get_the_date('Y-m-d H:i:s', $post->ID));
 							$today = current_time('timestamp');
@@ -186,16 +176,6 @@ function employeur_dashboard() {
 					} else {
 					
 							echo '<a href="' . get_permalink( $post->ID ) .'">' .  $post->ID . ' - ' . $post->post_title . '</a>';
-							$usermetadata = get_user_meta(get_current_user_id());
-							$field_data_adresse = $usermetadata['Adresse'];
-							$field_data = $usermetadata['Code_postal'];
-							if($field_data){
-								echo '<span class="autocompleteDeparture">';
-									echo '<span class="autocompleteDeparture_'.  $i . '" style="display:none;">'. $field_data_adresse . ' ' .implode($field_data) . '</span>';
-									echo '<span class="autocompleteArrival_' . $i . '" style="display: none;">' . get_post_meta( $post->ID, 'my_code_postal_key', true ) . '</span>';
-									echo ' - <span class="distance_' . $i . '"></span>';
-								echo '</span>';
-							}
 							echo ' - ' . get_post_meta( $post->ID, 'my_city_key', true );
 							$from = strtotime(get_the_date('Y-m-d H:i:s', $post->ID));
 							$today = current_time('timestamp');
@@ -312,6 +292,23 @@ function employeur_dashboard() {
 				    }
 				
 				echo '<h4>Avis</h4>';
+				
+				echo '<div class="moyenne_employeur_scores" style="display:block;">';
+					echo '<span>Moyenne</span>';
+					echo '<div class="moyenne-score-wrapper">';	
+						echo 'Horaire:';						
+    					        echo '<span class="horaire_moyenne_round_up"></span>';
+						echo ' - ';
+						echo 'Superieur:';
+						echo '<span class="superieur_moyenne_round_up"></span>';
+						echo ' - ';
+						echo 'Paie:';
+						echo '<span class="paie_moyenne_round_up"></span>';					
+					echo '</div>';
+				echo '</div>';
+				echo '<div class="moyenne_employeur_no" style="display:none;">';
+					echo '<p>Auccun avis sur cette employeur</p>'; 
+				echo '</div>';
 					
 				$allready_avis = 0;
 								
@@ -461,21 +458,19 @@ function employeur_dashboard() {
 					
 					echo '</div>';
 					
-					if($horaire_moyenne != 'NAN') {
+					echo '<div style="display:none;">';
 						echo '<span>Moyenne</span>';
 						echo '<div class="moyenne-score-wrapper" style="padding-bottom: 25px;">';	
 							echo 'Horaire:';						
-							echo round($horaire_moyenne/$i, 2);
+							echo '<span class="horaire_moyenne_round">'.round($horaire_moyenne/$i, 2).'</span>';
 							echo ' - ';
 							echo 'Superieur:';
-							echo round($superieur_moyenne/$i, 2);
+							echo '<span class="superieur_moyenne_round">'.round($superieur_moyenne/$i, 2).'</span>';
 							echo ' - ';
 							echo 'Paie:';
-							echo round($paie_moyenne/$i, 2);
+							echo '<span class="paie_moyenne_round">'.round($paie_moyenne/$i, 2).'</span>';
 						echo '</div>';
-			 		} else  {
-			 			echo '<span>Auccun avis sur cette employeur</span>';
-			 		}
+					echo '</div>';
 			 }
 			
 		} else  {

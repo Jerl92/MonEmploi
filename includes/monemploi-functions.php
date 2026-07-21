@@ -1242,7 +1242,8 @@ add_action('init', function(){
 	$hide_widget_new_jobs = $_POST['hide-widget-new-jobs'];
 	$hide_widget_finish_job = $_POST['hide-widget-finish-job'];
 	$hide_widget_school = $_POST['hide-widget-school'];
-	$hide_new_employee = $_POST['hide-new-employee'];
+	$hide_new_employee = $_POST['hide-new-employee'];	
+	$hide_widget_new_employeur = $_POST['hide_widget_new_employeur'];
 	
 	update_user_meta( $userid, 'hide_search_key', $hide_search);
 	update_user_meta( $userid, 'hide_dashboard_key', $hide_dashboard);
@@ -1265,7 +1266,8 @@ add_action('init', function(){
 	update_user_meta( $userid, 'hide_widget_new_jobs_key', $hide_widget_new_jobs);
 	update_user_meta( $userid, 'hide_widget_finish_job_key', $hide_widget_finish_job);
 	update_user_meta( $userid, 'hide_widget_school_key', $hide_widget_school);
-	update_user_meta( $userid, 'hide_widget_new_employee_key', $hide_new_employee);
+	update_user_meta( $userid, 'hide_widget_new_employee_key', $hide_new_employee);	
+	update_user_meta( $userid, 'hide_widget_new_employeur_key', $hide_widget_new_employeur);
 
 	$current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . strtok($_SERVER['REQUEST_URI'], '?');
 	

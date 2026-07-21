@@ -61,9 +61,9 @@ function monemploi_user_edit_info() {
 	if(is_user_logged_in()){
 
 	        echo '<div class="user-info" style="display: flex;">';
-		        echo '<div class="user-info-menu" style="padding-right: 15px; width: 25%;">';
+		        echo '<div class="user-info-menu" style="padding-right: 15px; width: 20%; text-align: center;">';
 		        
-		        $user = wp_get_current_user();
+		        	$user = wp_get_current_user();
 				$user_avatar = get_user_meta($user->ID, 'user_avatar', true);
 				$image_url = wp_get_attachment_url($user_avatar);
 				
@@ -140,7 +140,7 @@ function monemploi_user_edit_info() {
 			}
 		
 			if ($_GET['edit'] == true || $_GET['edit_update'] == true || $_GET['edit_update_email'] == true || $_GET['new_email'] == true) {
-				echo '<div class="user-edit-info" style="width: 75%;">';
+				echo '<div class="user-edit-info" style="width: 80%;">';
 				
 				    echo '<h2>Editer les informations</h2>';
 				
@@ -270,7 +270,7 @@ function monemploi_user_edit_info() {
 			
             if ($_GET['privacy'] == true) {
 			
-				echo '<div class="privacy" style="width: 75%;">';
+				echo '<div class="privacy" style="width: 80%;">';
 				
 				    echo '<h2>Confidentialité</h2>';
 				    
@@ -624,6 +624,25 @@ function monemploi_user_edit_info() {
 				                echo '<label for="html">Non</label>';
 				                
 				          	echo '<br>';
+				          	
+				          	$hide_widget_new_employeur = get_user_meta($userdata->ID, 'hide_widget_new_employeur_key', true);
+				    		echo '<span>Masquer l&#8216;employeur du widget des nouveaux employeurs.</span><br>';
+						
+						if($hide_widget_new_employeur == 1){
+				                	echo '<input type="radio" id="hide_widget_new_employeur" name="hide_widget_new_employeur" value="1" checked>';
+				                } else {
+				                	echo '<input type="radio" id="hide_widget_new_employeur" name="hide_widget_new_employeur" value="1">';
+				                }
+				                echo '<label for="html">Oui</label>';
+									
+						if($hide_widget_new_employeur == 0 || $hide_widget_new_employeur == ''){
+				                	echo '<input type="radio" id="hide_widget_new_employeur" name="hide_widget_new_employeur" value="0" checked>';
+				                } else {
+				                	echo '<input type="radio" id="hide_widget_new_employeur" name="hide_widget_new_employeur" value="0">';
+				                }
+				                echo '<label for="html">Non</label>';
+				                
+				          	echo '<br>';
 			                
 			                }
 			                
@@ -643,7 +662,7 @@ function monemploi_user_edit_info() {
 			
 			if ($_GET['delete_account'] == true) {
 			
-				echo '<div class="delete-account" style="width: 75%;">';
+				echo '<div class="delete-account" style="width: 80%;">';
 					
 				if ($_GET['delete_account_wrong_password'] == true) {
 					echo '<p>Le mot de passe n&#8216;est pas valide.</p>';

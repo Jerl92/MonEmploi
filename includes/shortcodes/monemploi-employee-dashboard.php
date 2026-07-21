@@ -257,7 +257,7 @@ function employee_dashboard() {
 					
 					echo '<div class="moyenne_employee_scores" style="display:block;">';
 						echo '<span>Moyenne</span>';
-						echo '<div class="moyenne-score-wrapper" style="padding-bottom: 25px;">';	
+						echo '<div class="moyenne-score-wrapper">';	
 							echo 'Poctualité:';						
 	    					        echo '<span class="ponctualite_moyenne_round_up"></span>';
 							echo ' - ';
@@ -1184,17 +1184,7 @@ function employee_dashboard() {
 	    			        echo $company_key;
 	    			    }
 	    			    echo ' - ';
-	    			    echo get_user_meta($user_id, 'city_key', true);
-	    			    $departure = get_user_meta(get_current_user_id(), 'adresse_key', true) . ' ' . get_user_meta(get_current_user_id(), 'postal_code_key', true);
-	    		    	$arrival = get_user_meta($user_id, 'adresse_key', true) . ' ' . get_user_meta($user_id, 'postal_code_key', true);
-	    		    	if($departure && $arrival){
-	        				echo '<span class="autocompleteDeparture">';
-	        					echo '<span class="autocompleteDeparture_'.  $i . '" style="display:none;">'. implode($departure) . '</span>';
-	        					echo '<span class="autocompleteArrival_' . $i . '" style="display: none;">' . implode($arrival) . '</span>';
-	        					echo ' - <span class="distance_' . $i . '"></span>';
-	        				echo '</span>';
-	    		        }
-	    			
+	    			    echo get_user_meta($user_id, 'city_key', true);    			
 	    			 ?></div><?php 
 	    			 
 	    			 $i++;
