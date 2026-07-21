@@ -266,7 +266,7 @@ echo '</ul>';
         if($user_role == 'employeur'){
                 echo '<select name="employee_horaire_select" id="employee_horaire_select" class="employee_horaire_select" style="float: right;">';
                     	$count_employees = count($my_employees);
-                    	if($count_employees <= 1 && $user_role == 'employeur'){
+                    	if($count_employees <= 0 && $user_role == 'employeur'){
                     		echo '<option value="-2">Pas d&#39;employer</option>';
                     	} else {
                     	        echo '<option value="0">Tous les employers</option>';
@@ -761,7 +761,7 @@ foreach($posts as $post) {
         if($user_role == 'employeur'){
                 echo '<select name="employee_horaire_select" id="employee_horaire_select" class="employee_horaire_select" style="float: right;">';
                     	$count_employees = count($my_employees);
-                    	if($count_employees <= 1 && $user_role == 'employeur'){
+                    	if($count_employees <= 0 && $user_role == 'employeur'){
                     		echo '<option value="-2">Pas d&#39;employer</option>';
                     	} else {
                     	        echo '<option value="0">Tous les employers</option>';
@@ -1070,6 +1070,9 @@ if (isset($_GET['new_job'])) {
 
 echo '<form action="'. $_SERVER['REQUEST_URI'] .'" method="post">';
 
+	$user_meta = get_userdata(get_current_user_id());
+	$user_role = $user_meta->roles[0];
+
 	if($user_role == 'employer'){
 		$x = 0;
 		$blogusers = get_users( array( 'role__in' => array( 'employeur' ) ) );
@@ -1271,7 +1274,7 @@ if ($_GET['summary'] == true) {
         if($user_role == 'employeur'){
                 echo '<select name="employee_horaire_select" id="employee_horaire_select" class="employee_horaire_select" style="float: right;">';
                     	$count_employees = count($my_employees);
-                    	if($count_employees <= 1 && $user_role == 'employeur'){
+                    	if($count_employees <= 0 && $user_role == 'employeur'){
                     		echo '<option value="-2">Pas d&#39;employer</option>';
                     	} else {
                     		echo '<option value="0">Tous les employés</option>';
