@@ -216,6 +216,12 @@ echo '<ul class="horaire-job" style="display: none;">';
                         $horaires[$i] = array(null);
 			$i++;
                     }
+                    
+                    if($employee_horaire_select != 0 && $employee_horaire_select == -2){
+                    	echo '<li style="display: none;"></li>';
+                        $horaires[$i] = array(null);
+			$i++;
+                    }
                   
 		}
 		
@@ -739,6 +745,12 @@ foreach($posts as $post) {
         	}
         	
 		if($employee_horaire_select == 0 && $employee_horaire_select == -2){
+			echo '<li style="display: none;"></li>';
+			$horaires[$i] = array(null);
+			$i++;
+		}
+		
+		if($employee_horaire_select != 0 && $employee_horaire_select == -2){
 			echo '<li style="display: none;"></li>';
 			$horaires[$i] = array(null);
 			$i++;
