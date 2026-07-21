@@ -116,18 +116,6 @@ class monemploi_new_jobs_widget extends WP_Widget {
 							echo $get_user_by_username->user_firstname;
 							echo ' ';
 							echo $get_user_by_username->user_lastname;
-							
-							$usermetadata = get_user_meta(get_current_user_id());	
-													
-							$field_data = $usermetadata['Code_postal'];
-							if($field_data){
-								echo '<span class="completeDeparture">';
-									echo '<div class="completeDeparture_'.  $i . '" style="display:none;">'. implode($field_data) . '</div>';
-									echo '<div class="completeArrival_' . $i . '" style="display: none;">' . get_post_meta( $p->ID, 'my_code_postal_key', true ) . '</div>';
-									echo ' - <span class="widgetdistance_' . $i . '"></span>';
-								echo '</span>';
-							}
-							
 							echo ' - ';
 							echo get_post_meta( $p->ID, 'my_city_key', true );
 							

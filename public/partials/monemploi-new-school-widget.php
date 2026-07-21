@@ -39,10 +39,14 @@ class monemploi_new_school_widgets extends WP_Widget {
 		    );
 		
 		    $users = get_users( $args );
+		    
+		    $unique_strings_school = [];
+		    
+		    $x = 0;
 		   
 		   foreach ($users as $user) {
 		                   
-                $unique_strings_school = get_user_meta( $user->ID, 'school_unique', true );
+                    $unique_strings_school = get_user_meta( $user->ID, 'school_unique', true );
 	    	    
 	    	    $unique_strings_school_first = $unique_strings_school[array_key_first($unique_strings_school)];
 	    	    
@@ -57,8 +61,11 @@ class monemploi_new_school_widgets extends WP_Widget {
 	    	        $school_array[$date_school_end_strtotime] = array($user->ID, $school_title, $school_name);
 	    	    
 	    	    }
+	    	    
+	    	    $x++;
 	    	
 		   }
+		   
 		   
 		   $i = 0;
 		   krsort($school_array);

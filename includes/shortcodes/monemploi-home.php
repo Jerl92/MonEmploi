@@ -80,7 +80,7 @@ function monemploi_home() {
 	
 	foreach($get_avis_ as $get_avis){
 	
-		if(get_user_meta($get_avis->ID, 'role_key', true) == 'um_employeur'){
+		if(get_user_meta($get_avis->ID, 'role_key', true) == 'employeur'){
 		
 			$um_employeur_count++;
 		

@@ -215,7 +215,7 @@ add_action('init', function(){
         
         }
          
-       header('Refresh:0;' . $_SERVER['REQUEST_URI']);
+       header('Refresh: ' . $_SERVER['REQUEST_URI']);
 });
 
 function generateRandomString($length = 10) {
@@ -526,7 +526,7 @@ add_action('init', function(){
 		$queryString = $pathInfo['query'];
 		$array = explode("&", $queryString);
 		$array[1] = '&delete_attachment='. $object_id;
-		header("Refresh:0;url=" . $current_url . "?" . implode($array) . "");
+		header("Refresh: " . $current_url . "?" . implode($array) . "");
 	}
 	
 });
@@ -1081,7 +1081,7 @@ add_action('init', function(){
 		add_user_meta( $post_id, 'authorid_key', $authorid);
 		add_user_meta( $post_id, 'role_key', 'employer');
 		add_user_meta( $post_id, 'nicename_key', $user_nicename);
-		get_user_meta( $post_id, 'authorid_key', $authorid);
+		add_user_meta( $post_id, 'userid_key', get_current_user_id());
 
 		$current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . strtok($_SERVER['REQUEST_URI'], '?');
 		
@@ -1093,7 +1093,7 @@ add_action('init', function(){
 		// Parse the query string into a resulting array
 		parse_str($queryString, $params);
 		
-		header("Location:0;" . $current_url . "?user=" . $params[user] . "&add_avis=". $post_id ."");
+		header("Location:" . $current_url . "?user=" . $params[user] . "&add_avis=". $post_id ."");
 	
 	}
 	
@@ -1131,8 +1131,9 @@ add_action('init', function(){
 		add_user_meta( $post_id, 'superieur_key', $superieur);
 		add_user_meta( $post_id, 'paie_key', $paie);
 		add_user_meta( $post_id, 'authorid_key', $authorid);
-		add_user_meta( $post_id, 'role_key', 'um_employeur');
+		add_user_meta( $post_id, 'role_key', 'employeur');
 		add_user_meta( $post_id, 'nicename_key', $user_nicename);
+		add_user_meta( $post_id, 'userid_key', get_current_user_id());
 		
 		$current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . strtok($_SERVER['REQUEST_URI'], '?');
 		
@@ -1144,7 +1145,7 @@ add_action('init', function(){
 		// Parse the query string into a resulting array
 		parse_str($queryString, $params);
 		
-		header("Location:0;" . $current_url . "?user=" . $params[user] . "&add_avis=". $post_id ."");
+		header("Location:" . $current_url . "?user=" . $params[user] . "&add_avis=". $post_id ."");
 		
 	}
 	
@@ -1170,7 +1171,7 @@ add_action('init', function(){
 	// Parse the query string into a resulting array
 	parse_str($queryString, $params);
 		
-	header("Location:0;" . $current_url . "?user=" . $params[user] . "&delete_avis=". $postid ."");
+	header("Location:" . $current_url . "?user=" . $params[user] . "&delete_avis=". $postid ."");
 	
 });
 
@@ -1194,7 +1195,7 @@ add_action('init', function(){
 	// Parse the query string into a resulting array
 	parse_str($queryString, $params);
 		
-	header("Location:0;" . $current_url . "?user=" . $params[user] . "&delete_avis=". $postid ."");
+	header("Location:" . $current_url . "?user=" . $params[user] . "&delete_avis=". $postid ."");
 	
 });
 
@@ -1210,7 +1211,7 @@ add_action('init', function(){
 	
     	$current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . strtok($_SERVER['REQUEST_URI'], '?');
 	
-	header("Location:0;" . $current_url . "?delete_comment=". $commentid ."");
+	header("Location:" . $current_url . "?delete_comment=". $commentid ."");
 
 });
 
@@ -1279,7 +1280,7 @@ add_action('init', function(){
 	// Parse the query string into a resulting array
 	parse_str($queryString, $params);
 	
-	header("Location:0;" . $current_url . "?privacy=" . $params[privacy] . "&privacy_update=true");
+	header("Location:" . $current_url . "?privacy=" . $params[privacy] . "&privacy_update=true");
 });
 
 add_action('init', function(){
@@ -1597,7 +1598,7 @@ add_action('init', function(){
 	
 	$url = home_url( $scheme = 'https' );
 
-	header("refresh:0;".$url."/horaire-des-employe/?delete=".$postid."");
+	header("refresh:".$url."/horaire-des-employe/?delete=".$postid."");
 		
 });
 
@@ -1674,6 +1675,6 @@ add_action('init', function(){
 	
 	update_user_meta( $userid, 'salary_key', $salary);
 	
-});	
+});
 
 ?>

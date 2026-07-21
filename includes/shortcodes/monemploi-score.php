@@ -41,24 +41,39 @@
        		$my_employees = get_user_meta( get_current_user_id(), 'my_employee_key', true);
        	}
         
-	if($user_role == 'employer'){
-		$x = 0;
-		$blogusers = get_users( array( 'role__in' => array( 'employeur' ) ) );
-		foreach ( $blogusers as $user ) {
-			$userid_employeurs[$x] = $user->ID;
-			$x++;
-		}
-		
-		foreach ( $userid_employeurs as $userid_employeur ) {
-			$my_employees[$userid_employeur] = get_user_meta( $userid_employeur, 'my_employee_key', true);
-		}
-		
-		foreach ( $my_employees as $key => $value ) {
-			if (in_array(get_current_user_id(), $value)) {
-				$my_employeur = $key;
-			}
-		}
-	}
+        if($user_role == 'employer'){
+        	$x = 0;
+        	$blogusers = get_users( array( 'role__in' => array( 'employeur' ) ) );
+        	foreach ( $blogusers as $user ) {
+        		$userid_employeurs[$x] = $user->ID;
+        		$x++;
+        	}
+        	
+        	foreach ( $userid_employeurs as $userid_employeur ) {
+        		$my_employees[$userid_employeur] = get_user_meta( $userid_employeur, 'my_employee_key', true);
+        	}
+        	
+        	$x = 0;
+        	foreach ( $my_employees as $key => $value ) {
+        		if (in_array(get_current_user_id(), $value)) {
+        			$my_employeurs[$x] = $key;
+        			$x++;
+        		}
+        	}
+        }
+        
+        if($user_role == 'employeur'){
+	        $get_args_emploi = array( 
+	                'post_type' => 'emploi',
+	                'posts_per_page' => -1,
+	                'post_status' => array('publish', 'draft', 'future'),
+	                'author'        => get_current_user_id(),
+	                'orderby' => 'date',
+	                'order' => 'DESC'
+	        ); 
+	    }
+	    
+        $get_emplois = get_posts($get_args_emploi);
         
         $posts = get_posts($args);
 	        $x = 0;
@@ -126,38 +141,41 @@
         	    
         	if($user_role == 'employeur'){
         	
-        		$job_horaire = get_post_meta( $post->ID, 'job_horaire_key', true );
+        		    $job_horaire = get_post_meta( $post->ID, 'job_horaire_key', true );
             		$employee_horaire = get_post_meta( $post->ID, 'employee_horaire_key', true );
     	      
         	    	if($employee_horaire_select == 0 && $jobs_horaire_select == 0){
-	    			$current_time = current_time( 'timestamp' );
-	    			$datepickerstarthoraire = get_post_meta( $post->ID, 'datepickerstarthoraire_key', true );
-	    			$timestarthoraire = get_post_meta( $post->ID, 'timestarthoraire_key', true );
-	    			$datepickerendhoraire = get_post_meta( $post->ID, 'datepickerendhoraire_key', true );
-	    			$timeendhoraire = get_post_meta( $post->ID, 'timeendhoraire_key', true );	
-	    			$employee_horaire = get_post_meta( $post->ID, 'employee_horaire_key', true);
-	    			$datestartstrtotime = strtotime($datepickerstarthoraire.'T'.$timestarthoraire);
-	    			$dateendstrtotime = strtotime($datepickerendhoraire.'T'.$timeendhoraire);
-	                	$timebrake = get_post_meta( $post->ID, 'timebrake_key', true );
-	    			
-	    			$push_ = get_post_meta( $post->ID, 'push_key', true );
-	    			$employee_horaire = get_post_meta( $post->ID, 'employee_horaire_key', true );
-	    			$employee_replace = get_post_meta( $post->ID, 'employee_replace_key', true );
-	    			$dayoff_status = get_post_meta( $post->ID, 'dayoff_status_key', true );
-	    			$fristpush = array_values($push_)[0];
-	    			$endpush = end($push_);
-	    			$fristpushalls[$u]['time'] = $fristpush[1];
-	    			$fristpushalls[$u]['inout'] = $fristpush[0];
-	    			$fristpushalls[$u]['date'] = $datestartstrtotime;
-	    			$fristpushalls[$u]['userid'] = $employee_horaire;
-	    			$fristpushalls[$u]['postid'] = $post->ID;
-	                	$punchs[$u] =  $push_;
-	    			$endpushallls[$u]['time'] = $endpush[1];
-	    			$endpushallls[$u]['inout'] = $endpush[0];
-	    			$endpushallls[$u]['date'] = $dateendstrtotime;
-	                	$timebrakes[$u] = $timebrake;
-	    			$u++;
-    	        
+        	    	    foreach ($get_emplois as $get_emploi){
+        	    	        if($get_emploi->ID == $job_horaire){
+                                $current_time = current_time( 'timestamp' );
+            	    			$datepickerstarthoraire = get_post_meta( $post->ID, 'datepickerstarthoraire_key', true );
+            	    			$timestarthoraire = get_post_meta( $post->ID, 'timestarthoraire_key', true );
+            	    			$datepickerendhoraire = get_post_meta( $post->ID, 'datepickerendhoraire_key', true );
+            	    			$timeendhoraire = get_post_meta( $post->ID, 'timeendhoraire_key', true );	
+            	    			$employee_horaire = get_post_meta( $post->ID, 'employee_horaire_key', true);
+            	    			$datestartstrtotime = strtotime($datepickerstarthoraire.'T'.$timestarthoraire);
+            	    			$dateendstrtotime = strtotime($datepickerendhoraire.'T'.$timeendhoraire);
+            	                $timebrake = get_post_meta( $post->ID, 'timebrake_key', true );
+            	    			
+            	    			$push_ = get_post_meta( $post->ID, 'push_key', true );
+            	    			$employee_horaire = get_post_meta( $post->ID, 'employee_horaire_key', true );
+            	    			$employee_replace = get_post_meta( $post->ID, 'employee_replace_key', true );
+            	    			$dayoff_status = get_post_meta( $post->ID, 'dayoff_status_key', true );
+            	    			$fristpush = array_values($push_)[0];
+            	    			$endpush = end($push_);
+            	    			$fristpushalls[$u]['time'] = $fristpush[1];
+            	    			$fristpushalls[$u]['inout'] = $fristpush[0];
+            	    			$fristpushalls[$u]['date'] = $datestartstrtotime;
+            	    			$fristpushalls[$u]['userid'] = $employee_horaire;
+            	    			$fristpushalls[$u]['postid'] = $post->ID;
+            	                $punchs[$u] =  $push_;
+            	    			$endpushallls[$u]['time'] = $endpush[1];
+            	    			$endpushallls[$u]['inout'] = $endpush[0];
+            	    			$endpushallls[$u]['date'] = $dateendstrtotime;
+            	                $timebrakes[$u] = $timebrake;
+            	    			$u++;
+        	    	        }
+        	    	    }
     	      		}
     	      		
     	      		if($employee_horaire_select == 0 && $jobs_horaire_select != 0){
@@ -227,6 +245,8 @@
     	      		}
     	      		
     	      		if($employee_horaire_select != 0 && $jobs_horaire_select == 0){
+                        foreach ($get_emplois as $get_emploi){
+        	    	    if($get_emploi->ID == $job_horaire){
     	      			if($employee_horaire_select == $employee_horaire){
 		    			$current_time = current_time( 'timestamp' );
 		    			$datepickerstarthoraire = get_post_meta( $post->ID, 'datepickerstarthoraire_key', true );
@@ -254,13 +274,16 @@
 		    			$endpushallls[$u]['inout'] = $endpush[0];
 		    			$endpushallls[$u]['date'] = $dateendstrtotime;
 		                	$timebrakes[$u] = $timebrake;
-		    			$u++;	    			
+		    			$u++;	    
+    	      			}
+		    			
+    	      			}
 	    			}
     	        
     	      		}
     	      		
     	      		if($employee_horaire_select == -2 && $jobs_horaire_select == 0){
-    	      				$current_time = null;
+    	      			$current_time = null;
 		    			$datepickerstarthoraire = null;
 		    			$timestarthoraire = null;
 		    			$datepickerendhoraire = null;
@@ -268,7 +291,7 @@
 		    			$employee_horaire = null;
 		    			$datestartstrtotime = null;
 		    			$dateendstrtotime = null;
-		                	$timebrake = null;
+		                $timebrake = null;
 		    			
 		    			$push_ = null;
 		    			$employee_horaire = null;
@@ -281,11 +304,41 @@
 		    			$fristpushalls[$u]['date'] = 0;
 		    			$fristpushalls[$u]['userid'] = 0;
 		    			$fristpushalls[$u]['postid'] = 0;
-		                	$punchs[$u] =  null;
+		                $punchs[$u] =  null;
 		    			$endpushallls[$u]['time'] = 0;
 		    			$endpushallls[$u]['inout'] = null;
 		    			$endpushallls[$u]['date'] = 0;
-		                	$timebrakes[$u] = null;
+		                $timebrakes[$u] = null;
+		    			$u++;	
+    	      		}
+    	      		
+	                if($employee_horaire_select == -2 && $jobs_horaire_select != 0){
+    	      			$current_time = null;
+		    			$datepickerstarthoraire = null;
+		    			$timestarthoraire = null;
+		    			$datepickerendhoraire = null;
+		    			$timeendhoraire = null; 	
+		    			$employee_horaire = null;
+		    			$datestartstrtotime = null;
+		    			$dateendstrtotime = null;
+		                $timebrake = null;
+		    			
+		    			$push_ = null;
+		    			$employee_horaire = null;
+		    			$employee_replace = null;
+		    			$dayoff_status = null;
+		    			$fristpush = null;
+		    			$endpush = null;
+		    			$fristpushalls[$u]['time'] = 0;
+		    			$fristpushalls[$u]['inout'] = null;
+		    			$fristpushalls[$u]['date'] = 0;
+		    			$fristpushalls[$u]['userid'] = 0;
+		    			$fristpushalls[$u]['postid'] = 0;
+		                $punchs[$u] =  null;
+		    			$endpushallls[$u]['time'] = 0;
+		    			$endpushallls[$u]['inout'] = null;
+		    			$endpushallls[$u]['date'] = 0;
+		                $timebrakes[$u] = null;
 		    			$u++;	
     	      		}
     
@@ -295,7 +348,7 @@
         
        	echo '<div style="display: float; height: 75px">';
         if($user_role == 'employeur'){
-	        $get_args_emploi = array( 
+	        $get_args_emploi[0] = array( 
 	                'post_type' => 'emploi',
 	                'posts_per_page' => -1,
 	                'post_status' => array('publish', 'draft', 'future'),
@@ -305,25 +358,35 @@
 	        ); 
 	}
 	if($user_role == 'employer'){
-		$get_args_emploi = array( 
-	                'post_type' => 'emploi',
-	                'posts_per_page' => -1,
-	                'post_status' => array('publish'),
-	                'author'        =>   $my_employeur,
-	                'orderby' => 'date',
-	                'order' => 'DESC'
-	        ); 
-	}
-
-        $get_emplois = get_posts( $get_args_emploi );
+            $x = 0;
+            foreach ($my_employeurs as $my_employeur){
+    	        $get_args_emploi[$x] = array( 
+    	                'post_type' => 'emploi',
+    	                'posts_per_page' => -1,
+    	                'post_status' => array('publish', 'draft', 'future'),
+	                    'author'        => $my_employeur,
+    	                'orderby' => 'date',
+    	                'order' => 'DESC'
+    	        );
+    	        $x++;
+            }
+        }
+        
+        $x = 0;
+        foreach ($get_args_emploi as $get_emploi){
+            $get_emplois[$x] = get_posts( $get_emploi );
+            $x++;
+        }
         echo '<select name="jobs_horaire_select" id="jobs_horaire_select" class="jobs_horaire_select" style="float: left;">';
         echo '<option value="0">Tous les emplois</option>';
-                foreach($get_emplois as $emploi){
-                    	if(intval($jobs_horaire_select) === intval($emploi->ID)){
-                        	echo '<option value="'. $emploi->ID .'" selected>'. $emploi->post_name .' - ' . get_post_status ( $emploi->ID ) . '</option>';
-                        } else {
-                        	echo '<option value="'. $emploi->ID .'">'. $emploi->post_name .' - ' . get_post_status ( $emploi->ID ) . '</option>';
-                        }
+                foreach($get_emplois as $emploi_){
+                    foreach($emploi_ as $emploi){
+                        	if(intval($jobs_horaire_select) === intval($emploi->ID)){
+                            	echo '<option value="'. $emploi->ID .'" selected>'. $emploi->post_name .' - ' . get_post_status ( $emploi->ID ) . '</option>';
+                            } else {
+                            	echo '<option value="'. $emploi->ID .'">'. $emploi->post_name .' - ' . get_post_status ( $emploi->ID ) . '</option>';
+                            }
+                    }
                 }
         echo '</select>';
                 
