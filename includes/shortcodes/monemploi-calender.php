@@ -66,7 +66,7 @@ $user_role = $user_meta->roles[0];
 if($user_role == 'employeur'){
         $args = array(
                  'post_type' => 'horaire',
-                 'post_status'    => array('publish', 'draft', 'future'),
+                 'post_status'    => array('publish'),
                   'orderby'       =>  'date',
                   'author'        =>   get_current_user_id(),
                   'order'         =>  'DESC',
@@ -108,19 +108,6 @@ if($user_role == 'employer'){
 		}
 	}
 }
-
-if($user_role == 'employeur'){
-        $get_args_emploi = array( 
-                'post_type' => 'emploi',
-                'posts_per_page' => -1,
-                'post_status' => array('publish', 'draft', 'future'),
-                'author'        => get_current_user_id(),
-                'orderby' => 'date',
-                'order' => 'DESC'
-        ); 
-}
-        
-$get_emplois = get_posts($get_args_emploi);
 
 $posts = get_posts( $args );
 
@@ -319,7 +306,7 @@ echo '</ul>';
     	                'post_type' => 'emploi',
     	                'posts_per_page' => -1,
     	                'post_status' => array('publish', 'draft', 'future'),
-	                    'author'        => $my_employeur,
+	                'author'        => $my_employeur,
     	                'orderby' => 'date',
     	                'order' => 'DESC'
     	        );
@@ -336,7 +323,7 @@ echo '</ul>';
         echo '<option value="0">Tous les emplois</option>';
                 foreach($get_emplois as $emploi_){
                     foreach($emploi_ as $emploi){
-                        	if(intval($jobs_horaire_select) === intval($emploi->ID)){
+                            if(intval($jobs_horaire_select) === intval($emploi->ID)){
                             	echo '<option value="'. $emploi->ID .'" selected>'. $emploi->post_name .' - ' . get_post_status ( $emploi->ID ) . '</option>';
                             } else {
                             	echo '<option value="'. $emploi->ID .'">'. $emploi->post_name .' - ' . get_post_status ( $emploi->ID ) . '</option>';
@@ -410,7 +397,7 @@ echo '</ul>';
                 if($user_role == 'employeur'){
                         $args = array(
                                  'post_type' => 'horaire',
-                                 'post_status'    => array('publish', 'draft', 'future'),
+                                 'post_status'    => array('publish'),
                                   'orderby'       =>  'date',
                                   'author'        =>   get_current_user_id(),
                                   'order'         =>  'DESC',
@@ -738,29 +725,10 @@ if($user_role == 'employeur'){
 	$my_employees = get_user_meta( get_current_user_id(), 'my_employee_key', true);
 }
 
-if($user_role == 'employer'){
-	$x = 0;
-	$blogusers = get_users( array( 'role__in' => array( 'employeur' ) ) );
-	foreach ( $blogusers as $user ) {
-		$userid_employeurs[$x] = $user->ID;
-		$x++;
-	}
-	
-	foreach ( $userid_employeurs as $userid_employeur ) {
-		$my_employees[$userid_employeur] = get_user_meta( $userid_employeur, 'my_employee_key', true);
-	}
-	
-	foreach ( $my_employees as $key => $value ) {
-		if (in_array(get_current_user_id(), $value)) {
-			$my_employeur = $key;
-		}
-	}
-}
-
 if($user_role == 'employeur'){
         $args = array(
                  'post_type' => 'horaire',
-                 'post_status'    => array('publish', 'draft', 'future'),
+                 'post_status'    => array('publish'),
                   'orderby'       =>  'date',
                   'author'        =>   get_current_user_id(),
                   'order'         =>  'DESC',
