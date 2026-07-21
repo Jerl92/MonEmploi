@@ -173,7 +173,7 @@ add_action('init', function(){
             $login_lock = get_user_meta($user->ID, 'login_lock', true);
 	     if($login_lock == 1){
             	$unlock = $lock_time - $date1;
- 		$time_unlock = gmdate("H:i:s", $unlock);
+ 		        $time_unlock = gmdate("H:i:s", $unlock);
                 wp_die($time_unlock . ' - Votre compte est barré pour 12 heures car vous avez echoué vos 5 tentative de connexion.');
             }
         }

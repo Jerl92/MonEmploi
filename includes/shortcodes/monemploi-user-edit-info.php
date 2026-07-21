@@ -642,7 +642,7 @@ function monemploi_user_edit_info() {
 				                }
 				                echo '<label for="html">Non</label>';
 				                
-				          	echo '<br>';
+				          	echo '<br>';				      
 			                
 			                }
 			                

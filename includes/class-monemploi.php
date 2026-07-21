@@ -128,7 +128,7 @@ class Monemploi {
 		
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/monemploi-new-jobs-widget.php';
 		
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/monemploi-new-employer-widget.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/monemploi-new-employeur-widget.php';
 		
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/monemploi-new-employee-widget.php';
 		
