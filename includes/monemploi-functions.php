@@ -147,7 +147,7 @@ add_action('init', function(){
             $login_attemp_count = intval($login_attemp);
             $login_attemp_count += 1;
             update_user_meta($user->ID, 'login_attemp', $login_attemp_count);
-            if($login_attemp_count == 5){
+            if($login_attemp_count == 15){
                 $new_date = strtotime(date("Y-m-d H:i:s", $date1) . "+12hours");
                 update_user_meta($user->ID, 'login_lock', 1);
                 update_user_meta($user->ID, 'login_lock_time', $new_date);
@@ -163,7 +163,7 @@ add_action('init', function(){
  		$time_unlock = gmdate("H:i:s", $unlock);
                 wp_die($time_unlock . ' - Votre compte est barré pour 12 heures car vous avez echoué vos 5 tentative de connexion.');
             }
-            wp_die('Nombre de tentative:' . $login_attemp_count . '/5 - Échec de la connexion. Mot de passe incorrect?');
+            wp_die('Nombre de tentative:' . $login_attemp_count . '/15 - Échec de la connexion. Mot de passe incorrect?');
         } else {
             if($date1 >= $lock_time && $lock_time != ''){
                 update_user_meta($user->ID, 'login_attemp', 0);
