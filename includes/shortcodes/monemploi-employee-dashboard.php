@@ -141,16 +141,20 @@ function employee_dashboard() {
 				$users = get_users( $args );
 				
 				foreach ( $users as $user ) {
+					$x = 0;
 					$my_employees = get_user_meta( $user->ID, 'my_employee_key', true);
 				   	foreach ( $my_employees as $employee ) {
 				   		if(floatval($employee) == floatval($userid)){
-				   			$user_employeur_id = $user->ID;
+				   			$user_employeur_ids[$x] = $user->ID;
+				   			$x++;
 				   		}
 				   	}
 				}
 				 
-				 if($user_employeur_id == get_current_user_id() || $userid == get_current_user_id()){
-				 	echo '<h3><a href="'.$current_url.'?user='.$params[user].'&employeur=true">Section réservée à l&#8216;employeur</a></h3>';
+				 foreach ( $user_employeur_ids as $user_employeur_id ){
+				 	if($user_employeur_id == get_current_user_id() || $userid == get_current_user_id()){
+					 	echo '<h3><a href="'.$current_url.'?user='.$params[user].'&employeur=true">Section réservée à l&#8216;employeur</a></h3>';
+					 }
 				 }					 		 		
 				 
 				 if ( is_user_logged_in() ) {
