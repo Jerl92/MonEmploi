@@ -151,8 +151,12 @@ function employee_dashboard() {
 				   	}
 				}
 				 
+				 
+				 if($userid == get_current_user_id()){
+				 	echo '<h3><a href="'.$current_url.'?user='.$params[user].'&employeur=true">Section réservée à l&#8216;employeur</a></h3>';
+				 }
 				 foreach ( $user_employeur_ids as $user_employeur_id ){
-				 	if($user_employeur_id == get_current_user_id() || $userid == get_current_user_id()){
+				 	if($user_employeur_id == get_current_user_id()){
 					 	echo '<h3><a href="'.$current_url.'?user='.$params[user].'&employeur=true">Section réservée à l&#8216;employeur</a></h3>';
 					 }
 				 }					 		 		
